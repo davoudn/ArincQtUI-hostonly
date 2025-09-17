@@ -1,9 +1,10 @@
 #ifndef TREEDATAMODEL_H
 #define TREEDATAMODEL_H
-
-#include <QAbstractItemModel>
 #include "PointerVector.h"
+#include "action.h"
+#include <QAbstractItemModel>
 #include <vector>
+
 class Label;
 class BaseItem;
 class DArincData;
@@ -16,6 +17,9 @@ class MyDataModel: public QAbstractItemModel
     Q_OBJECT
 private:
     PointerVector<BaseItem>& myData;
+
+    std::vector<action> actions;
+    uint32_t chanell = 0;
 
     int depth(QModelIndex &index);
     bool bIfEditable = false;
@@ -52,6 +56,9 @@ public:
     // for transmitter
     std::vector<DArincData> getListOfAvailableLabelData();
     void incrementLabelsDataRateCounter();
+    std::vector<action>& getActions();
+    void addLabelAction(uint32_t ch, uint32_t trans_rec, uint32_t instr, Label* label);
+    void addControlAction(uint32_t ch, uint32_t trans_rec, uint32_t instr, uint16_t controlword);
 
     // for receiver
     void evalDataRates();

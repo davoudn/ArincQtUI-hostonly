@@ -108,7 +108,7 @@ public:
 
 protected:
 
-    bool bIfActive = true;
+    bool bIfActive = false;
     str_t path;
     DArincData ArincData;
     double dataRate = 5.f;

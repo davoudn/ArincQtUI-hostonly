@@ -42,6 +42,7 @@ public:
 public slots:
      void taskTransmitData();
      void incrementLabelsDataRateCounter();
+     void actionListCleaner();
 protected:
 
     PointerVector<BaseItem> equipments;

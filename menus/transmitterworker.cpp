@@ -1,12 +1,10 @@
 #include "transmitterworker.h"
-#include "ArincData.h"
 #include "Label.h"
 #include "Equipment.h"
 #include "arinc_functions.h"
-#include "baseitem.h"
 #include "transmitter.h"
 #include "Timer.h"
-
+#include "generaldata.h"
 
 TransmitterWorker* TransmitterWorker::instance = nullptr;
 
@@ -40,12 +38,12 @@ TransmitterWorker::TransmitterWorker(str_t _equipment)
     dataRateThread->setObjectName(" Transmitter data rate thread... ");
 
     dataRateTimer = new Timer(this);
-    dataRateTimer->setTimeout(MIN_TICK);
+    dataRateTimer->setTimeout(ACTION_CLEANER_TIME);
 
     connect(mainThread, &QThread::started, this, &TransmitterWorker::taskTransmitData);
     connect(dataRateThread, &QThread::started, dataRateTimer, &Timer::counterTask);
     //
-    connect(dataRateTimer, &Timer::onTimeout, this, &TransmitterWorker::incrementLabelsDataRateCounter,  Qt::DirectConnection);
+    connect(dataRateTimer, &Timer::onTimeout, this, &TransmitterWorker::actionListCleaner,  Qt::DirectConnection);
     //
     dataRateTimer->moveToThread(dataRateThread);
     this->moveToThread(mainThread);
@@ -69,6 +67,16 @@ void TransmitterWorker::startTasks(){
  * SLOTS
  */
 
+void TransmitterWorker::actionListCleaner(){
+    QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
+    for (auto it = transmitter::getInstance()->getActions().begin();  it!=transmitter::getInstance()->getActions().end(); it++){
+        if ( (*it).bIfApplied ){
+            transmitter::getInstance()->getActions().erase(it);
+        }
+    }
+}
+
+
 void TransmitterWorker::run(){
     taskTransmitData();
 }
@@ -81,7 +89,8 @@ void TransmitterWorker::incrementLabelsDataRateCounter(){
 void TransmitterWorker::taskTransmitData(){
     qInfo() << "TransmitterWorker::taskTransmitData() is runnig on "<< QThread::currentThread();
     while(1){
-            std::vector<DArincData> dataToSend = transmitter::getInstance()->getListOfAvailableLabelData();
+        QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
+        auto dataToSend = transmitter::getInstance()->getActions();
             for (auto& x: dataToSend ){
 //#ifdef RASBERRY
 

@@ -1,10 +1,13 @@
 #ifndef TRANSMITTER_H
 #define TRANSMITTER_H
 
-#include <QWidget>
 
 #include "types.h"
+#include "action.h"
+#include <QWidget>
+#include <vector>
 #include <QMutex>
+
 
 class EditorDelegate;
 class Equipment;
@@ -40,6 +43,7 @@ public:
     QMutex modelMutex;
     void Disable();
     void Enable();
+    std::vector<action>& getActions();
 
 public slots:
     void OnEquipmentSelectorChanged(int);

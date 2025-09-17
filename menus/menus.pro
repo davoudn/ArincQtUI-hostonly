@@ -19,6 +19,7 @@ HEADERS       = mainwindow.h \
     PointerVector.h \
     Timer.h \
     TreeDataModel.h \
+    action.h \
     arinc_functions.h \
     baseitem.h \
     bitutils.h \
@@ -53,6 +54,7 @@ SOURCES       = mainwindow.cpp \
                 Label.cpp \
                 Timer.cpp \
                 TreeDataModel.cpp \
+                action.cpp \
                 arinc_functions.cpp \
                 baseitem.cpp \
                 bitutils.cpp \

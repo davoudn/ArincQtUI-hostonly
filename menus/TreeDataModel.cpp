@@ -6,6 +6,8 @@
 #include "baseitem.h"
 #include "ArincData.h"
 #include "labelfor.h"
+#include "generaldata.h"
+#include <QMutexLocker>
 
 #include <QThread>
 
@@ -373,6 +375,12 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
             case COLUMN_NAME: break;
             case COLUMN_STATUS: {
                 label->setStatus(value.toString());
+                if (label->getIfActive()){
+                    addLabelAction(chanell, 1, Instructions::ADD_LABEL_TO_TRANSMIT, label);
+                }
+                else {
+                    addLabelAction(chanell, 1, Instructions::REMOVE_LABEL_FROM_TRANSMIT, label);
+                }
                 break;
             }
             case COLUMN_ENGVALUE: break;
@@ -389,8 +397,13 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
         emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
         emit layoutChanged();
     }
-    //_index.row();
-
+    /* recording  actions to be sent to arinc board through usb */
+    if (item->type == BaseItem::ItemType::Label) {
+        auto label = static_cast<Label*>(item);
+        if (label->getIfActive()){
+            addLabelAction(chanell, 1, Instructions::UPDATE_LABEL_DATA_FOR_TRANSMIT, label);
+        }
+    }
     return true;
 }
 
@@ -707,7 +720,7 @@ std::vector<DArincData> MyDataModel::getListOfAvailableLabelData(){
             }
         }
     }
-    return _listOfDataToSend;
+    return tmpListOfDataToSend;
 }
 
 void MyDataModel::incrementLabelsDataRateCounter(){
@@ -770,3 +783,15 @@ std::vector<str_t> MyDataModel::getTimeOutList(){
 }
 
 
+void MyDataModel::addLabelAction(uint32_t ch, uint32_t transrec, uint32_t instr, Label* label){
+    QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
+    actions.push_back( action(ch, transrec, instr, label->valueBits(), label->getDataRate(), 0 ));
+}
+void MyDataModel::addControlAction(uint32_t ch, uint32_t trans_rec, uint32_t instr, uint16_t controlword){
+
+}
+
+std::vector<action>& MyDataModel::getActions()
+{
+    return actions;
+}

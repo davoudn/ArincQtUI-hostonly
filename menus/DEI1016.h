@@ -1,5 +1,6 @@
 #pragma once
 #include "types.h"
+#include "action.h"
 #include <QMutex>
 #include <QMutexLocker>
 #include <QThread>
@@ -18,6 +19,7 @@ public:
 
    ~DEI1016() = default;
     bool sendData(uint8_t chanel, float rate, dword_t& arincData) ;
+   bool sendData(action& ac);
 
     // Callback function for GPIO interrupts
    void setControlInstruction(uint8_t instruction);

@@ -7,6 +7,34 @@ namespace AUX {
 
 const std::array<uint8_t,ARINC32_SIZE> arinc_DEI_wordsMap = { 7, 6, 5, 4 , 3, 2, 1, 0, 31, 30, 29, 8 ,9 , 10, 11, 12, 13, 14, 15, 16 , 17, 18, 19, 20, 21, 22, 23, 24 ,25 , 26, 27, 28};
 
+uint16_t getInstruction(std::bitset<8>& x)
+{
+    return x[0] + x[1] * 2 + x[2] * 4 + x[3] * 8;
+}
+
+uint16_t getChanel(std::bitset<8>& x) {
+    return x[5] + x[6] * 2;
+}
+
+uint16_t getTransReceive(std::bitset<8>& x) {
+    return x[4];
+}
+
+void setInstruction(std::bitset<8>& x, uint32_t ins){
+    std::bitset<4> insbits{ins};
+    x[0] = insbits[0];
+    x[1] = insbits[1];
+    x[2] = insbits[2];
+    x[3] = insbits[3];
+}
+void setChanel(std::bitset<8>& x, uint32_t ch){
+    std::bitset<2> insbits{ch};
+    x[5] = insbits[0];
+    x[6] = insbits[1];
+}
+void setTransReceive(std::bitset<8>& x, uint32_t tranceive){
+    x[4] = tranceive;
+}
 
 void convertFromArincToDEI(dword_t& data){
     dword_t x{data} ;
@@ -15,12 +43,27 @@ void convertFromArincToDEI(dword_t& data){
     }
 }
 
+void convertFromArincToDEI(uint32_t& data){
+    dword_t databits{data};
+    convertFromDEIToArinc(databits);
+    data = static_cast<uint32_t>(databits.to_ulong());
+}
+
+
+
 void convertFromDEIToArinc(dword_t& data){
     dword_t x{data} ;
     for (uint32_t i=0; i < data.size();i++){
         data[arinc_DEI_wordsMap[i]] = x[i];
     }
 }
+
+void convertFromDEIToArinc(uint32_t& data){
+    dword_t databits{data};
+    convertFromDEIToArinc(databits);
+    data = static_cast<uint32_t>(databits.to_ulong());
+}
+
 
 void convertFromDEIToArinc(dword_t& data, dword_t& x){
     for (uint32_t i=0; i < data.size();i++){

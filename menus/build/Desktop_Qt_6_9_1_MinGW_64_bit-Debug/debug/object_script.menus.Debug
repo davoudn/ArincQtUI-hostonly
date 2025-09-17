@@ -16,6 +16,7 @@ debug/INTParameter.o
 debug/Label.o
 debug/Timer.o
 debug/TreeDataModel.o
+debug/action.o
 debug/arinc_functions.o
 debug/baseitem.o
 debug/bitutils.o

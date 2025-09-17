@@ -79,6 +79,16 @@ bool DEI1016::sendData(uint8_t chanel, float rate, dword_t& arincData)
     return false;
 }
 
+bool DEI1016::sendData(action& ac)
+{
+
+    if (serial->write(ac.toPacket(), TRANSMMIT_PACKET_SIZE)){
+        ac.bIfApplied = true;
+        return true;
+    }
+    return false;
+}
+
 /*
   @Receive
 */

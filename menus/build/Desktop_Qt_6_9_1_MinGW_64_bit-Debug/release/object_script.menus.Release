@@ -16,6 +16,7 @@ release/INTParameter.o
 release/Label.o
 release/Timer.o
 release/TreeDataModel.o
+release/action.o
 release/arinc_functions.o
 release/baseitem.o
 release/bitutils.o

@@ -2,6 +2,7 @@
 
 #pragma once
 #include <stdint.h>
+#include <bitset>
 #include "types.h"
 
 #define Byte0 0
@@ -19,6 +20,15 @@
 
 namespace AUX
 {
+
+uint16_t getInstruction(std::bitset<8>& x);
+uint16_t getChanel(std::bitset<8>& x);
+uint16_t getTransReceive(std::bitset<8>& x);
+
+void setInstruction(std::bitset<8>& x, uint32_t ins);
+void setChanel(std::bitset<8>& x, uint32_t ch);
+void setTransReceive(std::bitset<8>& x, uint32_t tranceive);
+
 
 template <typename T,typename U>
 void split(T& t, U& u1, U& u2)
@@ -62,6 +72,8 @@ void convertDataToBytes(uint8_t& chanel, float& rate, dword_t& arincData, char* 
 void convertFromDEIToArinc(dword_t& data, dword_t& x);
 void convertFromArincToDEI(dword_t& data);
 void convertFromDEIToArinc(dword_t& data);
+void convertFromArincToDEI(uint32_t& data);
+void convertFromDEIToArinc(uint32_t& data);
 
 inline uint8_t timeToBits(float& time) {
     return static_cast<char> (MAX_UINT8_VALUE * time / MAX_INTERVAL_TIMESCALE);

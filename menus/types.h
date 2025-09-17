@@ -12,6 +12,7 @@
 #include <QString>
 #include <QDebug>
 
+
 #define ARINC32_SIZE 32
 #define FOREWARD 0
 #define BACKWARD 1
@@ -31,7 +32,7 @@
 #define MAX_TIME 10000 // miliseconds
 #define IDLE_THRESHOLD 2000 // miliseconds
 #define MIN_TICK 1 // miliseconds
-
+#define ACTION_CLEANER_TIME 2000
 #define SET_ENABLE 1
 #define SET_DISABLE 0
 
@@ -53,6 +54,24 @@
 
 #define WAIT_FOR_SERIAL_READ_READY 1000
 
+#define Byte0 0
+#define Byte1 1
+#define Byte2 2
+#define Byte3 3
+#define Byte4 4
+#define Byte5 5
+#define Byte6 6
+#define Byte7 7
+#define LABEL_BYTE 4
+#define INSTRUCTION_BYTE 0
+#define ARINC_BYTE0 4
+#define ARINC_BYTE1 5
+#define ARINC_BYTE2 6
+#define ARINC_BYTE3 7
+#define CONTROL_BYTE0 2
+#define CONTROL_BYTE1 3
+#define RATE_BYTE 1
+
 using value_t = QVariant;
 using jsonobj_t = QJsonObject;
 using jsondoc_t = QJsonDocument;
@@ -68,17 +87,14 @@ enum class EquipmentRole{
     Transmitter
 };
 
-//
-/*
-enum PREDEFINED {
-   SLOW_32BIT_SELFTEST,
-   FAST_32BIT_SELFTEST,
-   SLOW_32BIT_NORMAL_OPERATION,
-   FAST_32BIT_NORMAL_OPERATION,
-   ALLONES
+
+enum Instructions {
+    ADD_LABEL_TO_TRANSMIT  ,
+    REMOVE_LABEL_FROM_TRANSMIT,
+    UPDATE_LABEL_DATA_FOR_TRANSMIT,
+    APPLY_CONTROL_WORD
 };
-*/
-//
+
 enum PREDEFINED {
     SLOW_32BIT_SELFTEST,
     FAST_32BIT_SELFTEST,
@@ -159,11 +175,17 @@ class DTransmitter{};
 class DReserved{};
 
 
-//#define WINDOWS
-#define RASBERRY
-//
-
-//
-
 
 #endif // TYPES_H
+
+//
+/*
+enum PREDEFINED {
+   SLOW_32BIT_SELFTEST,
+   FAST_32BIT_SELFTEST,
+   SLOW_32BIT_NORMAL_OPERATION,
+   FAST_32BIT_NORMAL_OPERATION,
+   ALLONES
+};
+*/
+//

@@ -117,6 +117,10 @@ void transmitter::onArinc_parity_bitRate(int index)
 {
 }
 
+std::vector<action>& transmitter::getActions(){
+    return dataModel->getActions();
+}
+
 
 std::vector<DArincData> transmitter::getListOfAvailableLabelData(){
     std::vector<DArincData> list;
