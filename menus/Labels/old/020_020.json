@@ -1,0 +1,1 @@
+{"Label": "020", "Id": "020", "Name": "Selected Vertical Speed", "Units": "Ft/Min", "Scale-": "-6000", "Scale+": "+6000", "SigBits": "4", "Resolution": "1", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BCD"}

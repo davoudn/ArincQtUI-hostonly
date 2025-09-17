@@ -1,0 +1,1 @@
+{"Label": "362", "Id": "115", "Name": "Range Rate", "Units": "Knotes", "Scale-": "-8192", "Scale+": "+8192", "SigBits": "13", "Resolution": "1.0", "MinTransit(msec)": "50", "MaxTransmit(msec)": "50", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "127", "Id": "01B", "Name": "Slat Angle", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "12", "Resolution": "0.05", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

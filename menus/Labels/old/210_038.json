@@ -1,0 +1,1 @@
+{"Label": "210", "Id": "038", "Name": "True Aispeed", "Units": "Knots", "Scale-": "-2048.0", "Scale+": "15", "SigBits": "", "Resolution": "0.0625", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "125", "Type": "BNR"}

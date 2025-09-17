@@ -1,0 +1,1 @@
+{"Label": "312", "Id": "004", "Name": "Ground Speed", "Units": "Knots", "Scale-": "0", "Scale+": "4096", "SigBits": "15", "Resolution": "0.125", "MinTransit(msec)": "25", "MaxTransmit(msec)": "50", "Type": "BNR"}

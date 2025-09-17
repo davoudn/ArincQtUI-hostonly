@@ -1,0 +1,1 @@
+{"Label": "316", "Id": "004", "Name": "Wind Angle", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "8", "Resolution": "0.7", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

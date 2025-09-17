@@ -1,0 +1,1 @@
+{"Label": "221", "Id": "0AD", "Name": "Indicated Angle Of Attack", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "14", "Resolution": "0.01", "MinTransit(msec)": "31.3", "MaxTransmit(msec)": "200", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "251", "Id": "006", "Name": "Baro Corrected Altitude #3", "Units": "Feet", "Scale-": "0", "Scale+": "131072", "SigBits": "17", "Resolution": "1.0", "MinTransit(msec)": "31.3", "MaxTransmit(msec)": "62.5", "Type": "BNR"}

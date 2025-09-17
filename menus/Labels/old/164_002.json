@@ -1,0 +1,1 @@
+{"Label": "164", "Id": "002", "Name": "Minimum Descent Altitude (MDA)", "Units": "Feet", "Scale-": "0", "Scale+": "8192", "SigBits": "16", "Resolution": "0.125", "MinTransit(msec)": "500", "MaxTransmit(msec)": "1000", "Type": "BNR"}

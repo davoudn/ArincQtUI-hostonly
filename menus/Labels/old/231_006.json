@@ -1,0 +1,1 @@
+{"Label": "231", "Id": "006", "Name": "Total Air Temperature", "Units": "Deg C", "Scale-": "-060", "Scale+": "+099", "SigBits": "3", "Resolution": "1", "MinTransit(msec)": "250", "MaxTransmit(msec)": "500", "Type": "BCD"}

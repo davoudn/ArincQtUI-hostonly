@@ -1,0 +1,1 @@
+{"Label": "103", "Id": "029", "Name": "DC voltage (TRU)", "Units": "Volts", "Scale-": "0", "Scale+": "128", "SigBits": "9", "Resolution": "0.25", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

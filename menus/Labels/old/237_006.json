@@ -1,0 +1,1 @@
+{"Label": "237", "Id": "006", "Name": "Baro Correction (ins of Hg) #2", "Units": "Ins Hg", "Scale-": "-22.0", "Scale+": "31", "SigBits": "5", "Resolution": "0.001", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "125", "Type": "BCD"}

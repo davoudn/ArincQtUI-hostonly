@@ -1,0 +1,1 @@
+{"Label": "141", "Id": "001", "Name": "Flight Director - Pitch", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "12", "Resolution": "0.05", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

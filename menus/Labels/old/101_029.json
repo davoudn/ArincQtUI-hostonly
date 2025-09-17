@@ -1,0 +1,1 @@
+{"Label": "101", "Id": "029", "Name": "DC Current (TRU)", "Units": "Amperes", "Scale-": "0", "Scale+": "256", "SigBits": "8", "Resolution": "1", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

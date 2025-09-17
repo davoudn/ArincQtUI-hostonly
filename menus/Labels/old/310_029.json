@@ -1,0 +1,1 @@
+{"Label": "310", "Id": "029", "Name": "Aileron Position", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "11", "Resolution": "0.088", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "066", "Id": "037", "Name": "Longitudinal Center of Gravity", "Units": "% MAC", "Scale-": "0", "Scale+": "100.00", "SigBits": "5", "Resolution": "0.01", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BCD"}

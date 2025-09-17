@@ -1,0 +1,1 @@
+{"Label": "203", "Id": "10A", "Name": "Ambient Static Pressure", "Units": "PSIA", "Scale-": "-1.5", "Scale+": "20.0", "SigBits": "11", "Resolution": "0.016", "MinTransit(msec)": "500", "MaxTransmit(msec)": "1000", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "366", "Id": "038", "Name": "N-S Velocity", "Units": "knots", "Scale-": "0", "Scale+": "4096", "SigBits": "15", "Resolution": "0.125", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

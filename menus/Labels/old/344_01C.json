@@ -1,0 +1,1 @@
+{"Label": "344", "Id": "01C", "Name": "N2", "Units": "%RPM", "Scale-": "0", "Scale+": "256", "SigBits": "14", "Resolution": "0.015", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

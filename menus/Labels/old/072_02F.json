@@ -1,0 +1,1 @@
+{"Label": "072", "Id": "02F", "Name": "Stator vane angle", "Units": "DEG/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "11", "Resolution": "0.1", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

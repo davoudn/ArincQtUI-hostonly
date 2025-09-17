@@ -1,0 +1,1 @@
+{"Label": "130", "Id": "10B", "Name": "Selected Total Air Temperature", "Units": "Deg C", "Scale-": "-80", "Scale+": "+90", "SigBits": "10", "Resolution": "0.125", "MinTransit(msec)": "100", "MaxTransmit(msec)": "500", "Type": "BNR"}

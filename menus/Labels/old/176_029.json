@@ -1,0 +1,1 @@
+{"Label": "176", "Id": "029", "Name": "RPM (APU)", "Units": "%RPM", "Scale-": "0", "Scale+": "256", "SigBits": "9", "Resolution": "0.5", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

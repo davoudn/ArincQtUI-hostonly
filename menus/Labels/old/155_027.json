@@ -1,0 +1,1 @@
+{"Label": "155", "Id": "027", "Name": "MLS Selected GP Angle", "Units": "Deg", "Scale-": "TBD", "Scale+": "TBD", "SigBits": "9", "Resolution": "0.1", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BCD"}

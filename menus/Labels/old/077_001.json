@@ -1,0 +1,1 @@
+{"Label": "077", "Id": "001", "Name": "Lateral center of gravity", "Units": "MLB-in", "Scale-": "0", "Scale+": "128", "SigBits": "17", "Resolution": "0.001", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

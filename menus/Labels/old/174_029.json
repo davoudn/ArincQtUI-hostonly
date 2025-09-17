@@ -1,0 +1,1 @@
+{"Label": "174", "Id": "029", "Name": "Hydrolic Pressure", "Units": "PSI", "Scale-": "0", "Scale+": "4096", "SigBits": "12", "Resolution": "0.0002", "MinTransit(msec)": "150", "MaxTransmit(msec)": "250", "Type": "BNR"}

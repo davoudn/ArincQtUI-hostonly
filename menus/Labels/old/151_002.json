@@ -1,0 +1,1 @@
+{"Label": "151", "Id": "002", "Name": "Localizer Bearing (true)", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "11", "Resolution": "0.1", "MinTransit(msec)": "167", "MaxTransmit(msec)": "333", "Type": "BNR"}

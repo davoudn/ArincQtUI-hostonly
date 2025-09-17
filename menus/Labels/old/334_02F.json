@@ -1,0 +1,1 @@
+{"Label": "334", "Id": "02F", "Name": "Fuel Flow Command", "Units": "Lb/Mr", "Scale-": "0", "Scale+": "32768", "SigBits": "12", "Resolution": "8", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

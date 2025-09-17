@@ -1,0 +1,1 @@
+{"Label": "213", "Id": "08D", "Name": "Fuel used", "Units": "Lbs.", "Scale-": "0", "Scale+": "262144", "SigBits": "18", "Resolution": "1", "MinTransit(msec)": "75", "MaxTransmit(msec)": "125", "Type": "BNR"}

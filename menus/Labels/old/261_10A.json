@@ -1,0 +1,1 @@
+{"Label": "261", "Id": "10A", "Name": "LP Turbine Inlet Pressure", "Units": "PSIA", "Scale-": "-2.0", "Scale+": "120", "SigBits": "11", "Resolution": "0.125", "MinTransit(msec)": "100", "MaxTransmit(msec)": "500", "Type": "BNR"}

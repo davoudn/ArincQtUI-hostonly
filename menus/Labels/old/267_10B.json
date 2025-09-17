@@ -1,0 +1,1 @@
+{"Label": "267", "Id": "10B", "Name": "HP Compressor Inlet Temperature (Total)", "Units": "Deg C", "Scale-": "-55", "Scale+": "+160", "SigBits": "11", "Resolution": "0.125", "MinTransit(msec)": "500", "MaxTransmit(msec)": "1000", "Type": "BNR"}

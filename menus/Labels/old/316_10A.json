@@ -1,0 +1,1 @@
+{"Label": "316", "Id": "10A", "Name": "Engine Oil Temperature", "Units": "Deg C", "Scale-": "-55", "Scale+": "+170", "SigBits": "11", "Resolution": "1.00", "MinTransit(msec)": "250", "MaxTransmit(msec)": "1000", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "360", "Id": "10B", "Name": "Throttle Rate of Change", "Units": "Deg/Sec", "Scale-": "-16", "Scale+": "+16", "SigBits": "4", "Resolution": "1.00", "MinTransit(msec)": "31.3", "MaxTransmit(msec)": "100", "Type": "BNR"}

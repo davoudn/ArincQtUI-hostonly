@@ -1,0 +1,1 @@
+{"Label": "144", "Id": "02B", "Name": "Altitude Error", "Units": "Feet", "Scale-": "0", "Scale+": "8192", "SigBits": "14", "Resolution": "1.0", "MinTransit(msec)": "25", "MaxTransmit(msec)": "50", "Type": "BNR"}

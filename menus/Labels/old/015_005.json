@@ -1,0 +1,1 @@
+{"Label": "015", "Id": "005", "Name": "Wind Speed", "Units": "Knots", "Scale-": "0", "Scale+": "799", "SigBits": "3", "Resolution": "1", "MinTransit(msec)": "250", "MaxTransmit(msec)": "500", "Type": "BCD"}

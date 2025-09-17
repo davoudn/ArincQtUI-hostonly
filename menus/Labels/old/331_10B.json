@@ -1,0 +1,1 @@
+{"Label": "331", "Id": "10B", "Name": "Selected LPT Clearance Valve Position", "Units": "%", "Scale-": "-5", "Scale+": "+105", "SigBits": "11", "Resolution": "0.063", "MinTransit(msec)": "250", "MaxTransmit(msec)": "1000", "Type": "BNR"}

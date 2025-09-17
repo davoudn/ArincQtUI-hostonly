@@ -1,0 +1,1 @@
+{"Label": "345", "Id": "01C", "Name": "Exhaus Gas Temperature", "Units": "Deg C", "Scale-": "0", "Scale+": "2048", "SigBits": "12", "Resolution": "0.5", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

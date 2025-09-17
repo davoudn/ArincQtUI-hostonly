@@ -1,0 +1,1 @@
+{"Label": "100", "Id": "037", "Name": "Gross weight (kilogram)", "Units": "Kilogram", "Scale-": "0", "Scale+": "655360", "SigBits": "15", "Resolution": "20", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

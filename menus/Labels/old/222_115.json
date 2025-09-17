@@ -1,0 +1,1 @@
+{"Label": "222", "Id": "115", "Name": "Bearing", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "11", "Resolution": "0.1", "MinTransit(msec)": "50", "MaxTransmit(msec)": "50", "Type": "BNR"}

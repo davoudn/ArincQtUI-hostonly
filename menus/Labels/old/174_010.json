@@ -1,0 +1,1 @@
+{"Label": "174", "Id": "010", "Name": "Glideslope Deviation", "Units": "DDm", "Scale-": "0", "Scale+": "0.8", "SigBits": "12", "Resolution": "0.0002", "MinTransit(msec)": "33.3", "MaxTransmit(msec)": "66.6", "Type": "BNR"}

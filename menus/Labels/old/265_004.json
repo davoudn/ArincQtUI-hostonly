@@ -1,0 +1,1 @@
+{"Label": "265", "Id": "004", "Name": "Integrated Vertical Acceleration", "Units": "Ft/Sec", "Scale-": "-256", "Scale+": "+256", "SigBits": "20", "Resolution": "0.000244", "MinTransit(msec)": "", "MaxTransmit(msec)": "20", "Type": "BNR"}

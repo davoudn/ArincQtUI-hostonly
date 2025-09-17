@@ -1,0 +1,85 @@
+{
+  "Id": "020",
+  "Label": "031",
+  "Type": "ATC",
+  "Name": "Beacon Transponder Code",
+  "Params": {
+    "0": {
+      "Name": "Beacon Transponder Code",
+      "Type": "ATCBCD",
+      "IBit": "",
+      "FBit": "",
+      "Details": {
+        "Units": "",
+        "Scale-": "0000",
+        "Scale+": "7777",
+        "SigBits": "4",
+        "Resolution": "",
+        "MinTransit(msec)": "100",
+        "MaxTransmit(msec)": "200"
+      }
+    },
+    "2": {
+      "IBit": 9,
+      "FBit": 10,
+      "Name": "SDI",
+      "Type": "DISCRETE",
+      "Details": {
+        "00": "0",
+        "01": "1",
+        "10": "2",
+        "11": "3"
+      }
+    },
+    "3": {
+      "IBit": 32,
+      "FBit": 32,
+      "Name": "Parity",
+      "Type": "DISCRETE",
+      "Details": {
+        "0": "Odd",
+        "1": "Even"
+      }
+    },
+    "4": {
+      "IBit": 17,
+      "FBit": 17,
+      "Name": "Hijack Mode",
+      "Type": "DISCRETE",
+      "Details": {
+        "0": "In Hijack Mode",
+        "1": "NOT in Hijack Mode"
+      }
+    },
+    "5": {
+      "IBit": 11,
+      "FBit": 11,
+      "Name": "ALT. REP. ON/OFF",
+      "Type": "DISCRETE",
+      "Details": {
+        "0": "Altitude Report On",
+        "1": "Altitude Reporting Off"
+      }
+    },
+    "18": {
+      "IBit": 13,
+      "FBit": 13,
+      "Name": "Ident (SPI)",
+      "Type": "DISCRETE",
+      "Details": {
+        "0": "Ident. (SPI) OFF",
+        "1": "Ident. ON "
+      }
+    },
+    "19": {
+      "IBit": 14,
+      "FBit": 14,
+      "Name": "ALT. DATA SOURCE SEL.",
+      "Type": "DISCRETE",
+      "Details": {
+        "0": "Use #1 Alt. Data Source",
+        "1": "Use #2 Alt. Data Source"
+      }
+    }
+  }
+}

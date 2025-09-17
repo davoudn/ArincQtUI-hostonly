@@ -1,0 +1,1 @@
+{"Label": "134", "Id": "10B", "Name": "Throttle Lever Angle", "Units": "Deg", "Scale-": "-128", "Scale+": "+128", "SigBits": "11", "Resolution": "0.088", "MinTransit(msec)": "500", "MaxTransmit(msec)": "1000", "Type": "BNR"}

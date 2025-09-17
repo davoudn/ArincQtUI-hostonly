@@ -1,0 +1,1 @@
+{"Label": "316", "Id": "002", "Name": "Wind Direction (true)", "Units": "Deg/180", "Scale-": "0", "Scale+": "180", "SigBits": "12", "Resolution": "0.05", "MinTransit(msec)": "25", "MaxTransmit(msec)": "50", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "321", "Id": "004", "Name": "Drift Angle", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "11", "Resolution": "0.09", "MinTransit(msec)": "25", "MaxTransmit(msec)": "50", "Type": "BNR"}

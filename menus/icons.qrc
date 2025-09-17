@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/zafiro/index.theme</file>
+        <file>main.cpp</file>
+        <file>custom-icons/open-app-library.png</file>
+        <file>icons/zafiro/places/48/folder-alt.svg</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,1 @@
+{"Label": "314", "Id": "03B", "Name": "Control Wheel Pitch Force", "Units": "Lbs.", "Scale-": "0", "Scale+": "64", "SigBits": "10", "Resolution": "0.0625", "MinTransit(msec)": "150", "MaxTransmit(msec)": "250", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "244", "Id": "03B", "Name": "Mach error", "Units": "Mach", "Scale-": "0", "Scale+": "0.064", "SigBits": "11", "Resolution": "0.00003", "MinTransit(msec)": "150", "MaxTransmit(msec)": "250", "Type": "BNR"}

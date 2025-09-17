@@ -1,0 +1,1 @@
+{"Label": "363", "Id": "10B", "Name": "Corrected Thrust", "Units": "LBF", "Scale-": "0", "Scale+": "64000", "SigBits": "11", "Resolution": "64.0", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "250", "Type": "BNR"}

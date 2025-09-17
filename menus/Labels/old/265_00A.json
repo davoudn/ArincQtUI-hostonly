@@ -1,0 +1,1 @@
+{"Label": "265", "Id": "00A", "Name": "Maneuvering Airspeed", "Units": "Knots", "Scale-": "0", "Scale+": "512", "SigBits": "11", "Resolution": "0.25", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

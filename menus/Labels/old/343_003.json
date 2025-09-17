@@ -1,0 +1,1 @@
+{"Label": "343", "Id": "003", "Name": "EPR Rate", "Units": "", "Scale-": "", "Scale+": "4", "SigBits": "12", "Resolution": "0.001", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

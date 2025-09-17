@@ -1,0 +1,1 @@
+{"Label": "204", "Id": "05A", "Name": "Fuel Tank #7 temperature", "Units": "Deg C", "Scale-": "0", "Scale+": "512", "SigBits": "11", "Resolution": "0.25", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

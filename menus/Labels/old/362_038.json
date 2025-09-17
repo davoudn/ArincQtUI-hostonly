@@ -1,0 +1,1 @@
+{"Label": "362", "Id": "038", "Name": "Along Track Horiz. Accel.", "Units": "g", "Scale-": "0", "Scale+": "4", "SigBits": "12", "Resolution": "0.001", "MinTransit(msec)": "10", "MaxTransmit(msec)": "20", "Type": "BNR"}

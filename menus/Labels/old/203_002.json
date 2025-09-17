@@ -1,0 +1,1 @@
+{"Label": "203", "Id": "002", "Name": "Energy Management Speed Brakes", "Units": "N.M", "Scale-": "0", "Scale+": "512", "SigBits": "15", "Resolution": "0.016", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

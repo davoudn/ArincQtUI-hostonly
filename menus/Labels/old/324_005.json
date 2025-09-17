@@ -1,0 +1,1 @@
+{"Label": "324", "Id": "005", "Name": "Pitch Angle", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "14", "Resolution": "0.01", "MinTransit(msec)": "10", "MaxTransmit(msec)": "20", "Type": "BNR"}

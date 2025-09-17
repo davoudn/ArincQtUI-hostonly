@@ -1,0 +1,1 @@
+{"Label": "170", "Id": "0C5", "Name": "Decision Height Selected (EFI)", "Units": "Feet", "Scale-": "-7000", "Scale+": "+7000", "SigBits": "4", "Resolution": "1", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BCD"}

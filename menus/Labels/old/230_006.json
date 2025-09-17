@@ -1,0 +1,1 @@
+{"Label": "230", "Id": "006", "Name": "True Airspeed", "Units": "Knots", "Scale-": "-100.0", "Scale+": "599", "SigBits": "3", "Resolution": "1", "MinTransit(msec)": "250", "MaxTransmit(msec)": "500", "Type": "BCD"}

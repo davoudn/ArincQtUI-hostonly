@@ -1,0 +1,1 @@
+{"Label": "250", "Id": "02C", "Name": "Preselected Fuel Quantity", "Units": "Lbs.", "Scale-": "0", "Scale+": "655360", "SigBits": "14", "Resolution": "40", "MinTransit(msec)": "100", "MaxTransmit(msec)": "400", "Type": "BNR"}

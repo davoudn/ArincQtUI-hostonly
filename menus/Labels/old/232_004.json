@@ -1,0 +1,1 @@
+{"Label": "232", "Id": "004", "Name": "Altitude Rate", "Units": "Ft/Min", "Scale-": "-20000", "Scale+": "+20000", "SigBits": "4", "Resolution": "10", "MinTransit(msec)": "31.3", "MaxTransmit(msec)": "62.5", "Type": "BCD"}

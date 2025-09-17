@@ -1,0 +1,1 @@
+{"Label": "175", "Id": "003", "Name": "Economical Speed", "Units": "Knots", "Scale-": "0", "Scale+": "1024", "SigBits": "14", "Resolution": "0.06", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "125", "Type": "BNR"}

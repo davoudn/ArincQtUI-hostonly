@@ -1,0 +1,1 @@
+{"Label": "043", "Id": "020", "Name": "Set Magnetic Heading", "Units": "Deg", "Scale-": "0", "Scale+": "359", "SigBits": "3", "Resolution": "1", "MinTransit(msec)": "250", "MaxTransmit(msec)": "500", "Type": "BCD"}

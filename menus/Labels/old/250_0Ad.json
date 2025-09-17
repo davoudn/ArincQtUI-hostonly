@@ -1,0 +1,1 @@
+{"Label": "250", "Id": "0Ad", "Name": "Indicated Side Slip Angle", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "14", "Resolution": "0.01", "MinTransit(msec)": "31.3", "MaxTransmit(msec)": "200", "Type": "BNR"}

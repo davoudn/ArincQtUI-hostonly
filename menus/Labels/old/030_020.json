@@ -1,0 +1,1 @@
+{"Label": "030", "Id": "020", "Name": "VHF COM Frequency", "Units": "MHz", "Scale-": "-118.0", "Scale+": "135.975", "SigBits": "5", "Resolution": "0.025", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "VHF"}

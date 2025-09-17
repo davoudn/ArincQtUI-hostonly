@@ -1,0 +1,1 @@
+{"Label": "330", "Id": "02F", "Name": "HC/TC Cooling Valve Pos. Feedback", "Units": "%", "Scale-": "0", "Scale+": "128", "SigBits": "12", "Resolution": "0.03", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

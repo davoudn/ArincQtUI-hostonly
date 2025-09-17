@@ -1,0 +1,1 @@
+{"Label": "336", "Id": "002", "Name": "Max Climb Angle", "Units": "Degrees", "Scale-": "0", "Scale+": "32", "SigBits": "15", "Resolution": "0.001", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

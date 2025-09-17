@@ -1,0 +1,1 @@
+{"Label": "246", "Id": "002", "Name": "Control Maximum Speed (VCMAX)", "Units": "Knots", "Scale-": "0", "Scale+": "512", "SigBits": "11", "Resolution": "0.25", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

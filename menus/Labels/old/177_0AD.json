@@ -1,0 +1,1 @@
+{"Label": "177", "Id": "0AD", "Name": "Static Pressure Right", "Units": "mB", "Scale-": "0", "Scale+": "2048", "SigBits": "18", "Resolution": "0.008", "MinTransit(msec)": "20", "MaxTransmit(msec)": "200", "Type": "BNR"}

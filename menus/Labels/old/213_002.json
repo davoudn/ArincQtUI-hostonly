@@ -1,0 +1,1 @@
+{"Label": "213", "Id": "002", "Name": "Static Air temperature", "Units": "Deg C", "Scale-": "0", "Scale+": "512", "SigBits": "11", "Resolution": "0.025", "MinTransit(msec)": "250", "MaxTransmit(msec)": "500", "Type": "BNR"}

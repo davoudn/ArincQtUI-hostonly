@@ -1,0 +1,1 @@
+{"Label": "330", "Id": "10A", "Name": "Selected HPT Clearance Valve Position", "Units": "%", "Scale-": "-5", "Scale+": "+105", "SigBits": "11", "Resolution": "0.063", "MinTransit(msec)": "250", "MaxTransmit(msec)": "1000", "Type": "BNR"}

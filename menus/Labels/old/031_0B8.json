@@ -1,0 +1,1 @@
+{"Label": "031", "Id": "0B8", "Name": "Beacon Transponder Code", "Units": "", "Scale-": "0000", "Scale+": "7777", "SigBits": "4", "Resolution": "", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "ATC"}

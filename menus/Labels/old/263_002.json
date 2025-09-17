@@ -1,0 +1,1 @@
+{"Label": "263", "Id": "002", "Name": "MIN Airspeed for flap retraction", "Units": "Knots", "Scale-": "0", "Scale+": "512", "SigBits": "11", "Resolution": "0.25", "MinTransit(msec)": "500", "MaxTransmit(msec)": "1000", "Type": "BNR"}

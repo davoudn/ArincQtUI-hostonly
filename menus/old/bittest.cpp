@@ -1,0 +1,82 @@
+#include <bitset>
+#include <cassert>
+#include <cstddef>
+#include <iostream>
+
+#define WORDSIZE 4
+
+bool READY(uint8_t b){
+    return !static_cast<bool>(b);
+}
+
+void ArincToWord() {
+    // first word to arincdata
+    for (int f = 14; f <= 29; f++) {
+        SendWords[chanel][WORD1][f-14] = SendArincBuffer[chanel].GetValue(f);
+    }
+    // second word to arincdata
+    for (int f = 1; f <= 8;   f++) {
+        SendWords[chanel][WORD2][8 - f] = SendArincBuffer[chanel].GetValue(f);
+    }
+    for (int f = 9; f <= 13;  f++) {
+        SendWords[chanel][WORD2][f+2] = SendArincBuffer[chanel].GetValue(f);
+    }
+    for (int f = 30; f <= 32; f++) {
+        SendWords[chanel][WORD2][40-f] = SendArincBuffer[chanel].GetValue(f);
+    }
+    return ;
+}
+
+
+std::bitset<WORDSIZE> operator+  (std::bitset<WORDSIZE> b1, std::bitset<WORDSIZE> b2){
+       std::bitset<WORDSIZE> b3(0);
+       for(int i=0; i <WORDSIZE; i++){
+          b3[i] = b1[i] || b2[i];
+       }
+       return b3;
+    }
+ 
+int main()
+{
+    typedef std::size_t length_t, position_t; // the hints
+ 
+    // constructors:
+    std::bitset<WORDSIZE> b0(1);
+    constexpr std::bitset<4> b1;
+    constexpr std::bitset<4> b2{0xA}; // == 0B1010
+    std::bitset<4> b3{"0011"}; // can also be constexpr since C++23
+    std::bitset<8> b4{"ABBA", length_t(4), /*0:*/'A', /*1:*/'B'}; // == 0B0000'0110
+ 
+    // bitsets can be printed out to a stream:
+    std::cout << "b1:" << b1 << "; b2:" << b2 << "; b3:" << b3 << "; b4:" << b4 << '\n';
+ 
+    // bitset supports bitwise operations:
+    b3 |= 0b0100; assert(b3 == 0b0111);
+    b3 &= 0b0011; assert(b3 == 0b0011);
+    b3 ^= std::bitset<4>{0b1100}; assert(b3 == 0b1111);
+ 
+    // operations on the whole set:
+    b3.reset(); assert(b3 == 0);
+    b3.set(); assert(b3 == 0b1111);
+    assert(b3.all() && b3.any() && !b3.none());
+    b3.flip(); assert(b3 == 0);
+ 
+    // operations on individual bits:
+    b3.set(position_t(1), true); assert(b3 == 0b0010);
+    b3.set(position_t(1), false); assert(b3 == 0);
+    b3.flip(position_t(2)); assert(b3 == 0b0100);
+    b3.reset(position_t(2)); assert(b3 == 0);
+ 
+    // subscript operator[] is supported:
+    b3[2] = true; assert(true == b3[2]);
+ 
+    // other operations:
+    assert(b3.count() == 1);
+    assert(b3.size() == 4);
+    assert(b3.to_ullong() == 0b0100ULL);
+    assert(b3.to_string() == "0100");
+
+    std::cout << b0 + b2 << "\n";
+    bool b = READY(0);
+    std::cout << b << "\n";
+}

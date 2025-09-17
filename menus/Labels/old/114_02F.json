@@ -1,0 +1,1 @@
+{"Label": "114", "Id": "02F", "Name": "Ambient pressure", "Units": "PSIA", "Scale-": "0", "Scale+": "32", "SigBits": "14", "Resolution": "0.002", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

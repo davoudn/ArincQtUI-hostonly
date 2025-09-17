@@ -1,0 +1,1 @@
+{"Label": "257", "Id": "02C", "Name": "Fuel quantity (Tanks) #2", "Units": "lbs.", "Scale-": "", "Scale+": "121072", "SigBits": "15", "Resolution": "4", "MinTransit(msec)": "500", "MaxTransmit(msec)": "1000", "Type": "BNR"}

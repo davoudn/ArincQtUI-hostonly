@@ -1,0 +1,1 @@
+{"Label": "314", "Id": "002", "Name": "Stabilizer Position Indication (B747-400)", "Units": "Deg/180", "Scale-": "0", "Scale+": "180", "SigBits": "12", "Resolution": "0.05", "MinTransit(msec)": "25", "MaxTransmit(msec)": "50", "Type": "BNR"}

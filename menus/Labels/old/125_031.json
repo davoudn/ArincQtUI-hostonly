@@ -1,0 +1,1 @@
+{"Label": "125", "Id": "031", "Name": "Greenwich Mean time", "Units": "Hr:Min", "Scale-": "0", "Scale+": "23.59.9", "SigBits": "5", "Resolution": "0.1", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "GMT"}

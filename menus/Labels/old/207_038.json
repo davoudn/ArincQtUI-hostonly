@@ -1,0 +1,1 @@
+{"Label": "207", "Id": "038", "Name": "Max. Allowable Airspeed", "Units": "Knots", "Scale-": "0", "Scale+": "1024", "SigBits": "12", "Resolution": "0.25", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "125", "Type": "BNR"}

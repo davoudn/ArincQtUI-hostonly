@@ -1,0 +1,1 @@
+{"Label": "105", "Id": "010", "Name": "Selected Runway Heading", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "11", "Resolution": "0.1", "MinTransit(msec)": "167", "MaxTransmit(msec)": "333", "Type": "BNR"}

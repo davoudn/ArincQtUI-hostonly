@@ -1,0 +1,1 @@
+{"Label": "345", "Id": "10B", "Name": "Selected Exhaust Gas Temperature (Total)", "Units": "Deg C", "Scale-": "-55", "Scale+": "+1100", "SigBits": "11", "Resolution": "1.00", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "250", "Type": "BNR"}

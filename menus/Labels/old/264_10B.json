@@ -1,0 +1,1 @@
+{"Label": "264", "Id": "10B", "Name": "Selected Compressor Discharge Pressure", "Units": "PSIA", "Scale-": "-5.0", "Scale+": "600", "SigBits": "11", "Resolution": "1.00", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "250", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "035", "Id": "009", "Name": "DME Frequency", "Units": "MHz", "Scale-": "-108.0", "Scale+": "135.95", "SigBits": "4", "Resolution": "0.050", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "DME"}

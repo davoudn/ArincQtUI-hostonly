@@ -1,0 +1,1 @@
+{"Label": "346", "Id": "033", "Name": "N1 Actual", "Units": "%RPM", "Scale-": "0", "Scale+": "256", "SigBits": "14", "Resolution": "0.015", "MinTransit(msec)": "50", "MaxTransmit(msec)": "200", "Type": "BNR"}

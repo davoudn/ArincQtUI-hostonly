@@ -1,0 +1,1 @@
+{"Label": "131", "Id": "035", "Name": "TCAS Trafic advisory Altitude Word", "Units": "Ft.", "Scale-": "-12700", "Scale+": "+12700", "SigBits": "8", "Resolution": "100", "MinTransit(msec)": "", "MaxTransmit(msec)": "", "Type": "TCASA"}

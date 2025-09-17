@@ -1,0 +1,1 @@
+{"Label": "077", "Id": "029", "Name": "AC load (Engine)", "Units": "%", "Scale-": "0", "Scale+": "256", "SigBits": "8", "Resolution": "1", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

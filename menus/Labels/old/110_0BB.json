@@ -1,0 +1,1 @@
+{"Label": "110", "Id": "0BB", "Name": "Flap Lever Position - Center", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "18", "Resolution": "0.000687", "MinTransit(msec)": "80", "MaxTransmit(msec)": "160", "Type": "BNR"}

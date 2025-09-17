@@ -1,0 +1,1 @@
+{"Label": "130", "Id": "035", "Name": "TCAS Traffic Advisory Range Word", "Units": "NM", "Scale-": "0", "Scale+": "15.9375", "SigBits": "8", "Resolution": "0.0625", "MinTransit(msec)": "", "MaxTransmit(msec)": "", "Type": "TCASR"}

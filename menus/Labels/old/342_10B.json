@@ -1,0 +1,1 @@
+{"Label": "342", "Id": "10B", "Name": "Max Allowed Fan Speed", "Units": "%", "Scale-": "0", "Scale+": "117.5", "SigBits": "13", "Resolution": "0.032", "MinTransit(msec)": "100", "MaxTransmit(msec)": "500", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "202", "Id": "009", "Name": "DME Distance", "Units": "N.M", "Scale-": "0", "Scale+": "512", "SigBits": "16", "Resolution": "0.008", "MinTransit(msec)": "83.3", "MaxTransmit(msec)": "167", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "034", "Id": "0B0", "Name": "VOR/ILS Frequency", "Units": "MHz", "Scale-": "108.0", "Scale+": "117.95", "SigBits": "4", "Resolution": "0.050", "MinTransit(msec)": "167", "MaxTransmit(msec)": "333", "Type": "VOR"}

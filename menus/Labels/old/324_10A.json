@@ -1,0 +1,1 @@
+{"Label": "324", "Id": "10A", "Name": "Selected Fuel Metering Valve Position", "Units": "%", "Scale-": "-5", "Scale+": "+105", "SigBits": "11", "Resolution": "0.063", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "250", "Type": "BNR"}

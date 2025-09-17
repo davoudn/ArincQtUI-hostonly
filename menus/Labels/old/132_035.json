@@ -1,0 +1,1 @@
+{"Label": "132", "Id": "035", "Name": "TCAS Traffic Advisory Bearing Estimate Word", "Units": "Deg.", "Scale-": "-180", "Scale+": "+180", "SigBits": "9", "Resolution": "0.703", "MinTransit(msec)": "", "MaxTransmit(msec)": "", "Type": "TCASB"}

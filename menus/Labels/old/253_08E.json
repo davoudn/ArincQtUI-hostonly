@@ -1,0 +1,1 @@
+{"Label": "253", "Id": "08E", "Name": "Spoiler Position", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "11", "Resolution": "0.1", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

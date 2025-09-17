@@ -1,0 +1,1 @@
+{"Label": "165", "Id": "007", "Name": "Radio Height", "Units": "Feet", "Scale-": "-7999.9", "Scale+": "+7999.9", "SigBits": "5", "Resolution": "0.1", "MinTransit(msec)": "25", "MaxTransmit(msec)": "200", "Type": "BCD"}

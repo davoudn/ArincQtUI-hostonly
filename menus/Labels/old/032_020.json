@@ -1,0 +1,1 @@
+{"Label": "032", "Id": "020", "Name": "ADF Frequency", "Units": "KHz", "Scale-": "-190.0", "Scale+": "1750", "SigBits": "4", "Resolution": "0.5", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "ADF"}

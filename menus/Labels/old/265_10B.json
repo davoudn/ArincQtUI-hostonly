@@ -1,0 +1,1 @@
+{"Label": "265", "Id": "10B", "Name": "Selected Compressor Discharge Temperature", "Units": "Deg C", "Scale-": "-55", "Scale+": "+650", "SigBits": "11", "Resolution": "0.50", "MinTransit(msec)": "100", "MaxTransmit(msec)": "500", "Type": "BNR"}

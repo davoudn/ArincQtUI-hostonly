@@ -1,0 +1,1 @@
+{"Label": "114", "Id": "0CC", "Name": "Wheel torque output", "Units": "Ld./Ft", "Scale-": "0", "Scale+": "16384", "SigBits": "12", "Resolution": "4", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

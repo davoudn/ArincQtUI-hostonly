@@ -1,0 +1,1 @@
+{"Label": "133", "Id": "10B", "Name": "Slected Throttle Lever Angle", "Units": "Deg", "Scale-": "0", "Scale+": "90", "SigBits": "11", "Resolution": "0.088", "MinTransit(msec)": "31.3", "MaxTransmit(msec)": "100", "Type": "BNR"}

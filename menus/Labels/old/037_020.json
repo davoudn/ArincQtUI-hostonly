@@ -1,0 +1,1 @@
+{"Label": "037", "Id": "020", "Name": "HF COM Frequency", "Units": "MHz", "Scale-": "-2.8", "Scale+": "24", "SigBits": "6", "Resolution": "0.0001", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "HF"}

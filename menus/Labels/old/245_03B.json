@@ -1,0 +1,1 @@
+{"Label": "245", "Id": "03B", "Name": "EPR Error", "Units": "", "Scale-": "0", "Scale+": "4", "SigBits": "12", "Resolution": "0.001", "MinTransit(msec)": "150", "MaxTransmit(msec)": "250", "Type": "BNR"}

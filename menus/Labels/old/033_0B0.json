@@ -1,0 +1,1 @@
+{"Label": "033", "Id": "0B0", "Name": "ILS Frequency", "Units": "MHz", "Scale-": "-108.0", "Scale+": "111.95", "SigBits": "4", "Resolution": "0.050", "MinTransit(msec)": "167", "MaxTransmit(msec)": "333", "Type": "ILS"}

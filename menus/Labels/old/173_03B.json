@@ -1,0 +1,1 @@
+{"Label": "173", "Id": "03B", "Name": "Localizer Deviation", "Units": "Dots", "Scale-": "0", "Scale+": "4", "SigBits": "11", "Resolution": "0.002", "MinTransit(msec)": "150", "MaxTransmit(msec)": "250", "Type": "BNR"}

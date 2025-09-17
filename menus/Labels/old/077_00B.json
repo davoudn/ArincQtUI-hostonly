@@ -1,0 +1,1 @@
+{"Label": "077", "Id": "00B", "Name": "GPS hor/vert deviation", "Units": "% F.S.", "Scale-": "-128", "Scale+": "+127", "SigBits": "8", "Resolution": "1", "MinTransit(msec)": "25", "MaxTransmit(msec)": "50", "Type": "GPSHV"}

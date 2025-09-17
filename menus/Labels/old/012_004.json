@@ -1,0 +1,1 @@
+{"Label": "012", "Id": "004", "Name": "Ground Speed", "Units": "Knots", "Scale-": "0", "Scale+": "7000", "SigBits": "4", "Resolution": "1", "MinTransit(msec)": "250", "MaxTransmit(msec)": "500", "Type": "BCD"}

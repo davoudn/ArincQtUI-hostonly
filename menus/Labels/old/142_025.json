@@ -1,0 +1,1 @@
+{"Label": "142", "Id": "025", "Name": "Flight director Fast/Slow", "Units": "Knots", "Scale-": "0", "Scale+": "32", "SigBits": "12", "Resolution": "0.008", "MinTransit(msec)": "31.3", "MaxTransmit(msec)": "62.5", "Type": "BNR"}

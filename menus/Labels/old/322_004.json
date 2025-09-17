@@ -1,0 +1,1 @@
+{"Label": "322", "Id": "004", "Name": "Flight path Angle", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "12", "Resolution": "0.05", "MinTransit(msec)": "25", "MaxTransmit(msec)": "50", "Type": "BNR"}

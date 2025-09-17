@@ -1,0 +1,1 @@
+{"Label": "337", "Id": "038", "Name": "Inertial Roll Rate", "Units": "Deg/Sec", "Scale-": "0", "Scale+": "128", "SigBits": "13", "Resolution": "0.015", "MinTransit(msec)": "10", "MaxTransmit(msec)": "20", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "206", "Id": "006", "Name": "Computed Airspeed", "Units": "Knots", "Scale-": "0", "Scale+": "1024", "SigBits": "14", "Resolution": "0.0625", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "125", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "372", "Id": "005", "Name": "Wind Direction-Magnetic", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "9", "Resolution": "0.35", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

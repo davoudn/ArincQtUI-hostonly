@@ -1,0 +1,1 @@
+{"Label": "122", "Id": "002", "Name": "Vertical Command Signal", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "12", "Resolution": "0.05", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

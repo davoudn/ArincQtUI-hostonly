@@ -1,0 +1,1 @@
+{"Label": "263", "Id": "10A", "Name": "Selected Compressor Inlet Temperature (Total)", "Units": "Deg C", "Scale-": "-55", "Scale+": "+160", "SigBits": "11", "Resolution": "0.125", "MinTransit(msec)": "100", "MaxTransmit(msec)": "500", "Type": "BNR"}

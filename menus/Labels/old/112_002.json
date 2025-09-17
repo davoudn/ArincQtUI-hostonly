@@ -1,0 +1,1 @@
+{"Label": "112", "Id": "002", "Name": "Runway length", "Units": "Feet", "Scale-": "0", "Scale+": "20480", "SigBits": "11", "Resolution": "10", "MinTransit(msec)": "250", "MaxTransmit(msec)": "500", "Type": "BNR"}

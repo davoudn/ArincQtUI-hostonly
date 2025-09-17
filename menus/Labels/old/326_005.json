@@ -1,0 +1,1 @@
+{"Label": "326", "Id": "005", "Name": "Body Pitch Rate", "Units": "Deg/sec", "Scale-": "0", "Scale+": "128", "SigBits": "13", "Resolution": "0.015", "MinTransit(msec)": "10", "MaxTransmit(msec)": "20", "Type": "BNR"}

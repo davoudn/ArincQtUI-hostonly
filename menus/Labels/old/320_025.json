@@ -1,0 +1,1 @@
+{"Label": "320", "Id": "025", "Name": "Magnetic Heading", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "10", "Resolution": "0.2", "MinTransit(msec)": "125", "MaxTransmit(msec)": "250", "Type": "BNR"}

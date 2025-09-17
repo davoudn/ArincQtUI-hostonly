@@ -1,0 +1,71 @@
+{
+  "Id": "002",
+  "Label": "035",
+  "Type": "DME",
+  "Name": "DME Frequency",
+  "Params": {
+    "0": {
+      "Name": "DME Frequency",
+      "Type": "FLOATBCD",
+      "IBit": "",
+      "FBit": "",
+      "Details": {
+        "Units": "MHz",
+        "Scale-": "108.0",
+        "Scale+": "135.95",
+        "SigBits": "4",
+        "Resolution": "0.05",
+        "MinTransit(msec)": "100",
+        "MaxTransmit(msec)": "200"
+      }
+    },
+    "2": {
+      "IBit": 9,
+      "FBit": 10,
+      "Name": "SDI",
+      "Type": "DISCRETE",
+      "Details": {
+        "00": "0",
+        "01": "1",
+        "10": "2",
+        "11": "3"
+      }
+    },
+    "3": {
+      "IBit": 32,
+      "FBit": 32,
+      "Name": "Parity",
+      "Type": "DISCRETE",
+      "Details": {
+        "0": "Odd",
+        "1": "Even"
+      }
+    },
+    "4": {
+      "IBit": 14,
+      "FBit": 14,
+      "Name": "ILS MODE",
+      "Type": "DISCRETE",
+      "Details": {
+        "0": "VOR",
+        "1": "ILS"
+      }
+    },
+    "5": {
+      "IBit": 11,
+      "FBit": 13,
+      "Name": "DME MODE",
+      "Type": "DISCRETE",
+      "Details": {
+        "000": "Standby",
+        "001": "Directed Freq #1",
+        "010": "Directed Freq #2",
+        "011": "Directed Freq #3",
+        "100": "Hold Freq #1",
+        "101": "Hold Freq #2 ",
+        "110": "NOT USED",
+        "111": "SPARE"
+      }
+    }
+  }
+}

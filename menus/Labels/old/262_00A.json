@@ -1,0 +1,1 @@
+{"Label": "262", "Id": "00A", "Name": "Predictive Airspeed Variation", "Units": "Knots", "Scale-": "0", "Scale+": "256", "SigBits": "10", "Resolution": "0.25", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

@@ -1,0 +1,1 @@
+{"Label": "247", "Id": "03B", "Name": "Speed Error", "Units": "Knots", "Scale-": "0", "Scale+": "256", "SigBits": "12", "Resolution": "0.06", "MinTransit(msec)": "150", "MaxTransmit(msec)": "250", "Type": "BNR"}

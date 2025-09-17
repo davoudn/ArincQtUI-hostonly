@@ -1,0 +1,1 @@
+{"Label": "127", "Id": "10A", "Name": "Fan Discharge Static Pressure", "Units": "PSIA", "Scale-": "-1.5", "Scale+": "30.0", "SigBits": "11", "Resolution": "0.016", "MinTransit(msec)": "100", "MaxTransmit(msec)": "500", "Type": "BNR"}

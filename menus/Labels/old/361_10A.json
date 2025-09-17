@@ -1,0 +1,1 @@
+{"Label": "361", "Id": "10A", "Name": "Derivative of Thrust vs. N1", "Units": "DFN/%N1", "Scale-": "0", "Scale+": "2000", "SigBits": "11", "Resolution": "2.0", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "250", "Type": "BNR"}

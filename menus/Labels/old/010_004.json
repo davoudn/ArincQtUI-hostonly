@@ -1,0 +1,1 @@
+{"Label": "010", "Id": "004", "Name": "Present Position - Latitude", "Units": "Deg:Min", "Scale-": "-180.0", "Scale+": "180", "SigBits": "6", "Resolution": "0.1", "MinTransit(msec)": "250", "MaxTransmit(msec)": "500", "Type": "BCD"}

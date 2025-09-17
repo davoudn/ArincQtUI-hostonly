@@ -1,0 +1,1 @@
+{"Label": "222", "Id": "011", "Name": "VDR Omnibearing", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "12", "Resolution": "0.004", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

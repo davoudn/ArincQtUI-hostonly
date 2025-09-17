@@ -1,0 +1,1 @@
+{"Label": "121", "Id": "002", "Name": "Horizontal command Signal", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "14", "Resolution": "0.01", "MinTransit(msec)": "50", "MaxTransmit(msec)": "100", "Type": "BNR"}

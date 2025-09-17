@@ -1,0 +1,1 @@
+{"Label": "067", "Id": "037", "Name": "Lateral Center of Gravity", "Units": "% MAC", "Scale-": "0", "Scale+": "1000.00", "SigBits": "5", "Resolution": "0.01", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BCD"}

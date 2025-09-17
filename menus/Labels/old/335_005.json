@@ -1,0 +1,1 @@
+{"Label": "335", "Id": "005", "Name": "Ttrack Angle Rate", "Units": "Deg/Sec", "Scale-": "0", "Scale+": "32", "SigBits": "11", "Resolution": "0.015", "MinTransit(msec)": "10", "MaxTransmit(msec)": "20", "Type": "BNR"}

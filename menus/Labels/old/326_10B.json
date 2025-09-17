@@ -1,0 +1,1 @@
+{"Label": "326", "Id": "10B", "Name": "Compressor Discharge Static Pressure", "Units": "PSIA", "Scale-": "-5.0", "Scale+": "600", "SigBits": "11", "Resolution": "1.00", "MinTransit(msec)": "500", "MaxTransmit(msec)": "1000", "Type": "BNR"}

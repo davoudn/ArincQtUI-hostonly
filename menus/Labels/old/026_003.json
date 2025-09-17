@@ -1,0 +1,1 @@
+{"Label": "026", "Id": "003", "Name": "Selected Airspeed", "Units": "Knots", "Scale-": "-30.0", "Scale+": "450", "SigBits": "3", "Resolution": "1", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BCD"}

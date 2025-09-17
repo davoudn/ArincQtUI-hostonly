@@ -1,0 +1,1 @@
+{"Label": "205", "Id": "10A", "Name": "Mach Number", "Units": "Mach", "Scale-": "0", "Scale+": "1", "SigBits": "11", "Resolution": "0.002", "MinTransit(msec)": "100", "MaxTransmit(msec)": "500", "Type": "BNR"}

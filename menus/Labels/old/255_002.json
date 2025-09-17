@@ -1,0 +1,1 @@
+{"Label": "255", "Id": "002", "Name": "Climb N1 Limit", "Units": "%RPM", "Scale-": "0", "Scale+": "256", "SigBits": "14", "Resolution": "0.015", "MinTransit(msec)": "50", "MaxTransmit(msec)": "200", "Type": "BNR"}

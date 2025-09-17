@@ -1,0 +1,1 @@
+{"Label": "115", "Id": "002", "Name": "Waypoint Bearing", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "12", "Resolution": "0.05", "MinTransit(msec)": "31.3", "MaxTransmit(msec)": "62.5", "Type": "BNR"}

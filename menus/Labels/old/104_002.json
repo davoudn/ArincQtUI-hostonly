@@ -1,0 +1,1 @@
+{"Label": "104", "Id": "002", "Name": "Selected vertical speed", "Units": "Ft/min", "Scale-": "0", "Scale+": "16384", "SigBits": "10", "Resolution": "16", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

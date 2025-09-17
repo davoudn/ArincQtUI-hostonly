@@ -1,0 +1,1 @@
+{"Label": "032", "Id": "012", "Type": "DISCRETE", "Params": {"0": {"IBit": 9, "FBit": 9, "Name": "SDI", "Details": {"1": "", "0": ""}}, "1": {"IBit": 10, "FBit": 10, "Name": "SDI", "Details": {"1": "", "0": ""}}, "2": {"IBit": 11, "FBit": 11, "Name": "BFO", "Details": {"1": "ON", "0": "OFF"}}, "3": {"IBit": 12, "FBit": 12, "Name": "MODE", "Details": {"1": "ANT", "0": "BFO"}}}}

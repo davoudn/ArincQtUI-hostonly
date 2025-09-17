@@ -1,0 +1,1 @@
+{"Label": "245", "Id": "002", "Name": "Minimum Airspeed", "Units": "Knots", "Scale-": "0", "Scale+": "256", "SigBits": "12", "Resolution": "0.0625", "MinTransit(msec)": "62.5", "MaxTransmit(msec)": "125", "Type": "BNR"}

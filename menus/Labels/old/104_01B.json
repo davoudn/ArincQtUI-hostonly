@@ -1,0 +1,1 @@
+{"Label": "104", "Id": "01B", "Name": "Right/POU flap", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "18", "Resolution": "0.000687", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

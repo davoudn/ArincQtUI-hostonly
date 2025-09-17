@@ -1,0 +1,1 @@
+{"Label": "262", "Id": "033", "Name": "Lp Compressor exist Pressure", "Units": "PSIA", "Scale-": "0", "Scale+": "64", "SigBits": "14", "Resolution": "0.004", "MinTransit(msec)": "150", "MaxTransmit(msec)": "250", "Type": "BNR"}

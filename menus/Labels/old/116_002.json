@@ -1,0 +1,1 @@
+{"Label": "116", "Id": "002", "Name": "Cross track distance", "Units": "M.M.", "Scale-": "0", "Scale+": "128", "SigBits": "15", "Resolution": "0.004", "MinTransit(msec)": "31.3", "MaxTransmit(msec)": "62.5", "Type": "BNR"}

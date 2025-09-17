@@ -1,0 +1,1 @@
+{"Label": "175", "Id": "029", "Name": "EGT (APU)", "Units": "Deg C", "Scale-": "0", "Scale+": "2048", "SigBits": "11", "Resolution": "1", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

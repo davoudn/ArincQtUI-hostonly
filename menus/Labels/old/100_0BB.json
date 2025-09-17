@@ -1,0 +1,1 @@
+{"Label": "100", "Id": "0BB", "Name": "Outboard flaps - pou", "Units": "Deg/180", "Scale-": "-180", "Scale+": "+180", "SigBits": "12", "Resolution": "0.05", "MinTransit(msec)": "20", "MaxTransmit(msec)": "100", "Type": "BNR"}

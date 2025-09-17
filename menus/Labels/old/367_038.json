@@ -1,0 +1,1 @@
+{"Label": "367", "Id": "038", "Name": "E-W Velocity", "Units": "knots", "Scale-": "0", "Scale+": "4096", "SigBits": "15", "Resolution": "0.125", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "BNR"}

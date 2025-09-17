@@ -1,0 +1,1 @@
+{"Label": "205", "Id": "002", "Name": "HF COM Frequency (New Format)", "Units": "MHz", "Scale-": "-2.8", "Scale+": "24", "SigBits": "5", "Resolution": "0.001", "MinTransit(msec)": "100", "MaxTransmit(msec)": "200", "Type": "HFAF"}

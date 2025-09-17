@@ -1,0 +1,1 @@
+{"Label": "042", "Id": "020", "Name": "Set Longitude", "Units": "Deg/Min", "Scale-": "-180.0", "Scale+": "180", "SigBits": "6", "Resolution": "0.1", "MinTransit(msec)": "250", "MaxTransmit(msec)": "500", "Type": "BCD"}
