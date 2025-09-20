@@ -316,14 +316,18 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
 
     if (role != Qt::EditRole)
         return false;
+    bool bIfSatusChanged = false;
 
     BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
 
-    if (item->type == BaseItem::ItemType::Parameter){
+    if (item->type == BaseItem::ItemType::Parameter)
+    {
         auto param = static_cast<BaseParameter*>(item);
         auto label = static_cast<Label*>(item->parent);
-        if (param && label){
-            switch(param->getType()){
+        if (param && label)
+        {
+            switch(param->getType())
+            {
             case DArincParamType::BCD : {
                 switch(column) {
                     case COLUMN_NAME:  break;
@@ -369,18 +373,14 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
         }
     }
     //
-    if (item->type == BaseItem::ItemType::Label){
+    if (item->type == BaseItem::ItemType::Label)
+    {
         auto label = static_cast<Label*>(item);
         switch(column) {
             case COLUMN_NAME: break;
             case COLUMN_STATUS: {
                 label->setStatus(value.toString());
-                if (label->getIfActive()){
-                    addLabelAction(chanell, 1, Instructions::ADD_LABEL_TO_TRANSMIT, label);
-                }
-                else {
-                    addLabelAction(chanell, 1, Instructions::REMOVE_LABEL_FROM_TRANSMIT, label);
-                }
+                bIfSatusChanged = true;
                 break;
             }
             case COLUMN_ENGVALUE: break;
@@ -397,11 +397,44 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
         emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
         emit layoutChanged();
     }
-    /* recording  actions to be sent to arinc board through usb */
-    if (item->type == BaseItem::ItemType::Label) {
+    /*
+     *
+     * recording  actions to be sent to arinc board through usb
+     *
+    */
+    if (item->type == BaseItem::ItemType::Label)
+    {
         auto label = static_cast<Label*>(item);
-        if (label->getIfActive()){
-            addLabelAction(chanell, 1, Instructions::UPDATE_LABEL_DATA_FOR_TRANSMIT, label);
+        if (label->getIfActive())
+        {
+            if (!bIfSatusChanged){
+                addLabelAction(chanell, 1, Instructions::UPDATE_LABEL_DATA_FOR_TRANSMIT, label);
+            }
+            else {
+                addLabelAction(chanell, 1, Instructions::ADD_LABEL_TO_TRANSMIT, label);
+            }
+        }
+        else
+        {
+            addLabelAction(chanell, 1, Instructions::REMOVE_LABEL_FROM_TRANSMIT, label);
+        }
+    }
+
+    if (item->type == BaseItem::ItemType::Parameter)
+    {
+        auto label = static_cast<Label*>(_index.parent().internalPointer());
+        if (label->getIfActive())
+        {
+            if (!bIfSatusChanged){
+                addLabelAction(chanell, 1, Instructions::UPDATE_LABEL_DATA_FOR_TRANSMIT, label);
+            }
+            else {
+                addLabelAction(chanell, 1, Instructions::ADD_LABEL_TO_TRANSMIT, label);
+            }
+        }
+        else
+        {
+            addLabelAction(chanell, 1, Instructions::REMOVE_LABEL_FROM_TRANSMIT, label);
         }
     }
     return true;
@@ -785,7 +818,9 @@ std::vector<str_t> MyDataModel::getTimeOutList(){
 
 void MyDataModel::addLabelAction(uint32_t ch, uint32_t transrec, uint32_t instr, Label* label){
     QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
-    actions.push_back( action(ch, transrec, instr, label->valueBits(), label->getDataRate(), 0 ));
+    actions.push_back( action(ch, transrec, instr, label->getUIntArincData(), label->getDataRate().toFloat(), 0 ));
+   // for (auto& x: actions)
+   //      qInfo() << x.chanel<<"\t"<<x.instruction<<"\t"<<x.arincData<< "\t" << x.bIfApplied;
 }
 void MyDataModel::addControlAction(uint32_t ch, uint32_t trans_rec, uint32_t instr, uint16_t controlword){
 

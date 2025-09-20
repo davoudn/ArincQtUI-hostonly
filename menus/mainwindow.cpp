@@ -10,7 +10,6 @@
 #include "settingsdialog.h"
 #include "DEI1016RasberryConfigurations.h"
 
-
 //! [0]
 MainWindow::MainWindow()
 {

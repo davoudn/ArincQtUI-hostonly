@@ -67,26 +67,31 @@ void DEI1016::setControlInstruction(uint8_t instruction)
 
 
 /*
-  @Send  
-*/
+  @Send
+
 bool DEI1016::sendData(uint8_t chanel, float rate, dword_t& arincData)
 {
 
     AUX::convertDataToBytes(chanel, rate, arincData, transData);
-    if (serial->write(transData, TRANSMMIT_PACKET_SIZE)){
+    int numSent = serial->write(transData, TRANSMMIT_PACKET_SIZE);
+    if (numSent==TRANSMMIT_PACKET_SIZE){
         return true;
     }
     return false;
 }
-
+*/
 bool DEI1016::sendData(action& ac)
 {
-
-    if (serial->write(ac.toPacket(), TRANSMMIT_PACKET_SIZE)){
+    int numSent = serial->write(ac.toPacket(), TRANSMMIT_PACKET_SIZE);
+    if (numSent==TRANSMMIT_PACKET_SIZE){
         ac.bIfApplied = true;
+        qInfo() << "Num bytes sent: "<<numSent;
         return true;
     }
-    return false;
+    else {
+        qInfo() << "Failed to send all data!";
+        return false;
+    }
 }
 
 /*
@@ -95,9 +100,7 @@ bool DEI1016::sendData(action& ac)
 void DEI1016::dataReceived()
 {
     qint64 numReadTotal = 0;
-   // if (!serial->waitForReadyRead(WAIT_FOR_SERIAL_READ_READY)){
-   //     return false;
-   // }
+
     for (;;)
     {
         const qint64 numRead  = serial->read(recData, RECEIVE_PACKET_SIZE);

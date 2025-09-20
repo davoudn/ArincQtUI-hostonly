@@ -49,6 +49,10 @@ public:
         return ArincData;
     }
 
+    inline uint32_t getUIntArincData(){
+        return static_cast<uint32_t>(ArincData.template Get<int>().toUInt());
+    }
+
     inline bool getIfActive(){
         return bIfActive;
     }

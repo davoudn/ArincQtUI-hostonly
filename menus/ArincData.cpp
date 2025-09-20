@@ -99,6 +99,11 @@ value_t  DArincData::Get<Bits>() const {
     return ArincFunctions::BITS::Value<value_t>(1, ARINC32_SIZE, *this);
 }
 
+template <>
+value_t  DArincData::Get<int>() const {
+    return ArincFunctions::INT::Value<value_t>(1, ARINC32_SIZE, *this);
+}
+
 
 
 

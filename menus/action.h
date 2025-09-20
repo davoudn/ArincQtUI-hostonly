@@ -8,7 +8,7 @@ class action
 {
 public:
     action() = delete;
-    action(uint32_t chanel, uint32_t trans_rec, uint32_t instr, value_t arincData, value_t rate, uint16_t control);
+    action(uint32_t ch, uint32_t trans_rec, uint32_t instr, uint32_t arincdata, float rt, uint16_t control);
 
     bool bIfApplied = false;
 
@@ -21,7 +21,7 @@ public:
     uint32_t instruction = 0;
     uint32_t chanel = 0;
     uint32_t tranReceive = 0;
-    void setData(uint32_t chanel, uint32_t trans_rec, uint32_t instr, value_t arincData, value_t rate, uint16_t control);
+    void setData(uint32_t ch, uint32_t trans_rec, uint32_t instr, uint32_t arincdata, float rt, uint16_t control);
     std::array<uint8_t,TRANSMMIT_PACKET_SIZE>& toArrayPacket();
     char* toPacket();
 

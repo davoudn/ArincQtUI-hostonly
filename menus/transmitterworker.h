@@ -5,12 +5,7 @@
 #include "PointerVector.h"
 #include "TreeDataModel.h"
 
-#ifdef RASBERRY
-#include "DEI1016.h"
-#endif
-
-#include <functional>
-
+#include <QObject>
 #include <QThread>
 #include <QtConcurrent/QtConcurrent>
 
@@ -29,6 +24,7 @@ class TransmitterWorker: public QObject {
     TransmitterWorker() = delete;
     static TransmitterWorker* instance;
 
+
 public:
     virtual ~TransmitterWorker() override;
     static TransmitterWorker* getInstance();
@@ -43,6 +39,9 @@ public slots:
      void taskTransmitData();
      void incrementLabelsDataRateCounter();
      void actionListCleaner();
+ signals:
+     bool sendData(action& ac);
+
 protected:
 
     PointerVector<BaseItem> equipments;

@@ -12,22 +12,22 @@ uint8_t makeInstructionByte(uint32_t ch, uint32_t transrec, uint32_t instr){
 
 
 
-action::action(uint32_t ch, uint32_t trans_rec, uint32_t instr, value_t arincdata, value_t rt, uint16_t control)
+action::action(uint32_t ch, uint32_t trans_rec, uint32_t instr,
+                                                              uint32_t arincdata, float rt, uint16_t control)
  {
     setData(ch,  trans_rec,  instr,  arincdata,  rt,  control);
  }
 
 void action::setData(uint32_t ch, uint32_t transreceive, uint32_t instr,
-                                                              value_t arincdata, value_t rt, uint16_t control)
+                                                              uint32_t arincdata, float rt, uint16_t control)
 {
     chanel = ch;
     tranReceive = transreceive;
     instruction = instr;
-    arincData   = static_cast<uint32_t>(arincdata.toUInt());
-    rate        = rt.toFloat();
+    arincData   = arincdata;
+    rate        = rt;
     controlWord = control;
 }
-
 std::array<uint8_t,TRANSMMIT_PACKET_SIZE>& action::toArrayPacket()
 {
     AUX::convertFromArincToDEI(arincData);

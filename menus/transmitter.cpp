@@ -7,7 +7,7 @@
 
 #include "editordelegate.h"
 #include "TreeDataModel.h"
-#include "DEI1016RasberryConfigurations.h".
+#include "DEI1016RasberryConfigurations.h"
 #include <thread>
 #include "utils.h"
 #include "generaldata.h"
@@ -117,12 +117,14 @@ void transmitter::onArinc_parity_bitRate(int index)
 {
 }
 
-std::vector<action>& transmitter::getActions(){
+std::vector<action>& transmitter::getActions()
+{
     return dataModel->getActions();
 }
 
 
-std::vector<DArincData> transmitter::getListOfAvailableLabelData(){
+std::vector<DArincData> transmitter::getListOfAvailableLabelData()
+{
     std::vector<DArincData> list;
 
     if (bIfEnabled){
@@ -133,7 +135,8 @@ std::vector<DArincData> transmitter::getListOfAvailableLabelData(){
     return list;
 }
 
-void transmitter::incrementLabelsDataRateCounter(){
+void transmitter::incrementLabelsDataRateCounter()
+{
   if (bIfEnabled){
     if(dataModel){
       dataModel->incrementLabelsDataRateCounter();
@@ -274,7 +277,8 @@ void transmitter::onLoadConfig(bool bIfClicked)
     } // check if configFileName is empty
 }
 
-void transmitter::onSelectLoadConfigFile(bool bIfClicked){
+void transmitter::onSelectLoadConfigFile(bool bIfClicked)
+{
     configFileName =  utils::openFileDialogForOpening(this, GeneralData::getInstance()->TRANSMIT_CONFIGS_PATH);
 
     if (!configFileName.isEmpty()) {
@@ -285,7 +289,8 @@ void transmitter::onSelectLoadConfigFile(bool bIfClicked){
     ui->lSelectedFile->setText("No file selected.");
 }
 
-void transmitter::onTransmitterEnabled(bool checked){
+void transmitter::onTransmitterEnabled(bool checked)
+{
     ui->chTransmitterDisabled->setChecked(!checked);
     if (checked)
         Enable();
@@ -293,7 +298,8 @@ void transmitter::onTransmitterEnabled(bool checked){
         Disable();
 
 }
-void transmitter::onTransmitterDisabled(bool checked){
+void transmitter::onTransmitterDisabled(bool checked)
+{
     ui->chTransmitterEnabled->setChecked(!checked);
     if (checked)
         Disable();
@@ -301,11 +307,13 @@ void transmitter::onTransmitterDisabled(bool checked){
         Enable();
 }
 
-void transmitter::Disable(){
+void transmitter::Disable()
+{
     bIfEnabled = false;
     std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
 }
-void transmitter::Enable(){
+void transmitter::Enable()
+{
     bIfEnabled = true;;
     std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
 }

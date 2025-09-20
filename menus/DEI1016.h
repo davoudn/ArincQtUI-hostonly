@@ -18,8 +18,7 @@ public:
  //   using words_t = std::array <word_t, NUM_WORDS_PER_DATA>;
 
    ~DEI1016() = default;
-    bool sendData(uint8_t chanel, float rate, dword_t& arincData) ;
-   bool sendData(action& ac);
+  // bool sendData(uint8_t chanel, float rate, dword_t& arincData) ;
 
     // Callback function for GPIO interrupts
    void setControlInstruction(uint8_t instruction);
@@ -34,6 +33,7 @@ public:
 
 public slots:
    void updateTask();
+   bool sendData(action& ac);
 
 
    //

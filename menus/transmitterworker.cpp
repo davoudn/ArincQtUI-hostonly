@@ -4,7 +4,10 @@
 #include "arinc_functions.h"
 #include "transmitter.h"
 #include "Timer.h"
+#include "DEI1016.h"
 #include "generaldata.h"
+#include <thread>
+#include <chrono>
 
 TransmitterWorker* TransmitterWorker::instance = nullptr;
 
@@ -44,12 +47,12 @@ TransmitterWorker::TransmitterWorker(str_t _equipment)
     connect(dataRateThread, &QThread::started, dataRateTimer, &Timer::counterTask);
     //
     connect(dataRateTimer, &Timer::onTimeout, this, &TransmitterWorker::actionListCleaner,  Qt::DirectConnection);
+    connect(this, &TransmitterWorker::sendData, DEI1016::getInstance(), &DEI1016::sendData, Qt::BlockingQueuedConnection);
     //
     dataRateTimer->moveToThread(dataRateThread);
     this->moveToThread(mainThread);
 
 }
-
 
 TransmitterWorker::~TransmitterWorker()
 {
@@ -59,7 +62,12 @@ TransmitterWorker::~TransmitterWorker()
   //  delete dataRateThread;
 }
 
-void TransmitterWorker::startTasks(){
+void TransmitterWorker::startTasks()
+{
+    DEI1016::getInstance();
+    if (!DEI1016::getInstance()->bIfSerialOpen){
+        DEI1016::getInstance()->openSerialPort();
+    }
     mainThread->start();
     dataRateThread->start();
 }
@@ -67,35 +75,40 @@ void TransmitterWorker::startTasks(){
  * SLOTS
  */
 
-void TransmitterWorker::actionListCleaner(){
+void TransmitterWorker::actionListCleaner()
+{
     QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
     for (auto it = transmitter::getInstance()->getActions().begin();  it!=transmitter::getInstance()->getActions().end(); it++){
         if ( (*it).bIfApplied ){
-            transmitter::getInstance()->getActions().erase(it);
+          //  transmitter::getInstance()->getActions().erase(it);
         }
     }
 }
 
-
-void TransmitterWorker::run(){
+void TransmitterWorker::run()
+{
     taskTransmitData();
 }
 
-void TransmitterWorker::incrementLabelsDataRateCounter(){
+void TransmitterWorker::incrementLabelsDataRateCounter()
+{
      transmitter::getInstance()->incrementLabelsDataRateCounter();
-   // qInfo() << "TransmitterWorker::incrementLabelsDataRateCounter() runs on " << QThread::currentThread();
 }
 
-void TransmitterWorker::taskTransmitData(){
+void TransmitterWorker::taskTransmitData()
+{
     qInfo() << "TransmitterWorker::taskTransmitData() is runnig on "<< QThread::currentThread();
     while(1){
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
         QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
-        auto dataToSend = transmitter::getInstance()->getActions();
-            for (auto& x: dataToSend ){
-//#ifdef RASBERRY
-
-//#endif
+        for (auto& x: transmitter::getInstance()->getActions() )
+        {
+            if (!x.bIfApplied){
+                std::this_thread::sleep_for(std::chrono::microseconds(1));
+                emit sendData(x);
+                qInfo() << x.chanel<<"\t"<<x.instruction<<"\t"<<x.arincData<< "\t" << x.bIfApplied;
             }
         }
+    }
 }
 

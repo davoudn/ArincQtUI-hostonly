@@ -12,7 +12,6 @@
 #include <QString>
 #include <QDebug>
 
-
 #define ARINC32_SIZE 32
 #define FOREWARD 0
 #define BACKWARD 1

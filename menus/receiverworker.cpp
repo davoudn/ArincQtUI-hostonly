@@ -60,6 +60,7 @@ void ReceiverWorker::startTasks()
     mainThread->start();
     idlecleanerThread->start();
 }
+
 void ReceiverWorker::idleLabelCleaner()
 {
     bIfToClean = true;
