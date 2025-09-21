@@ -64,7 +64,7 @@ protected:
     QMutex modelMutex;
     bool bIfEnabled = false;
     uint8_t chanell = 0;
-
+    word_t control_word;
 };
 
 #endif // RECEIVER_H

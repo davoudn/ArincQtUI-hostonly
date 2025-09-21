@@ -217,65 +217,128 @@ NOT USED D0-D3 : When writing to the control register, the four “not used bits
 std::bitset<WORDSIZE> operator+ (std::bitset<WORDSIZE> b1, std::bitset<WORDSIZE> b2);
 
 
-namespace CONTROL {
-    using word_t = std::bitset<WORDSIZE>;
-    static std::bitset<WORDSIZE> make_instruction(uint8_t bit, uint8_t val){
-         auto tmp = std::bitset<WORDSIZE>(0);
-         tmp[bit] = val;
-         return tmp;
+namespace CONTROL
+{
+using word_t = std::bitset<WORDSIZE>;
+
+struct SDI_ENB1
+{
+    static void ENABLE(word_t& word){
+        word[6] =  1;
     }
+    static void DISABLE(word_t& word){
+        word[6] = 0;
+    }
+};
 
-    struct SELF_TEST  {
-        static void ENABLE(word_t& word){
-             word[5] =  0;
-        } 
-        static void DISABLE(word_t& word){
-             word[5] = 1;
-        }  
-    };
+struct SDI_X1
+{
+    static void ENABLE(word_t& word){
+        word[7] =  1;
+    }
+    static void DISABLE(word_t& word){
+        word[7] = 0;
+    }
+};
 
-    struct PARITY_CHACK  {
-        static void SET_ODD(word_t& word){
-            word[12] = 0;
-        } 
-        static void SET_EVEN(word_t& word){
-            word[12] = 1;
-        }  
-    };
+struct SDI_Y1
+{
+    static void ENABLE(word_t& word){
+        word[8] =  1;
+    }
+    static void DISABLE(word_t& word){
+        word[8] = 0;
+    }
+};
 
-    struct WORD_LENGTH  {
-        static void SELECT_32(word_t& word){
-            word[15]= 0;
-        } 
-        static void SELECT_25(word_t& word){
-            word[15]= 1;
-        }  
-    };
+struct SDI_ENB2
+{
+    static void ENABLE(word_t& word){
+        word[9] = 1;
+    }
+    static void DISABLE(word_t& word){
+        word[9] = 0;
+    }
+};
 
-    struct TRANSMITTER_DATA_RATE   {
-        static void SELECT_HI(word_t& word){
-            word[13]= 0;
-        } 
-        static void SELECT_LOW(word_t& word){
-            word[13]= 1;
-        }  
-    };
+struct SDI_X2
+{
+    static void ENABLE(word_t& word){
+        word[10] =  1;
+    }
+    static void DISABLE(word_t& word){
+        word[11] = 0;
+    }
+};
 
-    struct RECEIVER_DATA_RATE  {
-        static void SELECT_HI(word_t& word){
-            word[14]= 0;
-        } 
-        static void SELECT_LOW(word_t& word){
-            word[14]= 1;
-        }  
-    };
+struct SDI_Y2
+{
+    static void ENABLE(word_t& word){
+        word[8] =  1;
+    }
+    static void DISABLE(word_t& word){
+        word[8] = 0;
+    }
+};
 
-    struct PAREN  {
-         static void ENABLE(word_t& word){
-            word[4]= 1;
-         } 
-        static void DISABLE(word_t& word){
-            word[4]= 0;
-        }  
-    };
+
+struct SELF_TEST
+{
+    static void ENABLE(word_t& word){
+        word[5] =  0;
+    }
+    static void DISABLE(word_t& word){
+        word[5] = 1;
+    }
+};
+
+struct PARCK
+{
+    static void SET_ODD(word_t& word){
+        word[12] = 0;
+    }
+    static void SET_EVEN(word_t& word){
+        word[12] = 1;
+    }
+};
+
+struct WORD_LENGTH
+{
+    static void SELECT_32(word_t& word){
+        word[15]= 0;
+    }
+    static void SELECT_25(word_t& word){
+        word[15]= 1;
+    }
+};
+
+struct TRANSMITTER_DATA_RATE
+{
+    static void SELECT_HI(word_t& word){
+        word[13]= 0;
+    }
+    static void SELECT_LOW(word_t& word){
+        word[13]= 1;
+    }
+};
+
+struct RECEIVER_DATA_RATE
+{
+    static void SELECT_HI(word_t& word){
+        word[14]= 0;
+    }
+    static void SELECT_LOW(word_t& word){
+        word[14]= 1;
+    }
+};
+
+struct PAREN
+{
+    static void ENABLE(word_t& word){
+        word[4]= 1;
+    }
+    static void DISABLE(word_t& word){
+        word[4]= 0;
+    }
+};
 }

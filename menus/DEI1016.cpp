@@ -65,21 +65,6 @@ void DEI1016::setControlInstruction(uint8_t instruction)
     }
 }
 
-
-/*
-  @Send
-
-bool DEI1016::sendData(uint8_t chanel, float rate, dword_t& arincData)
-{
-
-    AUX::convertDataToBytes(chanel, rate, arincData, transData);
-    int numSent = serial->write(transData, TRANSMMIT_PACKET_SIZE);
-    if (numSent==TRANSMMIT_PACKET_SIZE){
-        return true;
-    }
-    return false;
-}
-*/
 bool DEI1016::sendData(action& ac)
 {
     int numSent = serial->write(ac.toPacket(), TRANSMMIT_PACKET_SIZE);
@@ -166,6 +151,170 @@ void DEI1016::closeSerialPort()
 
 }
 //! [5]
+
+
+void DEI1016::setControlWord_receiver_32Bits(int receiveChanell, int index, word_t& control_word){
+
+
+    CONTROL::WORD_LENGTH::SELECT_32(control_word) ;
+    //
+    switch(index){
+    case PREDEFINED_RECEIVER::SLOW_SDI_DISABLED :{
+        CONTROL::RECEIVER_DATA_RATE::SELECT_LOW(control_word);
+        select_enable_receiver_SDIChanell(receiveChanell, SET_DISABLE, 0, control_word);
+    }
+    case PREDEFINED_RECEIVER::FAST_SDI_DISABLED :{
+        CONTROL::RECEIVER_DATA_RATE::SELECT_HI(control_word);
+        select_enable_receiver_SDIChanell(receiveChanell, SET_DISABLE, 0, control_word);
+        break;
+    }
+    case PREDEFINED_RECEIVER::SLOW_SDI0  :{
+        CONTROL::RECEIVER_DATA_RATE::SELECT_LOW(control_word);
+        select_enable_receiver_SDIChanell(receiveChanell, SET_ENABLE, SDI0, control_word);
+        break;
+    }
+    case PREDEFINED_RECEIVER::SLOW_SDI1  :{
+        CONTROL::RECEIVER_DATA_RATE::SELECT_LOW(control_word);
+        select_enable_receiver_SDIChanell(receiveChanell, SET_ENABLE, SDI1, control_word);
+        break;
+    }
+    case PREDEFINED_RECEIVER::SLOW_SDI2  :{
+        CONTROL::RECEIVER_DATA_RATE::SELECT_LOW(control_word);
+        select_enable_receiver_SDIChanell(receiveChanell, SET_ENABLE, SDI2, control_word);
+        break;
+    }
+    case PREDEFINED_RECEIVER::SLOW_SDI3  :{
+        CONTROL::RECEIVER_DATA_RATE::SELECT_LOW(control_word);
+        select_enable_receiver_SDIChanell(receiveChanell, SET_ENABLE, SDI3, control_word);
+        break;
+    }
+    case PREDEFINED_RECEIVER::FAST_SDI0  :{
+        CONTROL::RECEIVER_DATA_RATE::SELECT_HI(control_word);
+        select_enable_receiver_SDIChanell(receiveChanell, SET_ENABLE, SDI0, control_word);
+        break;
+    }
+    case PREDEFINED_RECEIVER::FAST_SDI1  :{
+        CONTROL::RECEIVER_DATA_RATE::SELECT_HI(control_word);
+        select_enable_receiver_SDIChanell(receiveChanell, SET_ENABLE, SDI1, control_word);
+        break;
+    }
+    case PREDEFINED_RECEIVER::FAST_SDI2  :{
+        CONTROL::RECEIVER_DATA_RATE::SELECT_HI(control_word);
+        select_enable_receiver_SDIChanell(receiveChanell, SET_ENABLE, SDI2, control_word);
+        break;
+    }
+    case PREDEFINED_RECEIVER::FAST_SDI3  :{
+        CONTROL::RECEIVER_DATA_RATE::SELECT_HI(control_word);
+        select_enable_receiver_SDIChanell(receiveChanell, SET_ENABLE, SDI3, control_word);
+        break;
+    }
+
+    } // switch block
+}
+
+
+
+void DEI1016::select_enable_receiver_SDIChanell(int chanell, int ifEnable, int index, word_t& control_word){
+    if (chanell==CHANELL0){
+        switch(index){
+        case 0:{
+            CONTROL::SDI_X1::DISABLE(control_word);
+            CONTROL::SDI_Y1::DISABLE(control_word);
+            break;
+        }
+        case 1:{
+            CONTROL::SDI_X1::ENABLE(control_word);
+            CONTROL::SDI_Y1::DISABLE(control_word);
+            break;
+        }
+        case 2:{
+            CONTROL::SDI_X1::DISABLE(control_word);
+            CONTROL::SDI_Y1::ENABLE(control_word);
+            break;
+        }
+        case 3:{
+            CONTROL::SDI_X1::ENABLE(control_word);
+            CONTROL::SDI_Y1::ENABLE(control_word);
+            break;
+        }
+        }
+        switch(ifEnable){
+        case SET_ENABLE :{
+            CONTROL::SDI_ENB1::ENABLE(control_word);
+            break;
+        }
+        case SET_DISABLE: {
+            CONTROL::SDI_ENB1::DISABLE(control_word);
+            break;
+        }
+        }
+    }
+    if (chanell==CHANELL1){
+        switch(index){
+        case 0:{
+            CONTROL::SDI_X2::DISABLE(control_word);
+            CONTROL::SDI_Y2::DISABLE(control_word);
+            break;
+        }
+        case 1:{
+            CONTROL::SDI_X2::ENABLE(control_word);
+            CONTROL::SDI_Y2::DISABLE(control_word);
+            break;
+        }
+        case 2:{
+            CONTROL::SDI_X2::DISABLE(control_word);
+            CONTROL::SDI_Y2::ENABLE(control_word);
+            break;
+        }
+        case 3:{
+            CONTROL::SDI_X2::ENABLE(control_word);
+            CONTROL::SDI_Y2::ENABLE(control_word);
+            break;
+        }
+        }
+        switch(ifEnable){
+        case SET_ENABLE :{
+            CONTROL::SDI_ENB1::ENABLE(control_word);
+            break;
+        }
+        case SET_DISABLE: {
+            CONTROL::SDI_ENB1::DISABLE(control_word);
+            break;
+        }
+        }
+    }
+}
+//
+
+void DEI1016::setControlWord_transmitter_32Bits(int transmitChanell, int index, word_t& control_word){
+
+    CONTROL::WORD_LENGTH::SELECT_32(control_word) ;
+    CONTROL::PAREN::ENABLE(control_word);
+    //
+    switch(index){
+    case PREDEFINED_TRANSMITTER::SLOW_ODD_PARITY :{
+        CONTROL::TRANSMITTER_DATA_RATE::SELECT_LOW(control_word);
+        CONTROL::PARCK::SET_ODD(control_word);
+        break;
+    }
+    case PREDEFINED_TRANSMITTER::FAST_ODD_PARITY :{
+        CONTROL::TRANSMITTER_DATA_RATE::SELECT_HI(control_word);
+        CONTROL::PARCK::SET_ODD(control_word);
+        break;
+    }
+    case PREDEFINED_TRANSMITTER::SLOW_EVEN_PARITY  :{
+        CONTROL::TRANSMITTER_DATA_RATE::SELECT_LOW(control_word);
+        CONTROL::PARCK::SET_EVEN(control_word);
+
+        break;
+    }
+    case PREDEFINED_TRANSMITTER::FAST_EVEN_PARITY  :{
+        CONTROL::TRANSMITTER_DATA_RATE::SELECT_HI(control_word);
+        CONTROL::PARCK::SET_EVEN(control_word);
+        break;
+    }
+    } // switch block
+}
 
 
 /*

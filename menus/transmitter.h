@@ -22,13 +22,15 @@ class transmitter;
 class transmitter : public QWidget
 {
     Q_OBJECT
-    explicit transmitter(QWidget *parent = nullptr);
-    static transmitter* instance;
+    explicit transmitter(QWidget *parent = nullptr, int ch = 0);
+    static transmitter* instance0;
+    static transmitter* instance1;
+
 
 
 public:
     ~transmitter();
-    static transmitter* getInstance();
+    static transmitter* getInstance(int ch);
 
     void FillEquipmentSelector();
     void FillLabelSelector();
@@ -44,7 +46,7 @@ public:
     void Disable();
     void Enable();
     std::vector<action>& getActions();
-
+    int chanell = 0;
 public slots:
     void OnEquipmentSelectorChanged(int);
     void OnLabelSelectorChanged(int _selectorindexd);

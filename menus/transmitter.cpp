@@ -15,15 +15,30 @@
 
 #include <vector>
 
-transmitter* transmitter::instance = nullptr;
+transmitter* transmitter::instance0 = nullptr;
+transmitter* transmitter::instance1 = nullptr;
 
 
-transmitter* transmitter::getInstance()
+transmitter* transmitter::getInstance(int ch)
 {
-    if (!instance){
-        instance = new transmitter();
+    switch(ch)
+    {
+        case CHANELL0:
+        {
+            if (!instance0){
+                instance0 = new transmitter(nullptr, ch);
+            }
+            return instance0;
+        }
+        case CHANELL1:
+        {
+            if (!instance1){
+                instance1 = new transmitter(nullptr, ch);
+            }
+            return instance1;
+        }
     }
-   return instance;
+    return nullptr;
 }
 
 void transmitter::initUiCombos()
@@ -40,9 +55,9 @@ void transmitter::resetDataModel(str_t _eqId){
     ui->treeView->setModel(nullptr);
     auto __datamodel =  dataModel;
 
-    TransmitterWorker::getInstance()->getEquipment()->init(_eqId);
+    TransmitterWorker::getInstance(chanell)->getEquipment()->init(_eqId);
 
-    dataModel = new MyDataModel(nullptr, TransmitterWorker::getInstance()->getEquipments(), true);
+    dataModel = new MyDataModel(nullptr, TransmitterWorker::getInstance(chanell)->getEquipments(), true);
     ui->treeView->setModel(dataModel);
     dataModel->addReservedLabel();
 
@@ -61,9 +76,9 @@ void transmitter::resetDataModel(str_t _eqId){
       delete __datamodel;
 }
 
-transmitter::transmitter(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::transmitter), dataModel(new MyDataModel(nullptr, TransmitterWorker::getInstance()->getEquipments(), true))
+transmitter::transmitter(QWidget *parent, int ch):
+    QWidget(parent), chanell(ch),
+    ui(new Ui::transmitter), dataModel(new MyDataModel(nullptr, TransmitterWorker::getInstance(ch)->getEquipments(), true))
 {
     ui->setupUi(this);
     equipmentsIds = new EquipmentsIds();
@@ -76,21 +91,22 @@ transmitter::transmitter(QWidget *parent) :
     setObjectName("Transmitter thread.");
     initUiCombos();
 
-    TransmitterWorker::getInstance()->startTasks();
+    TransmitterWorker::getInstance(chanell)->startTasks();
     //
     connect(ui->equipmentSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(OnEquipmentSelectorChanged(int)));
     connect(ui->labelSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(OnLabelSelectorChanged(int)));
     connect(ui->addLabel, SIGNAL(clicked(bool)), this, SLOT(addLabel(bool)));
     connect(ui->removeLabel, SIGNAL(clicked(bool)), this, SLOT(removeLabel(bool)));
     connect(ui->cArinc_parity_bitRate, SIGNAL(currentIndexChanged(int)), this, SLOT(onArinc_parity_bitRate(int)));
-    // connect(ui->pLoadConfig, SIGNAL(clicked(bool)), this, SLOT(onLoadConfig(bool)));
     connect(ui->pSaveConfig, SIGNAL(clicked(bool)), this, SLOT(onSelectSaveConfigFile(bool)));
     connect(ui->pLoadConfig, SIGNAL(clicked(bool)), this, SLOT(onSelectLoadConfigFile(bool)));
-
     connect(ui->chTransmitterEnabled, &QCheckBox::clicked, this, &transmitter::onTransmitterEnabled);
     connect(ui->chTransmitterDisabled, &QCheckBox::clicked, this, &transmitter::onTransmitterDisabled);
 
-    emit
+    //
+    this->setWindowTitle("Transmitter " + QString::number(chanell));
+    //
+
     ui->chTransmitterDisabled->setChecked(true);
     ui->chTransmitterEnabled->setChecked(false);
     bIfEnabled = false;
@@ -102,8 +118,8 @@ transmitter::~transmitter()
     delete equipmentsIds;
     delete editorDelegate;
     delete dataModel;
-   // TransmitterWorker::getInstance()->quit();
-   // TransmitterWorker::getInstance()->wait();
+   // TransmitterWorker::getInstance(chanell)->quit();
+   // TransmitterWorker::getInstance(chanell)->wait();
 
 
 }
@@ -196,7 +212,7 @@ void transmitter::FillLabelSelector()
 {
 
     ui->labelSelector->clear();
-    Equipment* tmp = TransmitterWorker::getInstance()->getEquipment();
+    Equipment* tmp = TransmitterWorker::getInstance(chanell)->getEquipment();
 
     for (const std::pair<str_t,str_t>& x: tmp->getLabelsIdAndNames()){
         ui->labelSelector->addItem(x.first);
@@ -214,7 +230,7 @@ void transmitter::OnEquipmentSelectorChanged(int _selectorindexd)
 
 void transmitter::OnLabelSelectorChanged(int _selectorindexd)
 {
-    Equipment* tmp = TransmitterWorker::getInstance()->getEquipment();
+    Equipment* tmp = TransmitterWorker::getInstance(chanell)->getEquipment();
     str_t _selectedLabelName = ui->labelSelector->itemText(_selectorindexd);
     selectedLabelId  = tmp->findLabelIdFromName(_selectedLabelName);
   //  qDebug() << "OnLabelSelectorChanged== " << _selectedLabelName<< "  "<<selectedLabelId;
@@ -225,7 +241,7 @@ void transmitter::onSelectSaveConfigFile(bool bIfClicked)
 {
     configFileName =  utils::openFileDialogForSaving(this, GeneralData::getInstance()->TRANSMIT_CONFIGS_PATH);
     if (!configFileName.isEmpty()) {
-        Equipment* equipment = TransmitterWorker::getInstance()->getEquipment();
+        Equipment* equipment = TransmitterWorker::getInstance(chanell)->getEquipment();
         jsonobj_t jconfig;
         jconfig["arincConfig"] = ui->cArinc_parity_bitRate->currentIndex();
         jconfig["equipmentId"] = equipment->getEqipmentId();

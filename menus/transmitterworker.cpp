@@ -5,11 +5,14 @@
 #include "transmitter.h"
 #include "Timer.h"
 #include "DEI1016.h"
-#include "generaldata.h"
 #include <thread>
 #include <chrono>
+#include "types.h"
+#include "DEI1016RasberryConfigurations.h"
+#include "generaldata.h"
 
-TransmitterWorker* TransmitterWorker::instance = nullptr;
+TransmitterWorker* TransmitterWorker::instance0 = nullptr;
+TransmitterWorker* TransmitterWorker::instance1 = nullptr;
 
 
 
@@ -18,20 +21,37 @@ Equipment*  TransmitterWorker:: getEquipment()
     return static_cast<Equipment*>(equipments[0]);
 }
 
-TransmitterWorker* TransmitterWorker::getInstance()
+TransmitterWorker* TransmitterWorker::getInstance(int ch)
 {
-    if (!instance){
-        instance = new TransmitterWorker("002");
-        return instance;
+    switch(ch){
+        case CHANELL0:
+        {
+            if (!instance0){
+                instance0 = new TransmitterWorker("002", ch);
+                return instance0;
+            }
+            else {
+                return instance0;
+            }
+        }
+        case CHANELL1:
+        {
+            if (!instance1){
+                instance1 = new TransmitterWorker("002", ch);
+                return instance1;
+            }
+            else {
+                return instance1;
+            }
+        }
     }
-    else {
-        return instance;
-    }
+    return nullptr;
 }
 
-TransmitterWorker::TransmitterWorker(str_t _equipment)
+TransmitterWorker::TransmitterWorker(str_t _equipment, int ch)
 {
     //
+    chanell = ch;
     defaultEquipment = "002";
     equipments.push_back(new Equipment(defaultEquipment,EquipmentRole::Transmitter));
     mainThread = new QThread();
@@ -78,7 +98,7 @@ void TransmitterWorker::startTasks()
 void TransmitterWorker::actionListCleaner()
 {
     QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
-    for (auto it = transmitter::getInstance()->getActions().begin();  it!=transmitter::getInstance()->getActions().end(); it++){
+    for (auto it = transmitter::getInstance(chanell)->getActions().begin();  it!=transmitter::getInstance(chanell)->getActions().end(); it++){
         if ( (*it).bIfApplied ){
           //  transmitter::getInstance()->getActions().erase(it);
         }
@@ -92,7 +112,7 @@ void TransmitterWorker::run()
 
 void TransmitterWorker::incrementLabelsDataRateCounter()
 {
-     transmitter::getInstance()->incrementLabelsDataRateCounter();
+    // transmitter::getInstance()->incrementLabelsDataRateCounter();
 }
 
 void TransmitterWorker::taskTransmitData()
@@ -101,7 +121,7 @@ void TransmitterWorker::taskTransmitData()
     while(1){
         std::this_thread::sleep_for(std::chrono::microseconds(1));
         QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
-        for (auto& x: transmitter::getInstance()->getActions() )
+        for (auto& x: transmitter::getInstance(chanell)->getActions() )
         {
             if (!x.bIfApplied){
                 std::this_thread::sleep_for(std::chrono::microseconds(1));

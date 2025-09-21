@@ -20,21 +20,22 @@ class Timer;
 
 class TransmitterWorker: public QObject {
     Q_OBJECT
-    TransmitterWorker(str_t _equipment);
+    TransmitterWorker(str_t _equipment, int ch);
     TransmitterWorker() = delete;
-    static TransmitterWorker* instance;
+    static TransmitterWorker* instance0;
+    static TransmitterWorker* instance1;
 
 
 public:
     virtual ~TransmitterWorker() override;
-    static TransmitterWorker* getInstance();
+    static TransmitterWorker* getInstance(int ch);
     virtual void run();
      inline PointerVector<BaseItem>& getEquipments(){
          return equipments;
      }
      Equipment* getEquipment();
      void startTasks() ;
-
+     int chanell = 0;
 public slots:
      void taskTransmitData();
      void incrementLabelsDataRateCounter();

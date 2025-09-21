@@ -62,10 +62,17 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 
 //
 
-void MainWindow::transmitter1()
+void MainWindow::transmitter0()
 {
    // infoLabel->setText(tr("Invoked <b>File|New</b>"));
-    transmitter::getInstance()->show();
+    transmitter::getInstance(CHANELL0)->show();
+
+}
+
+void MainWindow::transmitter1()
+{
+    // infoLabel->setText(tr("Invoked <b>File|New</b>"));
+    transmitter::getInstance(CHANELL1)->show();
 
 }
 
@@ -156,8 +163,14 @@ void MainWindow::about()
 void MainWindow::createActions()
 {
 //! [5]
+    transmitter0Act = new QAction(QIcon::fromTheme("folder-alt"),
+                         tr("&Transmitter 0"), this);
+    transmitter0Act->setShortcuts(QKeySequence::New);
+    transmitter0Act->setStatusTip(tr("Select transmitter 0."));
+    connect(transmitter0Act, &QAction::triggered, this, &MainWindow::transmitter0);
+
     transmitter1Act = new QAction(QIcon::fromTheme("folder-alt"),
-                         tr("&Transmitter 1"), this);
+                                  tr("&Transmitter 1"), this);
     transmitter1Act->setShortcuts(QKeySequence::New);
     transmitter1Act->setStatusTip(tr("Select transmitter 1."));
     connect(transmitter1Act, &QAction::triggered, this, &MainWindow::transmitter1);
@@ -251,7 +264,9 @@ void MainWindow::createMenus()
 {
 //
     transmitterMenu = menuBar()->addMenu(tr("&Transmitter"));
+    transmitterMenu->addAction(transmitter0Act);
     transmitterMenu->addAction(transmitter1Act);
+
 
 //
     receiverMenu = menuBar()->addMenu(tr("&Receiver"));

@@ -5,7 +5,7 @@
 uint8_t makeInstructionByte(uint32_t ch, uint32_t transrec, uint32_t instr){
     std::bitset<8> insByte;
     AUX::setChanel(insByte, ch);
-    AUX::setTransReceive(insByte,transrec);
+    AUX::setTransReceive(insByte, transrec);
     AUX::setInstruction(insByte, instr);
     return static_cast<uint8_t>(insByte.to_ulong());
 }

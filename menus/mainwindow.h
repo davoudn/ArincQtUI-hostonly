@@ -31,6 +31,7 @@ protected:
 //! [1]
 private slots:
     //
+    void transmitter0();
     void transmitter1();
 
     //
@@ -79,6 +80,7 @@ private:
     QAction *receiver3Act;
 
     // transmitterMenu
+    QAction *transmitter0Act;
     QAction *transmitter1Act;
 
     // recorderMenu
