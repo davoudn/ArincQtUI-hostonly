@@ -19,7 +19,6 @@ private:
     PointerVector<BaseItem>& myData;
 
     std::vector<action> actions;
-    uint32_t chanell = 0;
 
     int depth(QModelIndex &index);
     bool bIfEditable = false;
@@ -78,8 +77,9 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     void setLabelToInsert(str_t _labelToInsert);
 
+    QObject *tranciver = nullptr;
 
-
+    int getChanell();
 
 private:
     str_t labelToInsert;

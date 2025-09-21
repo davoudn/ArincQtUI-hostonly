@@ -8,7 +8,8 @@
 #include "labelfor.h"
 #include "generaldata.h"
 #include <QMutexLocker>
-
+#include "receiver.h"
+#include "transmitter.h"
 #include <QThread>
 
 #define COLUMN_NAME 0
@@ -24,7 +25,7 @@
 using namespace std;
 
 MyDataModel::MyDataModel(QObject *parent, PointerVector<BaseItem>& vec, bool _bIfEditable)
-    : QAbstractItemModel(parent), myData(vec), bIfEditable(_bIfEditable){
+    : QAbstractItemModel(parent), myData(vec), bIfEditable(_bIfEditable),tranciver(parent){
 }
 
 MyDataModel::~MyDataModel(){
@@ -402,6 +403,8 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
      * recording  actions to be sent to arinc board through usb
      *
     */
+    int chanell = 0; //getChanell();
+
     if (item->type == BaseItem::ItemType::Label)
     {
         auto label = static_cast<Label*>(item);
@@ -829,4 +832,20 @@ void MyDataModel::addControlAction(uint32_t ch, uint32_t trans_rec, uint32_t ins
 std::vector<action>& MyDataModel::getActions()
 {
     return actions;
+}
+
+int MyDataModel::getChanell(){
+    transmitter* x = dynamic_cast<transmitter*>(tranciver);
+    if (x){
+        return x->chanell;
+    }
+
+    Receiver* y = dynamic_cast<Receiver*>(tranciver);
+    if (y){
+        return y->chanell;
+    }
+    return 0;
+
+
+
 }

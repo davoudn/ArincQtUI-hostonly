@@ -22,6 +22,7 @@ HEADERS       = mainwindow.h \
     action.h \
     arinc_functions.h \
     baseitem.h \
+    basetransiverwidget.h \
     bitutils.h \
     checkboxarray.h \
     editordelegate.h \
@@ -57,6 +58,7 @@ SOURCES       = mainwindow.cpp \
                 action.cpp \
                 arinc_functions.cpp \
                 baseitem.cpp \
+                basetransiverwidget.cpp \
                 bitutils.cpp \
                 checkboxarray.cpp \
                 editordelegate.cpp \

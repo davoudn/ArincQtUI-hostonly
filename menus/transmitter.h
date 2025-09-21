@@ -1,7 +1,7 @@
 #ifndef TRANSMITTER_H
 #define TRANSMITTER_H
 
-
+#include "basetransiverwidget.h"
 #include "types.h"
 #include "action.h"
 #include <QWidget>

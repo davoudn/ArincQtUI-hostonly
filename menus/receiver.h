@@ -55,6 +55,8 @@ public slots:
     void on_SDI_bitRate(int index);
     void onReceiverEnabled(bool);
     void onReceiverDisabled(bool);
+public:
+    int chanell = 0;
 
 protected:
     Ui::Receiver *ui;
@@ -63,7 +65,6 @@ protected:
     QString equipmentId;
     QMutex modelMutex;
     bool bIfEnabled = false;
-    uint8_t chanell = 0;
     word_t control_word;
 };
 

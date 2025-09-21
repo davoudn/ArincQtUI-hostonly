@@ -57,7 +57,7 @@ void transmitter::resetDataModel(str_t _eqId){
 
     TransmitterWorker::getInstance(chanell)->getEquipment()->init(_eqId);
 
-    dataModel = new MyDataModel(nullptr, TransmitterWorker::getInstance(chanell)->getEquipments(), true);
+    dataModel = new MyDataModel(this, TransmitterWorker::getInstance(chanell)->getEquipments(), true);
     ui->treeView->setModel(dataModel);
     dataModel->addReservedLabel();
 
@@ -78,7 +78,7 @@ void transmitter::resetDataModel(str_t _eqId){
 
 transmitter::transmitter(QWidget *parent, int ch):
     QWidget(parent), chanell(ch),
-    ui(new Ui::transmitter), dataModel(new MyDataModel(nullptr, TransmitterWorker::getInstance(ch)->getEquipments(), true))
+    ui(new Ui::transmitter), dataModel(new MyDataModel(this, TransmitterWorker::getInstance(ch)->getEquipments(), true))
 {
     ui->setupUi(this);
     equipmentsIds = new EquipmentsIds();
