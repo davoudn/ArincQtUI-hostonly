@@ -10,6 +10,7 @@
 #include <QMutexLocker>
 #include "receiver.h"
 #include "transmitter.h"
+#include "bitutils.h"
 #include <QThread>
 
 #define COLUMN_NAME 0
@@ -408,6 +409,12 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
     if (item->type == BaseItem::ItemType::Label)
     {
         auto label = static_cast<Label*>(item);
+        /*
+        qInfo() <<" *Arinc -->" << label->getArincData().getBitSet().to_string();
+        dword_t x{label->getArincData().getBitSet()} ;
+        AUX::convertFromArincToDEI(x);
+         qInfo() <<" *DEI -->" << x.to_string();
+*/
         if (label->getIfActive())
         {
             if (!bIfSatusChanged){
@@ -796,7 +803,6 @@ void MyDataModel::evalDataRates(double _resettime){
     return ;
 }
 
-
 std::vector<str_t> MyDataModel::getTimeOutList(){
     std::vector<str_t> _garbage;
     QModelIndex topindex = index(0,0,QModelIndex());
@@ -821,9 +827,7 @@ std::vector<str_t> MyDataModel::getTimeOutList(){
 
 void MyDataModel::addLabelAction(uint32_t ch, uint32_t transrec, uint32_t instr, Label* label){
     QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
-    actions.push_back( action(ch, transrec, instr, label->getUIntArincData(), label->getDataRate().toFloat(), 0 ));
-   // for (auto& x: actions)
-   //      qInfo() << x.chanel<<"\t"<<x.instruction<<"\t"<<x.arincData<< "\t" << x.bIfApplied;
+    actions.push_back( action(ch, transrec, instr, label->getArincData().getBitSet().to_ulong(), label->getDataRate().toFloat(), 0 ));
 }
 void MyDataModel::addControlAction(uint32_t ch, uint32_t trans_rec, uint32_t instr, uint16_t controlword){
 

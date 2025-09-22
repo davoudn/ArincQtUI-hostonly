@@ -40,10 +40,14 @@ std::array<uint8_t,TRANSMMIT_PACKET_SIZE>& action::toArrayPacket()
 
 char* action::toPacket()
 {
-    AUX::convertFromArincToDEI(arincData);
+    qInfo() << "**Arinc --> "<<std::bitset<32>(arincData).to_string( );
+    dword_t a{arincData};
+    AUX::convertFromArincToDEI(a);
+    qInfo() << "**DEI   --> "<<a.to_string( );
+    uint32_t x = static_cast<uint32_t>(a.to_ulong());
     data[INSTRUCTION_BYTE] = makeInstructionByte(chanel, tranReceive, instruction);
     data[RATE_BYTE] = AUX::timeToBits(rate);
-    AUX::split(arincData, data[ARINC_BYTE0], data[ARINC_BYTE1], data[ARINC_BYTE2], data[ARINC_BYTE3]);
+    AUX::split(x, data[ARINC_BYTE0], data[ARINC_BYTE1], data[ARINC_BYTE2], data[ARINC_BYTE3]);
     AUX::split(controlWord, data[CONTROL_BYTE0], data[CONTROL_BYTE1]);
     return data;
 }

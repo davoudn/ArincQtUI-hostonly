@@ -121,12 +121,11 @@ void TransmitterWorker::taskTransmitData()
     while(1){
         std::this_thread::sleep_for(std::chrono::microseconds(1));
         QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
-        for (auto& x: transmitter::getInstance(chanell)->getActions() )
+        for (auto& x: transmitter::getInstance(chanell)->getActions())
         {
             if (!x.bIfApplied){
                 std::this_thread::sleep_for(std::chrono::microseconds(1));
                 emit sendData(x);
-                qInfo() << x.chanel<<"\t"<<x.instruction<<"\t"<<x.arincData<< "\t" << x.bIfApplied;
             }
         }
     }

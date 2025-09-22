@@ -38,8 +38,8 @@ void setTransReceive(std::bitset<8>& x, uint32_t tranceive){
 
 void convertFromArincToDEI(dword_t& data){
     dword_t x{data} ;
-    for (int i=0; data.size();i++){
-        x[i] = data[arinc_DEI_wordsMap[i]];
+    for (int i=0; i<data.size();i++){
+      data[i] = x[arinc_DEI_wordsMap[i]];
     }
 }
 
