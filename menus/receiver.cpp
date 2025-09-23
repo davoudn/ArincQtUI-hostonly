@@ -6,6 +6,8 @@
 #include "TreeDataModel.h"
 #include "DEI1016RasberryConfigurations.h"
 #include "Equipment.h"
+#include "generaldata.h"
+#include "DEI1016.h"
 
 #include <thread>
 #include <chrono>
@@ -100,7 +102,9 @@ void Receiver::initUiCombos()
 
 void Receiver::on_SDI_bitRate(int index)
 {
-
+    QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
+    auto control_word = DEI1016::getInstance()->setControlWord_receiver_32Bits(chanell,index);
+    GeneralData::getInstance()->getActions().push_back(MakeControlAction(chanell, 0, static_cast<uint16_t>(control_word.to_ulong())));
 }
 
 MyDataModel *  Receiver::getDataModel()

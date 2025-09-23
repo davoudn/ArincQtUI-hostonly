@@ -13,12 +13,14 @@ class DEI1016 : public QObject {
     DEI1016();
     static DEI1016* instance;
 public:
- 
+
     static DEI1016* getInstance();
    ~DEI1016() = default;
 
     void setControlWord_receiver_32Bits(int chanell, int index, word_t& control_word) ;
     void setControlWord_transmitter_32Bits(int chanell, int index, word_t& control_word) ;
+    const word_t& setControlWord_transmitter_32Bits(int chanell, int index) ;
+    const word_t& setControlWord_receiver_32Bits(int chanell, int index);
     void select_enable_receiver_SDIChanell(int chanell, int ifEnable, int index, word_t& control_word);
     void setControlInstruction(uint8_t instruction);
     void createMaps();
@@ -32,7 +34,7 @@ private slots:
 
 public slots:
    void updateTask();
-   bool sendData(action& ac);
+   bool sendData(BaseAction* ac);
 
 
    //
@@ -43,7 +45,7 @@ protected:
     char transData[TRANSMMIT_PACKET_SIZE];
     QThread* mainThread = nullptr;
     QMutex mutex;
-
+    std::array<word_t, NUM_DEI1016> controlWords;
     QSerialPort *serial = nullptr;
 };
 

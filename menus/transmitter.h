@@ -1,9 +1,8 @@
 #ifndef TRANSMITTER_H
 #define TRANSMITTER_H
 
-#include "basetransiverwidget.h"
+#include "PointerVector.h"
 #include "types.h"
-#include "action.h"
 #include <QWidget>
 #include <vector>
 #include <QMutex>
@@ -14,6 +13,7 @@ class Equipment;
 class EquipmentsIds;
 class MyDataModel;
 class DArincData;
+class BaseAction;
 
 namespace Ui {
 class transmitter;
@@ -45,7 +45,6 @@ public:
     QMutex modelMutex;
     void Disable();
     void Enable();
-    std::vector<action>& getActions();
     int chanell = 0;
 public slots:
     void OnEquipmentSelectorChanged(int);
@@ -60,6 +59,7 @@ public slots:
     void onLoadConfig(bool);
 
 protected:
+    word_t controlWord ;
     Ui::transmitter *ui;
     MyDataModel *dataModel = nullptr;
     EquipmentsIds* equipmentsIds = nullptr;

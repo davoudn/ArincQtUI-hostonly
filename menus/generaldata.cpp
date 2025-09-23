@@ -15,3 +15,8 @@ GeneralData* GeneralData::getInstance()
     }
     return instance;
 }
+
+PointerVector<BaseAction>& GeneralData::getActions()
+{
+    return actions;
+}

@@ -17,6 +17,7 @@ class BaseItem;
 class transmitter;
 class Receiver;
 class Timer;
+class BaseAction;
 
 class TransmitterWorker: public QObject {
     Q_OBJECT
@@ -41,7 +42,7 @@ public slots:
      void incrementLabelsDataRateCounter();
      void actionListCleaner();
  signals:
-     bool sendData(action& ac);
+     bool sendData(BaseAction* ac);
 
 protected:
 

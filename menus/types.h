@@ -26,7 +26,7 @@
 #define ARINC32_DATA_LENGTH 24
 #define CLEANING_CHECK_TIME 1500// miliseconds
 #define DATA_RATE_EVAL_TIME 1000// miliseconds
-
+#define NUM_DEI1016 2
 // for timers
 #define MAX_TIME 10000 // miliseconds
 #define IDLE_THRESHOLD 2000 // miliseconds

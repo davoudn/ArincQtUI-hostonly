@@ -1,19 +1,19 @@
 #include "transmitter.h"
 #include "ui_transmitter.h"
-
 #include "equipmentsids.h"
 #include "transmitterworker.h"
 #include "Equipment.h"
-
 #include "editordelegate.h"
 #include "TreeDataModel.h"
 #include "DEI1016RasberryConfigurations.h"
-#include <thread>
 #include "utils.h"
 #include "generaldata.h"
 #include "ArincData.h"
+#include "action.h"
+#include "DEI1016.h"
 
 #include <vector>
+#include <thread>
 
 transmitter* transmitter::instance0 = nullptr;
 transmitter* transmitter::instance1 = nullptr;
@@ -124,26 +124,24 @@ transmitter::~transmitter()
 
 }
 
-MyDataModel * transmitter::getDataModel()
+MyDataModel* transmitter::getDataModel()
 {
     return dataModel;
 }
 
 void transmitter::onArinc_parity_bitRate(int index)
 {
-}
-
-std::vector<action>& transmitter::getActions()
-{
-    return dataModel->getActions();
+    QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
+    auto control_word = DEI1016::getInstance()->setControlWord_transmitter_32Bits(chanell,index);
+    GeneralData::getInstance()->getActions().push_back(MakeControlAction(chanell, 0, static_cast<uint16_t>(control_word.to_ulong())));
 }
 
 
 std::vector<DArincData> transmitter::getListOfAvailableLabelData()
 {
     std::vector<DArincData> list;
-
-    if (bIfEnabled){
+    if (bIfEnabled)
+    {
         if (dataModel){
             list = dataModel->getListOfAvailableLabelData();
         }
@@ -153,7 +151,8 @@ std::vector<DArincData> transmitter::getListOfAvailableLabelData()
 
 void transmitter::incrementLabelsDataRateCounter()
 {
-  if (bIfEnabled){
+  if (bIfEnabled)
+  {
     if(dataModel){
       dataModel->incrementLabelsDataRateCounter();
     }

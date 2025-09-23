@@ -20,6 +20,14 @@ uint16_t getTransReceive(std::bitset<8>& x) {
     return x[4];
 }
 
+uint8_t makeInstructionByte(uint32_t ch, uint32_t instr, uint32_t transrec){
+    std::bitset<8> insByte;
+    AUX::setChanel(insByte, ch);
+    AUX::setTransReceive(insByte, transrec);
+    AUX::setInstruction(insByte, instr);
+    return static_cast<uint8_t>(insByte.to_ulong());
+}
+
 void setInstruction(std::bitset<8>& x, uint32_t ins){
     std::bitset<4> insbits{ins};
     x[0] = insbits[0];

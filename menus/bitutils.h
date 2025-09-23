@@ -24,6 +24,8 @@ namespace AUX
 uint16_t getInstruction(std::bitset<8>& x);
 uint16_t getChanel(std::bitset<8>& x);
 uint16_t getTransReceive(std::bitset<8>& x);
+uint8_t makeInstructionByte(uint32_t ch, uint32_t instr, uint32_t transrec);
+
 
 void setInstruction(std::bitset<8>& x, uint32_t ins);
 void setChanel(std::bitset<8>& x, uint32_t ch);

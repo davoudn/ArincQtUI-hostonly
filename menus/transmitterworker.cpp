@@ -10,6 +10,7 @@
 #include "types.h"
 #include "DEI1016RasberryConfigurations.h"
 #include "generaldata.h"
+#include "action.h"
 
 TransmitterWorker* TransmitterWorker::instance0 = nullptr;
 TransmitterWorker* TransmitterWorker::instance1 = nullptr;
@@ -98,8 +99,8 @@ void TransmitterWorker::startTasks()
 void TransmitterWorker::actionListCleaner()
 {
     QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
-    for (auto it = transmitter::getInstance(chanell)->getActions().begin();  it!=transmitter::getInstance(chanell)->getActions().end(); it++){
-        if ( (*it).bIfApplied ){
+    for (auto it = GeneralData::getInstance()->getActions().begin();  it!=GeneralData::getInstance()->getActions().end(); it++){
+        if ( (*it)->bIfApplied ){
           //  transmitter::getInstance()->getActions().erase(it);
         }
     }
@@ -121,9 +122,9 @@ void TransmitterWorker::taskTransmitData()
     while(1){
         std::this_thread::sleep_for(std::chrono::microseconds(1));
         QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
-        for (auto& x: transmitter::getInstance(chanell)->getActions())
+        for (auto& x: GeneralData::getInstance()->getActions())
         {
-            if (!x.bIfApplied){
+            if (!x->bIfApplied){
                 std::this_thread::sleep_for(std::chrono::microseconds(1));
                 emit sendData(x);
             }

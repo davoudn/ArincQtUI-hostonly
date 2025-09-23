@@ -10,7 +10,8 @@
 #include <QMutexLocker>
 #include "receiver.h"
 #include "transmitter.h"
-#include "bitutils.h"
+#include "action.h"
+#include "generaldata.h"
 #include <QThread>
 
 #define COLUMN_NAME 0
@@ -109,7 +110,8 @@ bool MyDataModel::hasChildren(const QModelIndex &index) const {
     return retVal;
 }
 
-QVariant MyDataModel::headerData(int section, Qt::Orientation, int role) const {
+QVariant MyDataModel::headerData(int section, Qt::Orientation, int role) const
+{
     QVariant retVal;
     if (role == Qt::DisplayRole){
         switch (section) {
@@ -127,33 +129,34 @@ QVariant MyDataModel::headerData(int section, Qt::Orientation, int role) const {
 }
 
 
-QVariant MyDataModel::data(const QModelIndex &index, int role) const {
+QVariant MyDataModel::data(const QModelIndex &index, int role) const
+{
     QVariant retVal;
-
     int row = index.row();
     int column = index.column();
     if (role == Qt::DisplayRole && index.isValid() && row >= 0 && column >= 0) {
         BaseItem *baseItem = static_cast<BaseItem *>(index.internalPointer());
-        if (baseItem != nullptr) {
-            switch (baseItem->type) {
-                case BaseItem::ItemType::Parameter: {
+        if (baseItem != nullptr)
+        {
+            switch (baseItem->type)
+            {
+                case BaseItem::ItemType::Parameter:
+                {
                     str_t paramname = static_cast<BaseParameter *>(baseItem)->GetName();
                     Label *label = static_cast<Label*> (baseItem->parent);
                     str_t info = static_cast<BaseParameter *>(baseItem)->getInfo();
                     switch(column) {
-
                         case COLUMN_NAME: retVal = paramname; break;
                         case COLUMN_STATUS:   break;
                         case COLUMN_BINARYVALUE: break;
                         case COLUMN_INFO: retVal =info; break;
                         case COLUMN_ENGVALUE: retVal = label->valueEng(paramname); break;
-
                         default: retVal = ""; break;
                     }
                     break;
                 }
-
-                case BaseItem::ItemType::Label: {
+                case BaseItem::ItemType::Label:
+                {
                     Label *label = static_cast<Label *>(baseItem);
                     switch(column) {
                         case COLUMN_NAME: retVal = label->getName(); break;
@@ -168,8 +171,8 @@ QVariant MyDataModel::data(const QModelIndex &index, int role) const {
                     }
                     break;
                 }
-
-                case BaseItem::ItemType::Equipment: {
+                case BaseItem::ItemType::Equipment:
+                {
                     Equipment *topData = static_cast<Equipment *>(baseItem);
                     switch(column) {
                         case COLUMN_NAME: retVal = topData->getEqipmentIdAndName(); break;
@@ -202,25 +205,30 @@ bool  MyDataModel::updateModelData(Label* _item){
       return false;
 }
 
-QModelIndex MyDataModel::findIndex(Label* _item, const  QModelIndex parent){
-    if (_item) {
-          for (int row=0; row < this->rowCount(parent); row++){
-              QModelIndex index = this->index(row,0,parent);
-              BaseItem* _base = static_cast<BaseItem*>(index.internalPointer());
-              if (_base->type == BaseItem::ItemType::Label){
-                 Label* _tmp = static_cast<Label*>(_base);
-                 if (_tmp){
-                      std::cout << " Item name  = " <<_item << "     Searched item name = "<< _tmp << "  ...\n";
-                      if (_tmp == _item){
-                         return index;
-                      }
-                 }
-              }
-              QModelIndex childIndex = findIndex(_item, index);
-              if (childIndex.isValid()){
-                  return childIndex;
-              }
-          }
+QModelIndex MyDataModel::findIndex(Label* _item, const  QModelIndex parent)
+{
+    if (_item)
+    {
+        for (int row=0; row < this->rowCount(parent); row++)
+        {
+            QModelIndex index = this->index(row,0,parent);
+            BaseItem* _base = static_cast<BaseItem*>(index.internalPointer());
+            if (_base->type == BaseItem::ItemType::Label)
+            {
+               Label* _tmp = static_cast<Label*>(_base);
+               if (_tmp)
+               {
+                    std::cout << " Item name  = " <<_item << "     Searched item name = "<< _tmp << "  ...\n";
+                    if (_tmp == _item){
+                       return index;
+                    }
+               }
+            }
+            QModelIndex childIndex = findIndex(_item, index);
+            if (childIndex.isValid()){
+                return childIndex;
+            }
+        }
     }
     else {
         std::cout << "MyDataModel::findIndex, item to find is nullptr ... " ;
@@ -230,13 +238,15 @@ QModelIndex MyDataModel::findIndex(Label* _item, const  QModelIndex parent){
 }
 
 
-QModelIndex MyDataModel::index ( int row, int column, const QModelIndex &parent) const {
+QModelIndex MyDataModel::index ( int row, int column, const QModelIndex &parent) const
+{
     if (row < 0 || column < 0) {
         return QModelIndex();
     }
 
     // If this is top level...
-    if (!parent.isValid()) {
+    if (!parent.isValid())
+    {
         if (row >= static_cast<int>(myData.size()) ) {
             return QModelIndex();
         }
@@ -330,7 +340,8 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
         {
             switch(param->getType())
             {
-            case DArincParamType::BCD : {
+            case DArincParamType::BCD :
+            {
                 switch(column) {
                     case COLUMN_NAME:  break;
                     case COLUMN_STATUS: break;
@@ -343,7 +354,8 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
                 }
             break;
             }
-            case DArincParamType::BNR :{
+            case DArincParamType::BNR :
+            {
                 switch(column) {
                     case COLUMN_NAME:  break;
                     case COLUMN_STATUS: break;
@@ -356,7 +368,8 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
                 }
                 break;
             }
-            case DArincParamType::DISCRETE :{
+            case DArincParamType::DISCRETE :
+            {
                 //
                 switch(column) {
                     case COLUMN_NAME:  break;
@@ -404,17 +417,11 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
      * recording  actions to be sent to arinc board through usb
      *
     */
-    int chanell = 0; //getChanell();
+    int chanell = getChanell();
 
     if (item->type == BaseItem::ItemType::Label)
     {
         auto label = static_cast<Label*>(item);
-        /*
-        qInfo() <<" *Arinc -->" << label->getArincData().getBitSet().to_string();
-        dword_t x{label->getArincData().getBitSet()} ;
-        AUX::convertFromArincToDEI(x);
-         qInfo() <<" *DEI -->" << x.to_string();
-*/
         if (label->getIfActive())
         {
             if (!bIfSatusChanged){
@@ -513,31 +520,27 @@ bool MyDataModel::setLabelData(str_t labelId, const QVariant &value){
 }
 
 
-bool MyDataModel::setLabelData(str_t labelId, const QVariant &value, QThread* thread){
+bool MyDataModel::setLabelData(str_t labelId, const QVariant &value, QThread* thread)
+{
     QModelIndex _index = findLabel(labelId);
-
     if (_index.isValid()){
-
         BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
         auto label = static_cast<Label*>(item);
-         label->setValueBits(value);
+        label->setValueBits(value);
         QModelIndex _parent = index(0,0);
         emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
         layoutChanged();
-        //setData(_index,value, Qt::EditRole);
         return true;
     }
+
     if (addLabel(labelId)){
         QModelIndex _index = findLabel(labelId);
-
         BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
         auto label = static_cast<Label*>(item);
-         label->setValueBits(value);
+        label->setValueBits(value);
         QModelIndex _parent = index(0,0);
         emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
         layoutChanged();
-
-       // setData(_index,value, Qt::EditRole);
         return true;
     }
 
@@ -545,7 +548,8 @@ bool MyDataModel::setLabelData(str_t labelId, const QVariant &value, QThread* th
 }
 
 
-bool MyDataModel::setLabelData(str_t labelId, const float& rate,  const QVariant &value){
+bool MyDataModel::setLabelData(str_t labelId, const float& rate,  const QVariant &value)
+{
     QModelIndex _index = findLabel(labelId);
     QModelIndex __index;
     if (_index.isValid()){
@@ -566,26 +570,29 @@ bool MyDataModel::setLabelData(str_t labelId, const float& rate,  const QVariant
     return false;
 }
 
-QModelIndex MyDataModel::findLabel(str_t labelId){
+QModelIndex MyDataModel::findLabel(str_t labelId)
+{
     QModelIndex topindex = index(0,0,QModelIndex());
-
-    for (int row=0; row < rowCount(topindex); row++){
+    for (int row=0; row < rowCount(topindex); row++)
+    {
         QModelIndex index = this->index(row,0,topindex);
         BaseItem* _base = static_cast<BaseItem*>(index.internalPointer());
-        if (_base->type == BaseItem::ItemType::Label){
+        if (_base->type == BaseItem::ItemType::Label)
+        {
             Label* _tmp = static_cast<Label*>(_base);
-            if (_tmp){
+            if (_tmp)
+            {
                if (_tmp->LabelId == labelId){
                         return index;
                 }
             }
         }
     }
-
     return QModelIndex();
 }
 
-bool MyDataModel::checkLabel(str_t labelId){
+bool MyDataModel::checkLabel(str_t labelId)
+{
     QModelIndex _index = findLabel(labelId);
     if(_index.isValid()){
         return true;
@@ -593,14 +600,18 @@ bool MyDataModel::checkLabel(str_t labelId){
     return false;
 }
 
-void MyDataModel::evalDataRates(){
+void MyDataModel::evalDataRates()
+{
     QModelIndex topindex = index(0,0,QModelIndex());
-    if (topindex.isValid()){
-        for (int row=0; row < rowCount(topindex); row++){
+    if (topindex.isValid())
+    {
+        for (int row=0; row < rowCount(topindex); row++)
+        {
             QModelIndex _index = index(row,0,topindex);
             BaseItem* _base = static_cast<BaseItem*>(_index.internalPointer());
             Label* _label = static_cast<Label*>(_base);
-            if (_base->type == BaseItem::ItemType::Label){
+            if (_base->type == BaseItem::ItemType::Label)
+            {
                 Label* _label = static_cast<Label*>(_base);
                 LabelFor<DReceiver>* _tmp = dynamic_cast<LabelFor<DReceiver>*>(_label);
                 if (_tmp){
@@ -692,7 +703,8 @@ bool MyDataModel::removeRows(int position, int rows, const QModelIndex &parent)
     return true;
 }
 
-bool MyDataModel::removeRow(int position){
+bool MyDataModel::removeRow(int position)
+{
     QModelIndex topItem = index(0,0,QModelIndex());
     if ( position < rowCount(topItem)-1){
       removeRows(position,1,topItem);
@@ -719,11 +731,12 @@ bool MyDataModel::removeLabel(str_t _labelName)
 {
     qInfo() << "MyDataModel::removeLabel runs on: " << QThread::currentThread();
     QModelIndex _index = findLabel(_labelName);
-    if (_index.isValid()){
-        if (_index.parent() == index(0,0,QModelIndex())) {
+    if (_index.isValid())
+    {
+        if (_index.parent() == index(0,0,QModelIndex())){
            qInfo() << _labelName << "  " << _index.row() << "  " <<_index.column() << "   parent --> " << _index.parent().row() << " " << _index.parent().column();
            removeRow(_index);
-        return true;
+            return true;
         }
     }
     return false;
@@ -744,18 +757,23 @@ Qt::ItemFlags MyDataModel::flags(const QModelIndex &index) const
 }
 //! [3]
 
-std::vector<DArincData> MyDataModel::getListOfAvailableLabelData(){
+std::vector<DArincData> MyDataModel::getListOfAvailableLabelData()
+{
     std::vector<DArincData> tmpListOfDataToSend;
 
     QModelIndex topindex = index(0,0,QModelIndex());
-    if (topindex.isValid()){
-        for (int row=0; row < rowCount(topindex); row++){
+    if (topindex.isValid())
+    {
+        for (int row=0; row < rowCount(topindex); row++)
+        {
             QModelIndex _index = index(row,0,topindex);
             BaseItem* _base = static_cast<BaseItem*>(_index.internalPointer());
-            if (_base->type == BaseItem::ItemType::Label){
+            if (_base->type == BaseItem::ItemType::Label)
+            {
                 Label* _label = static_cast<Label*>(_base);
                 LabelFor<DTransmitter>* _tmp = dynamic_cast<LabelFor<DTransmitter>*>(_label);
-                if (_tmp){
+                if (_tmp)
+                {
                     if ( _tmp->getIfDataAvailable() ){
                         tmpListOfDataToSend.push_back(_tmp->getArincDataAndReset());
                     }
@@ -766,13 +784,17 @@ std::vector<DArincData> MyDataModel::getListOfAvailableLabelData(){
     return tmpListOfDataToSend;
 }
 
-void MyDataModel::incrementLabelsDataRateCounter(){
+void MyDataModel::incrementLabelsDataRateCounter()
+{
     QModelIndex topindex = index(0,0,QModelIndex());
-    if (topindex.isValid()){
-        for (int row=0; row < rowCount(topindex); row++){
+    if (topindex.isValid())
+    {
+        for (int row=0; row < rowCount(topindex); row++)
+        {
             QModelIndex _index = index(row,0,topindex);
             BaseItem* _base = static_cast<BaseItem*>(_index.internalPointer());
-            if (_base->type == BaseItem::ItemType::Label){
+            if (_base->type == BaseItem::ItemType::Label)
+            {
                 Label* _label = static_cast<Label*>(_base);
                 LabelFor<DTransmitter>* _tmp = dynamic_cast<LabelFor<DTransmitter>*>(_label);
                 if (_tmp){
@@ -784,14 +806,18 @@ void MyDataModel::incrementLabelsDataRateCounter(){
     return ;
 }
 
-void MyDataModel::evalDataRates(double _resettime){
+void MyDataModel::evalDataRates(double _resettime)
+{
     std::vector<str_t> _garbage;
     QModelIndex topindex = index(0,0,QModelIndex());
-    if (topindex.isValid()){
-        for (int row=0; row < rowCount(topindex); row++){
+    if (topindex.isValid())
+    {
+        for (int row=0; row < rowCount(topindex); row++)
+        {
             QModelIndex _index = index(row,0,topindex);
             BaseItem* _base = static_cast<BaseItem*>(_index.internalPointer());
-            if (_base->type == BaseItem::ItemType::Label){
+            if (_base->type == BaseItem::ItemType::Label)
+            {
                 Label* _label = static_cast<Label*>(_base);
                 LabelFor<DReceiver>* _tmp = dynamic_cast<LabelFor<DReceiver>*>(_label);
                 if (_tmp){
@@ -803,14 +829,18 @@ void MyDataModel::evalDataRates(double _resettime){
     return ;
 }
 
-std::vector<str_t> MyDataModel::getTimeOutList(){
+std::vector<str_t> MyDataModel::getTimeOutList()
+{
     std::vector<str_t> _garbage;
     QModelIndex topindex = index(0,0,QModelIndex());
-    if (topindex.isValid()){
-        for (int row=0; row < rowCount(topindex); row++){
+    if (topindex.isValid())
+    {
+        for (int row=0; row < rowCount(topindex); row++)
+        {
             QModelIndex _index = index(row,0,topindex);
             BaseItem* _base = static_cast<BaseItem*>(_index.internalPointer());
-            if (_base->type == BaseItem::ItemType::Label){
+            if (_base->type == BaseItem::ItemType::Label)
+            {
                 Label* _label = static_cast<Label*>(_base);
                 LabelFor<DReceiver>* _tmp = dynamic_cast<LabelFor<DReceiver>*>(_label);
                 if (_tmp){
@@ -825,20 +855,19 @@ std::vector<str_t> MyDataModel::getTimeOutList(){
 }
 
 
-void MyDataModel::addLabelAction(uint32_t ch, uint32_t transrec, uint32_t instr, Label* label){
-    QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
-    actions.push_back( action(ch, transrec, instr, label->getArincData().getBitSet().to_ulong(), label->getDataRate().toFloat(), 0 ));
-}
-void MyDataModel::addControlAction(uint32_t ch, uint32_t trans_rec, uint32_t instr, uint16_t controlword){
-
-}
-
-std::vector<action>& MyDataModel::getActions()
+void MyDataModel::addLabelAction(uint32_t ch, uint32_t transrec, uint32_t instr, Label* label)
 {
-    return actions;
+    QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
+    GeneralData::getInstance()->getActions().push_back( MakeDataAction(ch, 0, transrec, instr, label->getArincData().getBitSet().to_ulong(), label->getDataRate().toFloat()));
+}
+void MyDataModel::addControlAction(uint32_t ch, uint32_t trans_rec, uint32_t instr, uint16_t controlword)
+{
+
 }
 
-int MyDataModel::getChanell(){
+
+int MyDataModel::getChanell()
+{
     transmitter* x = dynamic_cast<transmitter*>(tranciver);
     if (x){
         return x->chanell;
@@ -849,7 +878,4 @@ int MyDataModel::getChanell(){
         return y->chanell;
     }
     return 0;
-
-
-
 }

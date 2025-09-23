@@ -4,6 +4,7 @@
 #include "receiverworker.h"
 #include "settingsdialog.h"
 #include "bitutils.h"
+#include "action.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
 
@@ -65,17 +66,19 @@ void DEI1016::setControlInstruction(uint8_t instruction)
     }
 }
 
-bool DEI1016::sendData(action& ac)
+bool DEI1016::sendData(BaseAction* ac)
 {
-    int numSent = serial->write(ac.toPacket(), TRANSMMIT_PACKET_SIZE);
-    if (numSent==TRANSMMIT_PACKET_SIZE){
-        ac.bIfApplied = true;
-        qInfo() << "Num bytes sent: "<<numSent;
-        return true;
-    }
-    else {
-        qInfo() << "Failed to send all data!";
-        return false;
+    if (ac){
+        int numSent = serial->write(ac->toPacket(), TRANSMMIT_PACKET_SIZE);
+        if (numSent==TRANSMMIT_PACKET_SIZE){
+            ac->bIfApplied = true;
+            qInfo() << "Num bytes sent: "<<numSent;
+            return true;
+        }
+        else {
+            qInfo() << "Failed to send all data!";
+            return false;
+        }
     }
 }
 
@@ -314,6 +317,18 @@ void DEI1016::setControlWord_transmitter_32Bits(int transmitChanell, int index, 
         break;
     }
     } // switch block
+}
+
+const word_t& DEI1016::setControlWord_transmitter_32Bits(int chanell, int index)
+{
+    setControlWord_transmitter_32Bits(chanell,  index, controlWords[chanell]);
+    return controlWords[chanell];
+}
+
+const word_t& DEI1016::setControlWord_receiver_32Bits(int chanell, int index)
+{
+    setControlWord_receiver_32Bits(chanell,  index, controlWords[chanell]);
+    return controlWords[chanell];
 }
 
 
