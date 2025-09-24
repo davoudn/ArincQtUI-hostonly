@@ -9,7 +9,8 @@
 #include <QSerialPortInfo>
 
 //
-DEI1016::DEI1016()
+
+DEI1016::DEI1016(QObject* parent )
 {
     serial = new QSerialPort(this);
 
@@ -42,7 +43,6 @@ void DEI1016::setControlInstruction(uint8_t instruction)
         CONTROL::TRANSMITTER_DATA_RATE::SELECT_HI(control_word);
         CONTROL::RECEIVER_DATA_RATE::SELECT_HI(control_word);
     }
-
     if (instruction == PREDEFINED::SLOW_32BIT_NORMAL_OPERATION) {
         word_t control_word("1111111111111111");;
         CONTROL::SELF_TEST::DISABLE(control_word);
@@ -51,7 +51,6 @@ void DEI1016::setControlInstruction(uint8_t instruction)
         CONTROL::TRANSMITTER_DATA_RATE::SELECT_LOW(control_word);
         CONTROL::RECEIVER_DATA_RATE::SELECT_LOW(control_word);
     }
-
     if (instruction == PREDEFINED::FAST_32BIT_NORMAL_OPERATION) {
         word_t control_word("1111111111111111");;
         CONTROL::SELF_TEST::DISABLE(control_word);
@@ -60,7 +59,6 @@ void DEI1016::setControlInstruction(uint8_t instruction)
         CONTROL::TRANSMITTER_DATA_RATE::SELECT_HI(control_word);
         CONTROL::RECEIVER_DATA_RATE::SELECT_HI(control_word);
     }
-
     if (instruction == PREDEFINED::ALLONES) {
         word_t control_word("1111111111111111");        
     }
@@ -80,6 +78,7 @@ bool DEI1016::sendData(BaseAction* ac)
             return false;
         }
     }
+    return false;
 }
 
 /*
@@ -109,21 +108,13 @@ void DEI1016::dataReceived()
 void DEI1016::updateTask()
 {
     uint8_t  chanell = 0;
+    uint8_t  dei = 0;
     float    rate = 0.f;
     dword_t  arincData;
-//    while(1)
-    {
-        if (bIfDataReceived){
-           // qInfo() << "DEI1016::dataReceived() ... ";
-           // qInfo() << recData ;
 
-            bIfDataReceived = false;
-            AUX::convertBytesToData(recData, chanell, rate, arincData);
+            AUX::convertBytesToData(recData, dei, chanell, rate, arincData);
             AUX::convertFromDEIToArinc(arincData);
-            ReceiverWorker::getInstance(chanell)->update(rate, arincData);
-           // qInfo() << chanell<<"\t" << arincData.to_string() << "\t" << rate;
-        }
-    }
+            emit update(dei, chanell, rate, arincData);
 }
 /*
   @Serial port
@@ -319,16 +310,16 @@ void DEI1016::setControlWord_transmitter_32Bits(int transmitChanell, int index, 
     } // switch block
 }
 
-const word_t& DEI1016::setControlWord_transmitter_32Bits(int chanell, int index)
+const word_t& DEI1016::setControlWord_transmitter_32Bits(int dei, int index)
 {
-    setControlWord_transmitter_32Bits(chanell,  index, controlWords[chanell]);
-    return controlWords[chanell];
+    setControlWord_transmitter_32Bits(dei,  index, controlWords[dei]);
+    return controlWords[dei];
 }
 
-const word_t& DEI1016::setControlWord_receiver_32Bits(int chanell, int index)
+const word_t& DEI1016::setControlWord_receiver_32Bits(int dei, int index)
 {
-    setControlWord_receiver_32Bits(chanell,  index, controlWords[chanell]);
-    return controlWords[chanell];
+    setControlWord_receiver_32Bits(dei,  index, controlWords[dei]);
+    return controlWords[dei];
 }
 
 

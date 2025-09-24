@@ -49,7 +49,7 @@ void Timer::counterTask()
    // emit onTimeout();
 
     while(bIfStartTask){
-            std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
+            std::this_thread::sleep_for(std::chrono::microseconds (MIN_TICK));
             counter++;
             if (counter * MIN_TICK >= timeOut ){
                 counter = 0;

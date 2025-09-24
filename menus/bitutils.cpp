@@ -13,15 +13,20 @@ uint16_t getInstruction(std::bitset<8>& x)
 }
 
 uint16_t getChanel(std::bitset<8>& x) {
-    return x[5] + x[6] * 2;
+    return x[6];
+}
+
+uint16_t getDEI(std::bitset<8>& x) {
+    return x[5];
 }
 
 uint16_t getTransReceive(std::bitset<8>& x) {
     return x[4];
 }
 
-uint8_t makeInstructionByte(uint32_t ch, uint32_t instr, uint32_t transrec){
+uint8_t makeInstructionByte(uint32_t dei,uint32_t ch, uint32_t instr, uint32_t transrec){
     std::bitset<8> insByte;
+    AUX::setChanel(insByte, dei);
     AUX::setChanel(insByte, ch);
     AUX::setTransReceive(insByte, transrec);
     AUX::setInstruction(insByte, instr);
@@ -36,9 +41,11 @@ void setInstruction(std::bitset<8>& x, uint32_t ins){
     x[3] = insbits[3];
 }
 void setChanel(std::bitset<8>& x, uint32_t ch){
-    std::bitset<2> insbits{ch};
-    x[5] = insbits[0];
-    x[6] = insbits[1];
+    x[6] = ch;
+}
+
+void setDEI(std::bitset<8>& x, uint32_t dei){
+    x[5] = dei;
 }
 void setTransReceive(std::bitset<8>& x, uint32_t tranceive){
     x[4] = tranceive;
@@ -79,20 +86,25 @@ void convertFromDEIToArinc(dword_t& data, dword_t& x){
     }
 }
 
-void convertBytesToData(char* recData, uint8_t& chanel, float& rate, std::bitset<ARINC32_SIZE>& arincData){
-    chanel = static_cast<uint8_t>(recData[Byte0]);
+void convertBytesToData(char* recData, uint8_t& dei, uint8_t& chanel, float& rate, std::bitset<ARINC32_SIZE>& arincData){
+    auto x = std::bitset<8>(static_cast<uint8_t>(recData[Byte0]));
+    chanel = getChanel(x);
+    dei    = getDEI(x);
     rate = AUX::bitsToTime(recData[Byte1]);
     uint32_t dword = 0;
     AUX::merge(recData[Byte4],recData[Byte5],recData[Byte6],recData[Byte7],dword);
     arincData = std::bitset<ARINC32_SIZE>(dword);
 }
 
-void convertDataToBytes(uint8_t& chanel, float& rate, std::bitset<ARINC32_SIZE>& arincData, char* recData){
+/*
+void convertDataToBytes(uint8_t& dei,uint8_t& chanel, float& rate, std::bitset<ARINC32_SIZE>& arincData, char* recData){
+    auto x = std::bitset<8>(0);
+
     recData[Byte0] = chanel;
     recData[Byte1] = timeToBits(rate);
     uint32_t dword = static_cast<uint32_t>(arincData.to_ulong());
     split(dword, recData[Byte4],recData[Byte5],recData[Byte6],recData[Byte7]);
 }
-
+*/
 
 }// end namespace AUX

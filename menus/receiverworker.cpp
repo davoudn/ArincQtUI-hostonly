@@ -18,6 +18,7 @@ ReceiverWorker* ReceiverWorker::instance3 = nullptr;
 ReceiverWorker::ReceiverWorker(str_t _equipment, uint8_t ch):chanell(ch)
 {
     //
+    makeDeviceIndex();
     ArincData = new DArincData();
     equipments.push_back(new Equipment(_equipment, EquipmentRole::Receiver));
 // threads
@@ -40,7 +41,9 @@ ReceiverWorker::ReceiverWorker(str_t _equipment, uint8_t ch):chanell(ch)
       connect(dataRateTimer, &Timer::onTimeout, this, &ReceiverWorker::evalDataRates, Qt::DirectConnection);
       //
       connect(dataRateThread, &QThread::started, dataRateTimer, &Timer::counterTask);
-      connect(mainThread, &QThread::started, this, &ReceiverWorker::receiveTask);
+      connect(DEI1016::getInstance(), &DEI1016::update, this, &ReceiverWorker::update, Qt::BlockingQueuedConnection);
+
+     // connect(mainThread, &QThread::started, this, &ReceiverWorker::receiveTask);
       connect(idlecleanerThread, &QThread::started, idleLabelCleanerTimer, &Timer::counterTask);
       //
       dataRateTimer->moveToThread(dataRateThread);
@@ -56,9 +59,9 @@ void ReceiverWorker::startTasks()
     if (!DEI1016::getInstance()->bIfSerialOpen){
         DEI1016::getInstance()->openSerialPort();
     }
-    dataRateThread->start();
+//    dataRateThread->start();
     mainThread->start();
-    idlecleanerThread->start();
+  //  idlecleanerThread->start();
 }
 
 void ReceiverWorker::idleLabelCleaner()
@@ -150,7 +153,7 @@ void ReceiverWorker::receiveTask()
 
     while(1)
     {
-        std::this_thread::sleep_for(std::chrono::microseconds(10));
+        std::this_thread::sleep_for(std::chrono::microseconds(100));
         if (bIfDataUpdated)
         {
 
@@ -175,12 +178,10 @@ void ReceiverWorker::receiveTask()
 }
 
 
-
+/*
 void ReceiverWorker::update(std::bitset<ARINC32_SIZE>& arincBitsData)
 {
-    /*
-     *  it should be very low latency handling the actual job must be done through another thask task
-     */
+
     // std::cout << "ReceiverWorker:: Data received!! \n";
     if (this->bIfDataHandled) {
         ArincData->UpdateData(arincBitsData);
@@ -195,9 +196,6 @@ void ReceiverWorker::update(std::bitset<ARINC32_SIZE>& arincBitsData)
 
 void ReceiverWorker::update(std::bitset<ARINC32_SIZE>&& arincBitsData)
 {
-    /*
-     *  it should be very low latency handling the actual job must be done through another thask task
-     */
        qInfo() << "ReceiverWorker:: Data received!! \n";
     if (this->bIfDataHandled) {
         ArincData->UpdateData(arincBitsData);
@@ -208,22 +206,44 @@ void ReceiverWorker::update(std::bitset<ARINC32_SIZE>&& arincBitsData)
         qDebug() << "Data is not handled!! \n";
     }
 }
+            emit update(dei, chanell, rate, arincData);
 
-void ReceiverWorker::update(float _rate, std::bitset<ARINC32_SIZE>& arincBitsData)
+*/
+
+void ReceiverWorker::makeDeviceIndex()
 {
-    /*
-     *  it should be very low latency handling the actual job must be done through another thask task
-     */
-    // qInfo() << "ReceiverWorker:: Data received!! \n";
-    if (bIfDataHandled) {
+    switch (chanell) {
+    case 0:
+        dei = 0;
+        deiChanell = 0;
+        break;
+    case 1:
+        dei = 0;
+        deiChanell = 1;
+        break;
+    case 2:
+        dei = 1;
+        deiChanell = 0;
+        break;
+    case 3:
+        dei = 1;
+        deiChanell = 1;
+        break;
+    }
+}
+
+void ReceiverWorker::update(uint8_t& deiId, uint8_t& chanellId, float& _rate, std::bitset<ARINC32_SIZE>& arincBitsData)
+{
+    if (deiId==dei && chanellId==deiChanell) {
         ArincData->UpdateData(arincBitsData);
         rate = _rate;
-        bIfDataHandled = false;
-        bIfDataUpdated = true;
+
+        //qInfo() << ArincData->getBitSet().to_string();
+        str_t labelid = getArincData().template Get<LabelIdOctal>().toString();
+        value_t value = getArincData().template Get<DataBits>();
+        Receiver::getInstance(chanell)->setLabelData(labelid, rate, value);
     }
-    else {
-        qDebug() << this->metaObject() <<"  Data is not handled on chanell " << chanell<< "\t" << bIfDataUpdated << "\n";
-    }
+
 }
 
 

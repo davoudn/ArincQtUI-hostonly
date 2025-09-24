@@ -24,8 +24,7 @@ namespace AUX
 uint16_t getInstruction(std::bitset<8>& x);
 uint16_t getChanel(std::bitset<8>& x);
 uint16_t getTransReceive(std::bitset<8>& x);
-uint8_t makeInstructionByte(uint32_t ch, uint32_t instr, uint32_t transrec);
-
+uint8_t makeInstructionByte(uint32_t dei,uint32_t ch, uint32_t instr, uint32_t transrec);
 
 void setInstruction(std::bitset<8>& x, uint32_t ins);
 void setChanel(std::bitset<8>& x, uint32_t ch);
@@ -49,8 +48,6 @@ void split(T& t, U& u0, U& u1, U& u2, U& u3)
     u3 = *((volatile U*)&t + 3);
 }
 
-
-
 template <typename U,typename T>
 void merge(U& u0, U& u1, U& u2, U& u3, T& t)
 {
@@ -60,7 +57,6 @@ void merge(U& u0, U& u1, U& u2, U& u3, T& t)
     *((volatile U*)&t + 3) = u3;
 }
 
-
 template <typename U,typename T>
 void merge(U& u1, U& u2, T& t)
 {
@@ -68,8 +64,8 @@ void merge(U& u1, U& u2, T& t)
     *((volatile U*)&t + 1) = u2;
 }
 
-void convertBytesToData(char* recData, uint8_t& chanel, float& rate, dword_t& arincData);
-void convertDataToBytes(uint8_t& chanel, float& rate, dword_t& arincData, char* recData);
+void convertBytesToData(char* recData, uint8_t& dei, uint8_t& chanel, float& rate, std::bitset<ARINC32_SIZE>& arincData);
+//void convertDataToBytes(uint8_t& chanel, float& rate, dword_t& arincData, char* recData);
 
 void convertFromDEIToArinc(dword_t& data, dword_t& x);
 void convertFromArincToDEI(dword_t& data);
@@ -77,13 +73,14 @@ void convertFromDEIToArinc(dword_t& data);
 void convertFromArincToDEI(uint32_t& data);
 void convertFromDEIToArinc(uint32_t& data);
 
-inline uint8_t timeToBits(float& time) {
+inline uint8_t timeToBits(float& time)
+{
     return static_cast<char> (MAX_UINT8_VALUE * time / MAX_INTERVAL_TIMESCALE);
 }
-inline float bitsToTime(char& bits) {
+inline float bitsToTime(char& bits)
+{
     return MAX_INTERVAL_TIMESCALE * static_cast<uint8_t>(bits) / MAX_UINT8_VALUE;
 }
-
 
 } // end of name space AUX
 

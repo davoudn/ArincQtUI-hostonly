@@ -37,7 +37,6 @@ public:
     void resetDataModel(str_t _eqId);
     void initUiCombos();
     void removeLabel(bool _ifChecked);
-    void insertLabel(bool _ifChecked);
     bool setLabelData(str_t labelId, const QVariant &value);
     bool setLabelData(str_t labelId, const float& rate, const QVariant &value);
     void evalDataRates(uint32_t interval);
@@ -56,8 +55,10 @@ public slots:
     void onReceiverEnabled(bool);
     void onReceiverDisabled(bool);
 public:
+    void makeDeviceIndex();
     int chanell = 0;
-
+    int deiChanell = 0;
+    int dei = 0;
 protected:
     Ui::Receiver *ui;
     MyDataModel *dataModel = nullptr;
@@ -65,7 +66,6 @@ protected:
     QString equipmentId;
     QMutex modelMutex;
     bool bIfEnabled = false;
-    word_t control_word;
 };
 
 #endif // RECEIVER_H

@@ -53,8 +53,7 @@ public:
     // for transmitter
     std::vector<DArincData> getListOfAvailableLabelData();
     void incrementLabelsDataRateCounter();
-    void addLabelAction(uint32_t ch, uint32_t trans_rec, uint32_t instr, Label* label);
-    void addControlAction(uint32_t ch, uint32_t trans_rec, uint32_t instr, uint16_t controlword);
+    void addLabelAction(uint32_t dei, uint32_t deichanell, uint32_t transrec, uint32_t instr, Label* label);
 
     // for receiver
     void evalDataRates();
@@ -77,6 +76,7 @@ public:
     QObject *tranciver = nullptr;
 
     int getChanell();
+    int getDEI();
 private:
     str_t labelToInsert;
 };

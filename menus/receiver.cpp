@@ -20,7 +20,7 @@ Receiver* Receiver::instance3 = nullptr;
 
 Receiver::Receiver(QWidget *parent, uint8_t ch) :
    QWidget(parent),
-   ui(new Ui::Receiver), dataModel(new MyDataModel(nullptr, ReceiverWorker::getInstance(ch)->getEquipments(), false)), equipmentId("002"), chanell(ch)
+   chanell(ch), ui(new Ui::Receiver), dataModel(new MyDataModel(nullptr, ReceiverWorker::getInstance(ch)->getEquipments(), false)), equipmentId("002")
 {
    ui->setupUi(this);
 //
@@ -41,6 +41,7 @@ Receiver::Receiver(QWidget *parent, uint8_t ch) :
    initUiCombos();
    resetDataModel(equipmentId);
    ReceiverWorker::getInstance(chanell)->startTasks();
+   makeDeviceIndex();
 //
    connect(ui->equipmentSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(OnEquipmentSelectorChanged(int)));
    connect(ui->c_bitRate_enableSDI, SIGNAL(currentIndexChanged(int)), this, SLOT(on_SDI_bitRate(int)));
@@ -100,11 +101,34 @@ void Receiver::initUiCombos()
     ui->c_bitRate_enableSDI->addItem("100.0 Kbps/SDI 3      ");
 }
 
+void Receiver::makeDeviceIndex()
+{
+    switch (chanell) {
+    case 0:
+        dei = 0;
+        deiChanell = 0;
+        break;
+    case 1:
+        dei = 0;
+        deiChanell = 1;
+        break;
+    case 2:
+        dei = 1;
+        deiChanell = 0;
+        break;
+    case 3:
+        dei = 1;
+        deiChanell = 1;
+        break;
+    }
+}
+
+
 void Receiver::on_SDI_bitRate(int index)
 {
     QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
-    auto control_word = DEI1016::getInstance()->setControlWord_receiver_32Bits(chanell,index);
-    GeneralData::getInstance()->getActions().push_back(MakeControlAction(chanell, 0, static_cast<uint16_t>(control_word.to_ulong())));
+    auto control_word = DEI1016::getInstance()->setControlWord_receiver_32Bits(dei,index);
+    GeneralData::getInstance()->getActions().push_back(MakeControlAction(dei, static_cast<uint16_t>(control_word.to_ulong())));
 }
 
 MyDataModel *  Receiver::getDataModel()
@@ -117,10 +141,6 @@ void Receiver::updateModelData(Label* _baseItem)
      dataModel->updateModelData(_baseItem);
 }
 
-void Receiver::insertLabel(bool _ifChecked)
-{
-
-}
 
 void Receiver::removeLabel(bool _ifChecked)
 {

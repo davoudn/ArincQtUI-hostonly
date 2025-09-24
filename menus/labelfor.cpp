@@ -49,13 +49,15 @@ void LabelFor<DReceiver>::timerCallback()
 
 void LabelFor<DReceiver>::evalDataRate()
 {
-   // qDebug() << "LabelFor<DReceiver>::evalDataRate(), eval rate!!";
-    if (dataRateCounter>0){
-         dataRate = (uint16_t)RATE_EVAL_TIME / dataRateCounter;
-         timeAccumulation = 0.f;
+    if (dataRateCounter==0){
+        dataRate = 0;
     }
     else {
-        dataRate = 0;
+        float r = (uint16_t)RATE_EVAL_TIME / dataRateCounter;
+        if ( r > 2 * dataRate) {
+            // dataRate = r;
+        }
+       // timeAccumulation = 0.f;
     }
     resetDataRateCounter();
 

@@ -10,33 +10,35 @@ class QMutex;
 class QSerialPort;
 
 class DEI1016 : public QObject {
-    DEI1016();
+    Q_OBJECT
+    explicit DEI1016(QObject* parent= nullptr);
     static DEI1016* instance;
 public:
-
     static DEI1016* getInstance();
-   ~DEI1016() = default;
+     ~DEI1016() = default;
 
     void setControlWord_receiver_32Bits(int chanell, int index, word_t& control_word) ;
     void setControlWord_transmitter_32Bits(int chanell, int index, word_t& control_word) ;
-    const word_t& setControlWord_transmitter_32Bits(int chanell, int index) ;
-    const word_t& setControlWord_receiver_32Bits(int chanell, int index);
+    const word_t& setControlWord_transmitter_32Bits(int dei, int index) ;
+    const word_t& setControlWord_receiver_32Bits(int dei, int index);
     void select_enable_receiver_SDIChanell(int chanell, int ifEnable, int index, word_t& control_word);
     void setControlInstruction(uint8_t instruction);
     void createMaps();
+    void updateTask();
 
-private slots:
-    void dataReceived();
-
-   public:
+public:
    bool  bIfSerialOpen = false;
    bool  bIfDataReceived = false;
 
+private slots:
+   void dataReceived();
 public slots:
-   void updateTask();
    bool sendData(BaseAction* ac);
 
+signals:
+   void update(uint8_t& dei, uint8_t& chanell, float& rate, dword_t& arincData);
 
+public:
    //
    void openSerialPort();
    void closeSerialPort();

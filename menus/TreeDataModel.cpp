@@ -42,7 +42,17 @@ int MyDataModel::depth(QModelIndex &index) {
 }
 
 int MyDataModel::rowCount(const QModelIndex &thisitem) const {
+
     int retVal = 0;
+    /*if (thisitem.isValid()){
+        auto item = static_cast<BaseItem*>(thisitem.internalPointer());
+        if (item->type == BaseItem::ItemType::Equipment){
+            retVal = static_cast<Equipment*>(item)->GetLabels().size();
+        }
+        if (item->type == BaseItem::ItemType::Label){
+            retVal = static_cast<Label*>(item)->getParameters().size();
+        }
+    }*/
 
     if (thisitem.column() <= 0) {
         // If the parent isn't valid, this is the number of immediate children of the
@@ -51,13 +61,22 @@ int MyDataModel::rowCount(const QModelIndex &thisitem) const {
             retVal = static_cast<int>(myData.size());
         }
 
+        if (thisitem.isValid()){
+            auto item = static_cast<BaseItem*>(thisitem.internalPointer());
+            if (item->type == BaseItem::ItemType::Equipment){
+                retVal = static_cast<Equipment*>(item)->GetLabels().size();
+            }
+            if (item->type == BaseItem::ItemType::Label){
+                retVal = static_cast<Label*>(item)->getParameters().size();
+            }
+        }
         // At this point, we're working on drill downs. We can be for:
         // -A TopData Row -- our parent is the root.
         // -A MiddleData row
         // -A ChildData row.
         //
         // There's probably a more clever way to write this using lambdas or something, but this works.
-
+        /*
         else if (!thisitem.parent().isValid()) {
             // Our parent is the root (which is handled above, so we're a TopData, and
             // we just return the number of children.
@@ -72,6 +91,7 @@ int MyDataModel::rowCount(const QModelIndex &thisitem) const {
             Label *md = static_cast<Label*>(static_cast<Equipment*>(td)->GetLabels().at(thisitem.row()));
             retVal = static_cast<int>(md->getParameters().size());
         }
+        */
     }
 
     return retVal;
@@ -245,8 +265,7 @@ QModelIndex MyDataModel::index ( int row, int column, const QModelIndex &parent)
     }
 
     // If this is top level...
-    if (!parent.isValid())
-    {
+    if (!parent.isValid()) {
         if (row >= static_cast<int>(myData.size()) ) {
             return QModelIndex();
         }
@@ -265,7 +284,12 @@ QModelIndex MyDataModel::index ( int row, int column, const QModelIndex &parent)
     void *ptr = nullptr;
     if (baseData->type == BaseItem::ItemType::Equipment) {
         Equipment *td = static_cast<Equipment *>(baseData);
-        ptr = td->GetLabels().at(row);
+        if (row < td->GetLabels().size()){
+            ptr = td->GetLabels().at(row);
+        }
+        else {
+            qInfo()<<  td->GetLabels().size() <<"---> " <<row ;
+        }
     }
     else if (baseData->type == BaseItem::ItemType::Label) {
         Label *md = static_cast<Label *>(baseData);
@@ -418,6 +442,7 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
      *
     */
     int chanell = getChanell();
+    int dei = getDEI();
 
     if (item->type == BaseItem::ItemType::Label)
     {
@@ -425,15 +450,15 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
         if (label->getIfActive())
         {
             if (!bIfSatusChanged){
-                addLabelAction(chanell, 1, Instructions::UPDATE_LABEL_DATA_FOR_TRANSMIT, label);
+                addLabelAction(dei, chanell, 1, Instructions::UPDATE_LABEL_DATA_FOR_TRANSMIT, label);
             }
             else {
-                addLabelAction(chanell, 1, Instructions::ADD_LABEL_TO_TRANSMIT, label);
+                addLabelAction(dei, chanell, 1, Instructions::ADD_LABEL_TO_TRANSMIT, label);
             }
         }
         else
         {
-            addLabelAction(chanell, 1, Instructions::REMOVE_LABEL_FROM_TRANSMIT, label);
+            addLabelAction(dei, chanell, 1, Instructions::REMOVE_LABEL_FROM_TRANSMIT, label);
         }
     }
 
@@ -443,15 +468,15 @@ bool MyDataModel::setData(const QModelIndex &_index, const QVariant &value, int 
         if (label->getIfActive())
         {
             if (!bIfSatusChanged){
-                addLabelAction(chanell, 1, Instructions::UPDATE_LABEL_DATA_FOR_TRANSMIT, label);
+                addLabelAction(dei, chanell, 1, Instructions::UPDATE_LABEL_DATA_FOR_TRANSMIT, label);
             }
             else {
-                addLabelAction(chanell, 1, Instructions::ADD_LABEL_TO_TRANSMIT, label);
+                addLabelAction(dei, chanell, 1, Instructions::ADD_LABEL_TO_TRANSMIT, label);
             }
         }
         else
         {
-            addLabelAction(chanell, 1, Instructions::REMOVE_LABEL_FROM_TRANSMIT, label);
+            addLabelAction(dei, chanell, 1, Instructions::REMOVE_LABEL_FROM_TRANSMIT, label);
         }
     }
     return true;
@@ -720,9 +745,11 @@ bool MyDataModel::removeRow(QModelIndex _index){
         if (topItem->type == BaseItem::ItemType::Equipment) {
             if (_index.row() < rowCount(_index.parent()) ){
                 removeRows(_index.row(),1,_index.parent());
+                return true;
             }
         }
     }
+    return false;
 }
 
 
@@ -760,7 +787,6 @@ Qt::ItemFlags MyDataModel::flags(const QModelIndex &index) const
 std::vector<DArincData> MyDataModel::getListOfAvailableLabelData()
 {
     std::vector<DArincData> tmpListOfDataToSend;
-
     QModelIndex topindex = index(0,0,QModelIndex());
     if (topindex.isValid())
     {
@@ -854,17 +880,11 @@ std::vector<str_t> MyDataModel::getTimeOutList()
     return _garbage;
 }
 
-
-void MyDataModel::addLabelAction(uint32_t ch, uint32_t transrec, uint32_t instr, Label* label)
+void MyDataModel::addLabelAction(uint32_t dei, uint32_t deichanell, uint32_t transrec, uint32_t instr, Label* label)
 {
     QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
-    GeneralData::getInstance()->getActions().push_back( MakeDataAction(ch, 0, transrec, instr, label->getArincData().getBitSet().to_ulong(), label->getDataRate().toFloat()));
+    GeneralData::getInstance()->getActions().push_back(MakeDataAction(dei, deichanell, transrec, instr, label->getArincData().getBitSet().to_ulong(), label->getDataRate().toFloat()));
 }
-void MyDataModel::addControlAction(uint32_t ch, uint32_t trans_rec, uint32_t instr, uint16_t controlword)
-{
-
-}
-
 
 int MyDataModel::getChanell()
 {
@@ -876,6 +896,20 @@ int MyDataModel::getChanell()
     Receiver* y = dynamic_cast<Receiver*>(tranciver);
     if (y){
         return y->chanell;
+    }
+    return 0;
+}
+
+int MyDataModel::getDEI()
+{
+    transmitter* x = dynamic_cast<transmitter*>(tranciver);
+    if (x){
+        return x->dei;
+    }
+
+    Receiver* y = dynamic_cast<Receiver*>(tranciver);
+    if (y){
+        return y->dei;
     }
     return 0;
 }

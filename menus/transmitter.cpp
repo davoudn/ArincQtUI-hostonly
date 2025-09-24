@@ -86,7 +86,7 @@ transmitter::transmitter(QWidget *parent, int ch):
     equipmentId = "002";
     resetDataModel(equipmentId);
     selectEquipment(equipmentId);
-
+    makeDeviceIndex();
     setEditorDelegate();
     setObjectName("Transmitter thread.");
     initUiCombos();
@@ -129,13 +129,27 @@ MyDataModel* transmitter::getDataModel()
     return dataModel;
 }
 
+void transmitter::makeDeviceIndex()
+{
+    switch (chanell) {
+    case 0:
+        dei = 0;
+        deiChanell = 0;
+        break;
+    case 1:
+        dei = 1;
+        deiChanell = 0;
+        break;
+    }
+}
+
 void transmitter::onArinc_parity_bitRate(int index)
 {
     QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
-    auto control_word = DEI1016::getInstance()->setControlWord_transmitter_32Bits(chanell,index);
-    GeneralData::getInstance()->getActions().push_back(MakeControlAction(chanell, 0, static_cast<uint16_t>(control_word.to_ulong())));
+    auto control_word = DEI1016::getInstance()->setControlWord_transmitter_32Bits(0,index);
+    GeneralData::getInstance()->getActions().push_back(
+                   MakeControlAction(dei, static_cast<uint16_t>(control_word.to_ulong())));
 }
-
 
 std::vector<DArincData> transmitter::getListOfAvailableLabelData()
 {

@@ -24,13 +24,13 @@
 #define SDI_LSB 9
 #define SDI_MSB 10
 #define ARINC32_DATA_LENGTH 24
-#define CLEANING_CHECK_TIME 1500// miliseconds
-#define DATA_RATE_EVAL_TIME 1000// miliseconds
+#define CLEANING_CHECK_TIME 1000// miliseconds
+#define DATA_RATE_EVAL_TIME 10000// miliseconds
 #define NUM_DEI1016 2
 // for timers
 #define MAX_TIME 10000 // miliseconds
 #define IDLE_THRESHOLD 2000 // miliseconds
-#define MIN_TICK 1 // miliseconds
+#define MIN_TICK 1000 // microseconds
 #define ACTION_CLEANER_TIME 2000
 #define SET_ENABLE 1
 #define SET_DISABLE 0

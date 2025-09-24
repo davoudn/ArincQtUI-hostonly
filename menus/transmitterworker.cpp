@@ -57,13 +57,11 @@ TransmitterWorker::TransmitterWorker(str_t _equipment, int ch)
     equipments.push_back(new Equipment(defaultEquipment,EquipmentRole::Transmitter));
     mainThread = new QThread();
     dataRateThread = new QThread();
-
     mainThread->setObjectName(" Main Transmitter thread... ");
     dataRateThread->setObjectName(" Transmitter data rate thread... ");
-
     dataRateTimer = new Timer(this);
     dataRateTimer->setTimeout(ACTION_CLEANER_TIME);
-
+    //
     connect(mainThread, &QThread::started, this, &TransmitterWorker::taskTransmitData);
     connect(dataRateThread, &QThread::started, dataRateTimer, &Timer::counterTask);
     //
@@ -119,7 +117,8 @@ void TransmitterWorker::incrementLabelsDataRateCounter()
 void TransmitterWorker::taskTransmitData()
 {
     qInfo() << "TransmitterWorker::taskTransmitData() is runnig on "<< QThread::currentThread();
-    while(1){
+    while(1)
+    {
         std::this_thread::sleep_for(std::chrono::microseconds(1));
         QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
         for (auto& x: GeneralData::getInstance()->getActions())

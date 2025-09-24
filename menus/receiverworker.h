@@ -41,9 +41,8 @@ public:
 
     static ReceiverWorker* getInstance(uint8_t ch);
 
-    void update(std::bitset<ARINC32_SIZE>&& _ArincBitData) ;
-    void update(std::bitset<ARINC32_SIZE>&  _ArincBitData) ;
-    void update(float _rate, std::bitset<ARINC32_SIZE>& arincBitsData);
+   // void update(std::bitset<ARINC32_SIZE>&& _ArincBitData) ;
+   // void update(std::bitset<ARINC32_SIZE>&  _ArincBitData) ;
 
      DArincData& getArincData();
      PointerVector<BaseItem>& getEquipments();
@@ -56,10 +55,14 @@ public:
     Receiver *parent=nullptr;
     DArincData* ArincData;
     float rate = 0.f;
+    void makeDeviceIndex();
+    uint8_t dei = 0;
+    uint8_t deiChanell = 0;
 public slots:
     void idleLabelCleaner();
     void evalDataRates();
     void receiveTask();
+    void update(uint8_t& dei, uint8_t& chanell, float& _rate, std::bitset<ARINC32_SIZE>& arincBitsData);
 
 protected:
 

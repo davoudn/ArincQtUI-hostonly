@@ -45,6 +45,9 @@ public:
     QMutex modelMutex;
     void Disable();
     void Enable();
+    void makeDeviceIndex();
+    int dei = 0;
+    int deiChanell = 0;
     int chanell = 0;
 public slots:
     void OnEquipmentSelectorChanged(int);
