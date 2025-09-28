@@ -12,6 +12,7 @@
 #include "transmitter.h"
 #include "action.h"
 #include "generaldata.h"
+#include "receiverworker.h"
 #include <QThread>
 
 #define COLUMN_NAME 0
@@ -28,8 +29,13 @@ using namespace std;
 
 MyDataModel::MyDataModel(QObject *parent, PointerVector<BaseItem>& vec, bool _bIfEditable)
     : QAbstractItemModel(parent), myData(vec), bIfEditable(_bIfEditable),tranciver(parent){
+    connect(&layoutRefresher, &QTimer::timeout, this, &MyDataModel::enableLayoutRefresh);
+    layoutRefresher.start(LAYOUT_REFRESHER_INTERVAL);
 }
-
+void MyDataModel::enableLayoutRefresh(){
+    bIfLayoutRefresh = true;
+    //qInfo() << "000099999";
+}
 MyDataModel::~MyDataModel(){
 
 }
@@ -513,68 +519,47 @@ bool MyDataModel::insertRows(int position, int rows, const QModelIndex &parent)
     return true;
 }
 
-
-bool MyDataModel::setLabelData(str_t labelId, const QVariant &value){
-    QModelIndex _index = findLabel(labelId);
-
-    if (_index.isValid()){
-
-        BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
-        auto label = static_cast<Label*>(item);
-         label->setValueBits(value);
-        QModelIndex _parent = index(0,0);
-        emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
-        layoutChanged();
-        return true;
-    }
-    if (addLabel(labelId)){
-        QModelIndex _index = findLabel(labelId);
-
-        BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
-        auto label = static_cast<Label*>(item);
-         label->setValueBits(value);
-        QModelIndex _parent = index(0,0);
-        emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
-        layoutChanged();
-
-       // setData(_index,value, Qt::EditRole);
-        return true;
-    }
-
-    return false;
-}
-
-
-bool MyDataModel::setLabelData(str_t labelId, const QVariant &value, QThread* thread)
-{
-    QModelIndex _index = findLabel(labelId);
-    if (_index.isValid()){
-        BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
-        auto label = static_cast<Label*>(item);
-        label->setValueBits(value);
-        QModelIndex _parent = index(0,0);
-        emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
-        layoutChanged();
-        return true;
-    }
-
-    if (addLabel(labelId)){
-        QModelIndex _index = findLabel(labelId);
-        BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
-        auto label = static_cast<Label*>(item);
-        label->setValueBits(value);
-        QModelIndex _parent = index(0,0);
-        emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
-        layoutChanged();
-        return true;
-    }
-
-    return false;
-}
-
-
 bool MyDataModel::setLabelData(str_t labelId, const float& rate,  const QVariant &value)
 {
+    bool retval = false;
+    counter++;
+    QModelIndex _index = findLabel(labelId);
+    if (_index.isValid())
+    {
+        BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
+        auto label = static_cast<Label*>(item);
+        label->setValueBits(value);
+        label->setDataRate(rate);
+        QModelIndex _parent = index(0,0);
+        if (bIfLayoutRefresh){
+             dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
+             layoutChanged();
+            bIfLayoutRefresh = false;
+        }
+        retval =  true;
+    }
+    else
+    {
+        if (addLabel(labelId)){
+            QModelIndex _index = findLabel(labelId);
+            BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
+            auto label = static_cast<Label*>(item);
+            label->setValueBits(value);
+            label->setDataRate(rate);
+            QModelIndex _parent = index(0,0);
+            if (bIfLayoutRefresh){
+                dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
+                layoutChanged();
+                bIfLayoutRefresh = false;
+            }
+             retval = true;
+            }
+    }
+
+    return retval;
+}
+
+/*
     QModelIndex _index = findLabel(labelId);
     QModelIndex __index;
     if (_index.isValid()){
@@ -593,7 +578,8 @@ bool MyDataModel::setLabelData(str_t labelId, const float& rate,  const QVariant
         return true;
     }
     return false;
-}
+*/
+
 
 QModelIndex MyDataModel::findLabel(str_t labelId)
 {
@@ -665,7 +651,7 @@ void  MyDataModel::cleanTimeoutList(){
 
 bool MyDataModel::addLabel(str_t labelId)
 {
-    qInfo() << "MyDataModel::addLabel is runnig on " << QThread::currentThread() ;
+   //  qInfo() << "MyDataModel::addLabel is runnig on " << QThread::currentThread() ;
     QModelIndex topindex = index(0,0,QModelIndex());
     BaseItem* topItem = static_cast<BaseItem*>(topindex.internalPointer());
 
@@ -913,3 +899,65 @@ int MyDataModel::getDEI()
     }
     return 0;
 }
+
+/*
+
+bool MyDataModel::setLabelData(str_t labelId, const QVariant &value){
+    QModelIndex _index = findLabel(labelId);
+
+    if (_index.isValid()){
+
+        BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
+        auto label = static_cast<Label*>(item);
+         label->setValueBits(value);
+        QModelIndex _parent = index(0,0);
+        emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
+        layoutChanged();
+        return true;
+    }
+    if (addLabel(labelId)){
+        QModelIndex _index = findLabel(labelId);
+
+        BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
+        auto label = static_cast<Label*>(item);
+         label->setValueBits(value);
+        QModelIndex _parent = index(0,0);
+        emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
+        layoutChanged();
+
+       // setData(_index,value, Qt::EditRole);
+        return true;
+    }
+
+    return false;
+}
+
+
+bool MyDataModel::setLabelData(str_t labelId, const QVariant &value, QThread* thread)
+{
+    QModelIndex _index = findLabel(labelId);
+    if (_index.isValid()){
+        BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
+        auto label = static_cast<Label*>(item);
+        label->setValueBits(value);
+        QModelIndex _parent = index(0,0);
+        emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
+        layoutChanged();
+        return true;
+    }
+
+    if (addLabel(labelId)){
+        QModelIndex _index = findLabel(labelId);
+        BaseItem *item = static_cast<BaseItem*>(_index.internalPointer());
+        auto label = static_cast<Label*>(item);
+        label->setValueBits(value);
+        QModelIndex _parent = index(0,0);
+        emit dataChanged(index(_index.row(),0,_parent), index(_index.row(),MAX_COLUMNS,_parent), {Qt::DisplayRole, Qt::EditRole});
+        layoutChanged();
+        return true;
+    }
+
+    return false;
+}
+
+ */

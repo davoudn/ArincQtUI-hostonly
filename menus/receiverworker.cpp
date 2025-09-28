@@ -7,7 +7,8 @@
 #include "baseitem.h"
 #include "DEI1016.h"
 #include "DEI1016RasberryConfigurations.h"
-
+#include "actionsrecord.h"
+#include "bitutils.h"
 
 ReceiverWorker* ReceiverWorker::instance0 = nullptr;
 ReceiverWorker* ReceiverWorker::instance1 = nullptr;
@@ -41,9 +42,9 @@ ReceiverWorker::ReceiverWorker(str_t _equipment, uint8_t ch):chanell(ch)
       connect(dataRateTimer, &Timer::onTimeout, this, &ReceiverWorker::evalDataRates, Qt::DirectConnection);
       //
       connect(dataRateThread, &QThread::started, dataRateTimer, &Timer::counterTask);
-      connect(DEI1016::getInstance(), &DEI1016::update, this, &ReceiverWorker::update, Qt::BlockingQueuedConnection);
+     // connect(DEI1016::getInstance(), &DEI1016::update, this, &ReceiverWorker::update, Qt::QueuedConnection);
 
-     // connect(mainThread, &QThread::started, this, &ReceiverWorker::receiveTask);
+      connect(mainThread, &QThread::started, this, &ReceiverWorker::receiveTask);
       connect(idlecleanerThread, &QThread::started, idleLabelCleanerTimer, &Timer::counterTask);
       //
       dataRateTimer->moveToThread(dataRateThread);
@@ -150,10 +151,42 @@ Equipment*  ReceiverWorker::getEquipment()
 void ReceiverWorker::receiveTask()
 {
     qInfo() <<"ReceiverWorker::run() : started on chanel: "<<chanell << ", running thread: " << QThread::currentThread() <<"\n";
-
+    dword_t arincBits;
+    DArincData arincData;
     while(1)
     {
-        std::this_thread::sleep_for(std::chrono::microseconds(100));
+        std::this_thread::sleep_for(std::chrono::microseconds(10));
+        for(uint32_t i=0; i < ReceiverRecords::getInstance()->size(); i++)
+        {
+            auto d = ReceiverRecords::getInstance()->getAt(i);
+            if (d.first)
+            {
+                  AUX::log(d.second,"received Data");
+
+                   AUX::convertBytesToData(d.second, dei, chanell, rate, arincBits);
+                    AUX::convertFromDEIToArinc(arincBits);
+                    arincData.Init(arincBits);
+                    str_t labelid = arincData.template Get<LabelIdOctal>().toString();
+                    value_t value = arincData.template Get<DataBits>();
+                    auto res = QtConcurrent::run( [=](){
+                       //  QMetaObject::invokeMethod(this,[=](){
+                            emit setLabelData(labelid, rate, value);//});
+                    });
+
+            }
+        }
+        if (bIfToClean)
+        {
+            Receiver::getInstance(chanell)->idleLabelCleaner();
+            bIfToClean = false;
+        }
+
+    }
+}
+
+
+/*
+ *
         if (bIfDataUpdated)
         {
 
@@ -168,17 +201,6 @@ void ReceiverWorker::receiveTask()
 
         }
 
-        if (bIfToClean)
-        {
-            Receiver::getInstance(chanell)->idleLabelCleaner();
-            bIfToClean = false;
-        }
-
-    }
-}
-
-
-/*
 void ReceiverWorker::update(std::bitset<ARINC32_SIZE>& arincBitsData)
 {
 
@@ -237,11 +259,7 @@ void ReceiverWorker::update(uint8_t& deiId, uint8_t& chanellId, float& _rate, st
     if (deiId==dei && chanellId==deiChanell) {
         ArincData->UpdateData(arincBitsData);
         rate = _rate;
-
-        //qInfo() << ArincData->getBitSet().to_string();
-        str_t labelid = getArincData().template Get<LabelIdOctal>().toString();
-        value_t value = getArincData().template Get<DataBits>();
-        Receiver::getInstance(chanell)->setLabelData(labelid, rate, value);
+        bIfDataUpdated = true;
     }
 
 }

@@ -1,6 +1,7 @@
 #ifndef TREEDATAMODEL_H
 #define TREEDATAMODEL_H
 #include "PointerVector.h"
+#include <QTimer>
 #include <QAbstractItemModel>
 #include <vector>
 
@@ -16,10 +17,11 @@ class MyDataModel: public QAbstractItemModel
 {
     Q_OBJECT
 private:
+    QTimer layoutRefresher;
     PointerVector<BaseItem>& myData;
-
     int depth(QModelIndex &index);
     bool bIfEditable = false;
+
 public:
     MyDataModel(QObject *parent, PointerVector<BaseItem>& vec, bool _bIfEditable);
     ~MyDataModel();
@@ -46,10 +48,12 @@ public:
     bool addLabel(str_t _labelName);
     bool addReservedLabel();
     bool removeLabel(str_t _labelName);
-    bool setLabelData(str_t labelName, const QVariant &value);
-    bool setLabelData(str_t labelId, const QVariant &value, QThread* thread);
+  //  bool setLabelData(str_t labelName, const QVariant &value);
+  //  bool setLabelData(str_t labelId, const QVariant &value, QThread* thread);
+public slots:
     bool setLabelData(str_t labelName, const float& rate,  const QVariant &value);
-
+    void enableLayoutRefresh();
+public:
     // for transmitter
     std::vector<DArincData> getListOfAvailableLabelData();
     void incrementLabelsDataRateCounter();
@@ -78,7 +82,9 @@ public:
     int getChanell();
     int getDEI();
 private:
+    int counter = 0;
     str_t labelToInsert;
+    bool bIfLayoutRefresh = false;
 };
 
 #endif // TREEDATAMODEL_H

@@ -37,8 +37,7 @@ public:
     void resetDataModel(str_t _eqId);
     void initUiCombos();
     void removeLabel(bool _ifChecked);
-    bool setLabelData(str_t labelId, const QVariant &value);
-    bool setLabelData(str_t labelId, const float& rate, const QVariant &value);
+   // bool setLabelDataSimple(str_t labelId, const QVariant &value);
     void evalDataRates(uint32_t interval);
     void idleLabelCleaner();
 
@@ -54,6 +53,8 @@ public slots:
     void on_SDI_bitRate(int index);
     void onReceiverEnabled(bool);
     void onReceiverDisabled(bool);
+    bool setLabelData(str_t labelId, const float& rate, const QVariant &value);
+
 public:
     void makeDeviceIndex();
     int chanell = 0;

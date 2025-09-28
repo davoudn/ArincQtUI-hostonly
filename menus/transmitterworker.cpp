@@ -67,6 +67,7 @@ TransmitterWorker::TransmitterWorker(str_t _equipment, int ch)
     //
     connect(dataRateTimer, &Timer::onTimeout, this, &TransmitterWorker::actionListCleaner,  Qt::DirectConnection);
     connect(this, &TransmitterWorker::sendData, DEI1016::getInstance(), &DEI1016::sendData, Qt::BlockingQueuedConnection);
+
     //
     dataRateTimer->moveToThread(dataRateThread);
     this->moveToThread(mainThread);
@@ -88,7 +89,7 @@ void TransmitterWorker::startTasks()
         DEI1016::getInstance()->openSerialPort();
     }
     mainThread->start();
-    dataRateThread->start();
+    // dataRateThread->start();
 }
 /*
  * SLOTS
@@ -96,7 +97,7 @@ void TransmitterWorker::startTasks()
 
 void TransmitterWorker::actionListCleaner()
 {
-    QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
+    QMutexLocker locker(&GeneralData::getInstance()->mutex);
     for (auto it = GeneralData::getInstance()->getActions().begin();  it!=GeneralData::getInstance()->getActions().end(); it++){
         if ( (*it)->bIfApplied ){
           //  transmitter::getInstance()->getActions().erase(it);
@@ -119,13 +120,16 @@ void TransmitterWorker::taskTransmitData()
     qInfo() << "TransmitterWorker::taskTransmitData() is runnig on "<< QThread::currentThread();
     while(1)
     {
-        std::this_thread::sleep_for(std::chrono::microseconds(1));
-        QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
-        for (auto& x: GeneralData::getInstance()->getActions())
+        // std::this_thread::sleep_for(std::chrono::microseconds(10));
+        QMutexLocker mutexlocker(&GeneralData::getInstance()->mutex);
+        for (int i=0; i < GeneralData::getInstance()->getActions().size(); i++)
         {
-            if (!x->bIfApplied){
-                std::this_thread::sleep_for(std::chrono::microseconds(1));
-                emit sendData(x);
+            if (!GeneralData::getInstance()->getActions()[i]->bIfApplied){
+                qInfo() << i << "\t" << (GeneralData::getInstance()->getActions()[i]->bIfApplied);
+
+               // std::this_thread::sleep_for(std::chrono::microseconds(1));
+               emit sendData(GeneralData::getInstance()->getActions()[i]->toPacket());
+               GeneralData::getInstance()->getActions()[i]->bIfApplied = true;
             }
         }
     }

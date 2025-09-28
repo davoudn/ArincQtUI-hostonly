@@ -51,7 +51,7 @@ class LabelFor<DTransmitter>: public Label
 {
 public:
     LabelFor(str_t _path, str_t equipmentId, str_t labelId):Label( _path,  equipmentId,  labelId){
-        dataRate = 25;
+        dataRate = 200;
     }
 
     inline DArincData& getArincDataAndReset(){

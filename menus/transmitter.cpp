@@ -107,9 +107,9 @@ transmitter::transmitter(QWidget *parent, int ch):
     this->setWindowTitle("Transmitter " + QString::number(chanell));
     //
 
-    ui->chTransmitterDisabled->setChecked(true);
-    ui->chTransmitterEnabled->setChecked(false);
-    bIfEnabled = false;
+    ui->chTransmitterDisabled->setChecked(false);
+    ui->chTransmitterEnabled->setChecked(true);
+    bIfEnabled = true;
 }
 
 transmitter::~transmitter()
@@ -145,7 +145,7 @@ void transmitter::makeDeviceIndex()
 
 void transmitter::onArinc_parity_bitRate(int index)
 {
-    QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
+    QMutexLocker locker(&GeneralData::getInstance()->mutex);
     auto control_word = DEI1016::getInstance()->setControlWord_transmitter_32Bits(0,index);
     GeneralData::getInstance()->getActions().push_back(
                    MakeControlAction(dei, static_cast<uint16_t>(control_word.to_ulong())));
@@ -297,9 +297,10 @@ void transmitter::onLoadConfig(bool bIfClicked)
             arincData.Init(x.toString().toStdString());
             str_t labelid  = arincData.template Get<LabelIdOctal>().toString();
             value_t value = arincData.template Get<DataBits>();
+            float rate = 100;
             if (labelId!="000"){
                 if (getDataModel()){
-                    getDataModel()->setLabelData(labelid, value);
+                    getDataModel()->setLabelData(labelid, rate, value);
                 }
             }
         }
@@ -339,10 +340,10 @@ void transmitter::onTransmitterDisabled(bool checked)
 void transmitter::Disable()
 {
     bIfEnabled = false;
-    std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
+    //std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
 }
 void transmitter::Enable()
 {
     bIfEnabled = true;;
-    std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
+    //std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
 }

@@ -48,10 +48,11 @@ Receiver::Receiver(QWidget *parent, uint8_t ch) :
    connect(this, SIGNAL(OnArincDataUpdated()), this, SLOT(UpdateTree()));
    connect(ui->chReceiverEnabled, &QCheckBox::clicked, this, &Receiver::onReceiverEnabled);
    connect(ui->chReceiverDisabled, &QCheckBox::clicked, this, &Receiver::onReceiverDisabled);
+   connect(ReceiverWorker::getInstance(chanell), &ReceiverWorker::setLabelData, this, &Receiver::setLabelData, Qt::QueuedConnection);
 
-   ui->chReceiverDisabled->setCheckState(Qt::CheckState::Checked);
-   ui->chReceiverEnabled->setCheckState(Qt::CheckState::Unchecked);
-   bIfEnabled = false;
+   ui->chReceiverDisabled->setCheckState(Qt::CheckState::Unchecked);
+   ui->chReceiverEnabled->setCheckState(Qt::CheckState::Checked);
+   bIfEnabled = true;
 }
 
 Receiver::~Receiver()
@@ -126,7 +127,7 @@ void Receiver::makeDeviceIndex()
 
 void Receiver::on_SDI_bitRate(int index)
 {
-    QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
+    //QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
     auto control_word = DEI1016::getInstance()->setControlWord_receiver_32Bits(dei,index);
     GeneralData::getInstance()->getActions().push_back(MakeControlAction(dei, static_cast<uint16_t>(control_word.to_ulong())));
 }
@@ -204,33 +205,7 @@ void Receiver::UpdateTree()
     emit dataModel->layoutChanged();
 }
 
-bool Receiver::setLabelData(str_t labelId, const QVariant &value)
-{
-    if (bIfEnabled)
-    {
-        Equipment* equipment =  ReceiverWorker::getInstance(chanell)->getEquipment();
-        if (equipment)
-        {
-            if (equipment->checkLabel(labelId))
-            {
-                if (dataModel){
-                    return dataModel->setLabelData(labelId, value);
-                }
-            }
-            else
-            {
-                Disable();
-                resetDataModel("1111");
-                if (dataModel){
-                    return dataModel->setLabelData(labelId, value);
 
-                }
-                Enable();
-            }
-        }
-    }
-    return false;
-}
 
 
 bool Receiver::setLabelData(str_t labelId, const float& rate, const QVariant &value)
@@ -302,16 +277,44 @@ void Receiver::onReceiverDisabled(bool checked)
 void Receiver::Disable()
 {
     bIfEnabled = false;
-    std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
+   // std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
 }
 
 void Receiver::Enable()
 {
     bIfEnabled = true;;
-    std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
+  //  std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
 }
 
 
 
+/*
+bool Receiver::setLabelDataSimple(str_t labelId, const QVariant &value)
+{
+    if (bIfEnabled)
+    {
+        Equipment* equipment =  ReceiverWorker::getInstance(chanell)->getEquipment();
+        if (equipment)
+        {
+            if (equipment->checkLabel(labelId))
+            {
+                if (dataModel){
+                    return dataModel->setLabelData(labelId, value);
+                }
+            }
+            else
+            {
+                Disable();
+                resetDataModel("1111");
+                if (dataModel){
+                    return dataModel->setLabelData(labelId, value);
 
+                }
+                Enable();
+            }
+        }
+    }
+    return false;
+}
+ */
 

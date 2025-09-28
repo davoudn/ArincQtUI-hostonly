@@ -4,21 +4,27 @@
 #include "receiverworker.h"
 #include "settingsdialog.h"
 #include "bitutils.h"
-#include "action.h"
+#include "actionsrecord.h"
+#include "ArincData.h"
+
 #include <QSerialPort>
 #include <QSerialPortInfo>
-
+#include <tuple>
 //
 
 DEI1016::DEI1016(QObject* parent )
 {
-    serial = new QSerialPort(this);
+    mainThread = new QThread();
+    this->moveToThread(mainThread);
+    mainThread->start();
 
-  //  mainThread = new QThread();
-  //  connect(mainThread, &QThread::started, this, &DEI1016::updateTask);
-   // this->moveToThread(mainThread);
-  //  mainThread->start();
-    connect(serial, &QSerialPort::readyRead, this, &DEI1016::dataReceived);
+    serial = new QSerialPort(this);
+    serial->moveToThread(mainThread);
+    openSerialPort();
+
+    serialResetTimer.start(SERIAL_RESET_INTERVAL);
+    connect(serial, &QSerialPort::readyRead, this, &DEI1016::dataReceived, Qt::DirectConnection);
+    connect(&serialResetTimer, &QTimer::timeout, this, &DEI1016::serialReset);
 
 }
 
@@ -64,12 +70,28 @@ void DEI1016::setControlInstruction(uint8_t instruction)
     }
 }
 
-bool DEI1016::sendData(BaseAction* ac)
+bool DEI1016::sendAction(BaseAction* ac)
 {
     if (ac){
-        int numSent = serial->write(ac->toPacket(), TRANSMMIT_PACKET_SIZE);
-        if (numSent==TRANSMMIT_PACKET_SIZE){
+        int numSent = serial->write(ac->toPacket(), TX_BUFFER_SIZE);
+        if (numSent==TX_BUFFER_SIZE){
+            qInfo() << "Num bytes sent: "<<numSent;
             ac->bIfApplied = true;
+            return true;
+        }
+        else {
+            qInfo() << "Failed to send all data!";
+            ac->bIfApplied = true;
+            return false;
+        }
+    }
+    return false;
+}
+
+bool DEI1016::sendData(char* ac)
+{
+        int numSent = serial->write(ac, TX_BUFFER_SIZE);
+        if (numSent==TX_BUFFER_SIZE){
             qInfo() << "Num bytes sent: "<<numSent;
             return true;
         }
@@ -77,8 +99,20 @@ bool DEI1016::sendData(BaseAction* ac)
             qInfo() << "Failed to send all data!";
             return false;
         }
+}
+
+
+void log (QByteArray& data, str_t msg)
+{
+    if (data.size()== RX_BUFFER_SIZE)
+    {
+        qInfo() << msg;
+        qInfo() << "\t"<<static_cast<uint8_t>(data[0]) <<"\t" << static_cast<uint8_t>(data[1])
+                << "\t"<<static_cast<uint8_t>(data[2]) <<"\t" << static_cast<uint8_t>(data[3])
+                << "\t"<<static_cast<uint8_t>(data[4]) <<"\t" << static_cast<uint8_t>(data[5])
+                << "\t"<<static_cast<uint8_t>(data[6]) <<"\t" << static_cast<uint8_t>(data[7])
+                << "\t"<<static_cast<uint8_t>(data[8]) << "\t"<< static_cast<uint8_t>(data[9]);
     }
-    return false;
 }
 
 /*
@@ -86,36 +120,75 @@ bool DEI1016::sendData(BaseAction* ac)
 */
 void DEI1016::dataReceived()
 {
-    qint64 numReadTotal = 0;
+    recDataBuffer.append(serial->readAll());
+    updateTask();
+}
 
-    for (;;)
-    {
-        const qint64 numRead  = serial->read(recData, RECEIVE_PACKET_SIZE);
-        numReadTotal += numRead;
-        if (numReadTotal == RECEIVE_PACKET_SIZE){
-            bIfDataReceived = true;
-            updateTask();
-            return ;
+void DEI1016::serialReset()
+{
+    serial->reset();
+    qInfo() << " DEI1016::serialReset(), data were not visible fot 100 milliseconds...";
+}
+
+std::tuple<bool,uint32_t, uint32_t>& DEI1016::parse(QByteArray& ba)
+{
+    bool ifInitfound = false;
+    bool ifFinalFound = false;
+    std::get<0>(parseResult) = false;
+    std::get<1>(parseResult) = -1;
+    std::get<1>(parseResult) = -1;
+
+    for(int i=0;i<ba.size();i++){
+        if ( static_cast<uint8_t>(ba[i]) == INITIAL_BYTE && !ifInitfound ){
+            std::get<1>(parseResult) = i;
+            ifInitfound = true;
         }
-        if (numReadTotal == 0){
-            bIfDataReceived = false;
+        if ( static_cast<uint8_t>(ba[i]) == FINAL_BYTE && ifInitfound ){
+            std::get<2>(parseResult) = i;
+            ifFinalFound = true;
+        }
 
-            return ;
+    }
+    if (ifInitfound && ifFinalFound)
+    {
+        if (std::get<2>(parseResult)- std::get<1>(parseResult) == DATA_POCKET_SIZE+1 ){
+            std::get<0>(parseResult) = true;
         }
     }
+    return parseResult;
 }
 
 void DEI1016::updateTask()
 {
-    uint8_t  chanell = 0;
-    uint8_t  dei = 0;
-    float    rate = 0.f;
-    dword_t  arincData;
-
-            AUX::convertBytesToData(recData, dei, chanell, rate, arincData);
-            AUX::convertFromDEIToArinc(arincData);
-            emit update(dei, chanell, rate, arincData);
+        parse(recDataBuffer);
+        if(std::get<0>(parseResult))
+        {
+            bIfUpdated = true;
+                    int initbyteidx= std::get<1>(parseResult);
+                    for (int i=0;i < FRAME_POCKET_SIZE; i++){
+                        recData[i] = static_cast<uint8_t>(recDataBuffer[initbyteidx+i]);
+                    }
+                    auto r =  ReceiverRecords::getInstance()->record(recData);
+                    recDataBuffer.clear();
+        }
 }
+
+
+
+/*    AUX::convertBytesToData(recData, dei, chanell, rate, arincData);
+                    AUX::convertFromDEIToArinc(arincData);
+                    dArincData.Init(arincData);
+                    str_t labelid = dArincData.template Get<LabelIdOctal>().toString();
+                    value_t value = dArincData.template Get<DataBits>();
+                    log(recDataBuffer, "Rec Data: ");
+                   auto res = QtConcurrent::run( [=](){
+                        // QMetaObject::invokeMethod(this,[=](){
+                       //     emit setLabelData(labelid, rate, value);
+                       // });
+                    });
+*/
+//   emit update(dei, chanell, rate, arincData);
+
 /*
   @Serial port
 */
@@ -133,6 +206,9 @@ void DEI1016::openSerialPort()
          bIfSerialOpen = true;
          qInfo() << "Serial port is connected...";
      }
+     serial->setReadBufferSize(1);
+     //erial-wri(POCKET_SIZE);
+
 }
 //! [4]
 

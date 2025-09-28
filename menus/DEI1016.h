@@ -1,10 +1,12 @@
 #pragma once
 #include "types.h"
 #include "action.h"
+
 #include <QMutex>
 #include <QMutexLocker>
 #include <QThread>
-
+#include <QTimer>
+#include <tuple>
 
 class QMutex;
 class QSerialPort;
@@ -24,30 +26,37 @@ public:
     void select_enable_receiver_SDIChanell(int chanell, int ifEnable, int index, word_t& control_word);
     void setControlInstruction(uint8_t instruction);
     void createMaps();
-    void updateTask();
 
 public:
    bool  bIfSerialOpen = false;
    bool  bIfDataReceived = false;
 
+
 private slots:
    void dataReceived();
 public slots:
-   bool sendData(BaseAction* ac);
-
-signals:
-   void update(uint8_t& dei, uint8_t& chanell, float& rate, dword_t& arincData);
+   bool sendAction(BaseAction* ac);
+   bool sendData(char* ac);
+   void updateTask();
+   void serialReset();
 
 public:
    //
    void openSerialPort();
    void closeSerialPort();
+   void init();
+   std::tuple<bool,uint32_t, uint32_t>& parse(QByteArray& ba);
 protected:
-    char recData  [RECEIVE_PACKET_SIZE];
-    char transData[TRANSMMIT_PACKET_SIZE];
-    QThread* mainThread = nullptr;
-    QMutex mutex;
+    record_t recData;
+    record_t transData;
     std::array<word_t, NUM_DEI1016> controlWords;
+    std::tuple<bool,uint32_t, uint32_t> parseResult;
+    bool bIfUpdated = false;
+    QByteArray recDataBuffer;
+    QMutex mutex;
+
+    QThread* mainThread = nullptr;
     QSerialPort *serial = nullptr;
+    QTimer serialResetTimer;
 };
 

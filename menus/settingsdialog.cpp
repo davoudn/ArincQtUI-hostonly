@@ -22,13 +22,13 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
     connect(m_ui->applyButton, &QPushButton::clicked,
             this, &SettingsDialog::apply);
-    connect(m_ui->serialPortInfoListBox, &QComboBox::currentIndexChanged,
+   /* connect(m_ui->serialPortInfoListBox, &QComboBox::currentIndexChanged,
             this, &SettingsDialog::showPortInfo);
     connect(m_ui->baudRateBox,  &QComboBox::currentIndexChanged,
             this, &SettingsDialog::checkCustomBaudRatePolicy);
     connect(m_ui->serialPortInfoListBox, &QComboBox::currentIndexChanged,
             this, &SettingsDialog::checkCustomDevicePathPolicy);
-
+*/
     fillPortsParameters();
     fillPortsInfo();
 
@@ -88,6 +88,7 @@ void SettingsDialog::checkCustomDevicePathPolicy(int idx)
 
 void SettingsDialog::fillPortsParameters()
 {
+    m_ui->baudRateBox->addItem(QStringLiteral("921600"), 921600);
     m_ui->baudRateBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
     m_ui->baudRateBox->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
     m_ui->baudRateBox->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);

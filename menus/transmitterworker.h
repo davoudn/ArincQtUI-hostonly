@@ -42,7 +42,7 @@ public slots:
      void incrementLabelsDataRateCounter();
      void actionListCleaner();
  signals:
-     bool sendData(BaseAction* ac);
+     bool sendData(char* ac);
 
 protected:
 

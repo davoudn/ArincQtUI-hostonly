@@ -27,6 +27,9 @@
 #define CLEANING_CHECK_TIME 1000// miliseconds
 #define DATA_RATE_EVAL_TIME 10000// miliseconds
 #define NUM_DEI1016 2
+#define LAYOUT_REFRESHER_INTERVAL 100 // milliseconds
+#define SERIAL_RESET_INTERVAL 100 // milliseconds
+
 // for timers
 #define MAX_TIME 10000 // miliseconds
 #define IDLE_THRESHOLD 2000 // miliseconds
@@ -40,6 +43,8 @@
 #define SDI2 2
 #define SDI3 3
 
+#define POCKET_SIZE 9
+
 
 #define TRANSMITTER_INTERVAL_TIME 2 // MILLISECONDS
 #define MILLISECONDS_TO_SECONDS 0.001
@@ -48,28 +53,32 @@
 #define DWORD_SIZE 32 // num bits
 #define WORD_SIZE  16 // num bits
 
-#define RECEIVE_PACKET_SIZE 8 // bytes
-#define TRANSMMIT_PACKET_SIZE 8 // bytes
-
 #define WAIT_FOR_SERIAL_READ_READY 1000
 
-#define Byte0 0
-#define Byte1 1
-#define Byte2 2
-#define Byte3 3
-#define Byte4 4
-#define Byte5 5
-#define Byte6 6
-#define Byte7 7
-#define LABEL_BYTE 4
-#define INSTRUCTION_BYTE 0
-#define ARINC_BYTE0 4
-#define ARINC_BYTE1 5
-#define ARINC_BYTE2 6
-#define ARINC_BYTE3 7
-#define CONTROL_BYTE0 2
-#define CONTROL_BYTE1 3
-#define RATE_BYTE 1
+
+#define DATA_POCKET_SIZE 8
+#define FRAME_POCKET_SIZE 10 // bytes
+#define RX_BUFFER_SIZE 10 // bytes
+#define TX_BUFFER_SIZE 10 // bytes
+
+#define FINAL_BYTE_INDEX 9
+#define ARINC_BYTE3 8
+#define ARINC_BYTE2 7
+#define ARINC_BYTE1 6
+#define LABEL_BYTE 5
+#define ARINC_BYTE0 5
+#define CONTROL_BYTE1 4
+#define CONTROL_BYTE0 3
+#define RATE_BYTE 2
+#define INSTRUCTION_BYTE 1
+#define INITIAL_BYTE_INDEX 0
+// actual frame bytes
+#define INITIAL_BYTE 0xFF
+#define FINAL_BYTE 0xFF
+#define INITIAL_BYTE 0xFF
+
+
+#define RECEIVER_RECORDE_SIZE 64
 
 using value_t = QVariant;
 using jsonobj_t = QJsonObject;
@@ -79,7 +88,7 @@ using str_t = QString;
 using word_t = std::bitset<WORDSIZE>;
 using parameters_list_t = std::vector<str_t>;
 using dword_t = std::bitset<ARINC32_SIZE>;
-
+using record_t = std::array<uint8_t, FRAME_POCKET_SIZE>;
 //
 enum class EquipmentRole{
     Receiver,
@@ -91,7 +100,8 @@ enum Instructions {
     ADD_LABEL_TO_TRANSMIT  ,
     REMOVE_LABEL_FROM_TRANSMIT,
     UPDATE_LABEL_DATA_FOR_TRANSMIT,
-    APPLY_CONTROL_WORD
+    APPLY_CONTROL_WORD,
+    BURST_A_LABEL
 };
 
 enum PREDEFINED {

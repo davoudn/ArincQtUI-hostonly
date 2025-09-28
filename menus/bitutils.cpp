@@ -7,6 +7,21 @@ namespace AUX {
 
 const std::array<uint8_t,ARINC32_SIZE> arinc_DEI_wordsMap = { 7, 6, 5, 4 , 3, 2, 1, 0, 31, 30, 29, 8 ,9 , 10, 11, 12, 13, 14, 15, 16 , 17, 18, 19, 20, 21, 22, 23, 24 ,25 , 26, 27, 28};
 
+void log (record_t& data, str_t msg)
+{
+    if (data.size()== RX_BUFFER_SIZE)
+    {
+        qInfo() << msg;
+        qInfo() << "\t"<<static_cast<uint8_t>(data[0]) <<"\t" << static_cast<uint8_t>(data[1])
+                << "\t"<<static_cast<uint8_t>(data[2]) <<"\t" << static_cast<uint8_t>(data[3])
+                << "\t"<<static_cast<uint8_t>(data[4]) <<"\t" << static_cast<uint8_t>(data[5])
+                << "\t"<<static_cast<uint8_t>(data[6]) <<"\t" << static_cast<uint8_t>(data[7])
+                << "\t"<<static_cast<uint8_t>(data[8]) << "\t"<< static_cast<uint8_t>(data[9]);
+    }
+}
+
+
+
 uint16_t getInstruction(std::bitset<8>& x)
 {
     return x[0] + x[1] * 2 + x[2] * 4 + x[3] * 8;
@@ -86,15 +101,18 @@ void convertFromDEIToArinc(dword_t& data, dword_t& x){
     }
 }
 
-void convertBytesToData(char* recData, uint8_t& dei, uint8_t& chanel, float& rate, std::bitset<ARINC32_SIZE>& arincData){
-    auto x = std::bitset<8>(static_cast<uint8_t>(recData[Byte0]));
+//template <typename T>
+void convertBytesToData(record_t& recData, uint8_t& dei, uint8_t& chanel, float& rate, dword_t& arincData){
+    auto x = std::bitset<8>(static_cast<uint8_t>(recData[LABEL_BYTE]));
     chanel = getChanel(x);
     dei    = getDEI(x);
-    rate = AUX::bitsToTime(recData[Byte1]);
+    rate = AUX::bitsToTime(recData[RATE_BYTE]);
     uint32_t dword = 0;
-    AUX::merge(recData[Byte4],recData[Byte5],recData[Byte6],recData[Byte7],dword);
+    AUX::merge(recData[ARINC_BYTE0],recData[ARINC_BYTE1],recData[ARINC_BYTE2],recData[ARINC_BYTE3],dword);
     arincData = std::bitset<ARINC32_SIZE>(dword);
 }
+
+
 
 /*
 void convertDataToBytes(uint8_t& dei,uint8_t& chanel, float& rate, std::bitset<ARINC32_SIZE>& arincData, char* recData){

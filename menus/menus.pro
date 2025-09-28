@@ -20,6 +20,7 @@ HEADERS       = mainwindow.h \
     Timer.h \
     TreeDataModel.h \
     action.h \
+    actionsrecord.h \
     arinc_functions.h \
     baseitem.h \
     basetransiverwidget.h \
@@ -56,6 +57,7 @@ SOURCES       = mainwindow.cpp \
                 Timer.cpp \
                 TreeDataModel.cpp \
                 action.cpp \
+                actionsrecord.cpp \
                 arinc_functions.cpp \
                 baseitem.cpp \
                 basetransiverwidget.cpp \
@@ -75,7 +77,7 @@ SOURCES       = mainwindow.cpp \
                 utils.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/mainwindows/menus
+target.path = ./menus
 INSTALLS += target
 
 RESOURCES += \

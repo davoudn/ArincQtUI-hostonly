@@ -63,6 +63,8 @@ public slots:
     void evalDataRates();
     void receiveTask();
     void update(uint8_t& dei, uint8_t& chanell, float& _rate, std::bitset<ARINC32_SIZE>& arincBitsData);
+signals:
+    bool setLabelData(str_t labelId, const float& rate, const QVariant &value);
 
 protected:
 
