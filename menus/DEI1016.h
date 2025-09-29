@@ -5,6 +5,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QThread>
+#include <QSerialPort>
 #include <QTimer>
 #include <tuple>
 
@@ -13,11 +14,11 @@ class QSerialPort;
 
 class DEI1016 : public QObject {
     Q_OBJECT
-    explicit DEI1016(QObject* parent= nullptr);
+    explicit DEI1016(QObject* parent = nullptr);
     static DEI1016* instance;
 public:
-    static DEI1016* getInstance();
-     ~DEI1016() = default;
+     static DEI1016* getInstance(QObject* parent = nullptr);
+     ~DEI1016() ;
 
     void setControlWord_receiver_32Bits(int chanell, int index, word_t& control_word) ;
     void setControlWord_transmitter_32Bits(int chanell, int index, word_t& control_word) ;
@@ -35,7 +36,6 @@ public:
 private slots:
    void dataReceived();
 public slots:
-   bool sendAction(BaseAction* ac);
    bool sendData(char* ac);
    void updateTask();
    void serialReset();
@@ -55,8 +55,8 @@ protected:
     QByteArray recDataBuffer;
     QMutex mutex;
 
-    QThread* mainThread = nullptr;
-    QSerialPort *serial = nullptr;
+    QThread mainThread ;
+    QSerialPort serial ;
     QTimer serialResetTimer;
 };
 

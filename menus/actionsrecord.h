@@ -44,7 +44,6 @@ public:
         return actions.size();
     }
     std::pair<bool,int> record (record_t& d);
-
 };
 
 class ReceiverRecords : public ActionsRecords
@@ -56,5 +55,12 @@ public:
     static ReceiverRecords* getInstance();
 };
 
-
+class TransmitterRecords : public ActionsRecords
+{
+    TransmitterRecords(int N):ActionsRecords(N) {
+    }
+    static TransmitterRecords* instance;
+public:
+    static TransmitterRecords* getInstance();
+};
 #endif // ACTIONSRECORD_H

@@ -53,13 +53,13 @@ public slots:
     void on_SDI_bitRate(int index);
     void onReceiverEnabled(bool);
     void onReceiverDisabled(bool);
-    bool setLabelData(str_t labelId, const float& rate, const QVariant &value);
+    bool setLabelData(uint32_t dei, uint32_t ch, str_t labelId, const float& rate, const QVariant &value);
 
 public:
     void makeDeviceIndex();
-    int chanell = 0;
-    int deiChanell = 0;
-    int dei = 0;
+    uint32_t chanell = 0;
+    uint32_t deiChanell = 0;
+    uint32_t dei = 0;
 protected:
     Ui::Receiver *ui;
     MyDataModel *dataModel = nullptr;

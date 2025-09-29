@@ -11,6 +11,8 @@
 #include "DEI1016RasberryConfigurations.h"
 #include "generaldata.h"
 #include "action.h"
+#include "actionsrecord.h"
+#include "bitutils.h"
 
 TransmitterWorker* TransmitterWorker::instance0 = nullptr;
 TransmitterWorker* TransmitterWorker::instance1 = nullptr;
@@ -118,8 +120,27 @@ void TransmitterWorker::incrementLabelsDataRateCounter()
 void TransmitterWorker::taskTransmitData()
 {
     qInfo() << "TransmitterWorker::taskTransmitData() is runnig on "<< QThread::currentThread();
+    char txBuff[FRAME_POCKET_SIZE];
     while(1)
     {
+        std::this_thread::sleep_for(std::chrono::microseconds(10));
+        for(uint32_t i=0; i < TransmitterRecords::getInstance()->size(); i++)
+        {
+            auto d = TransmitterRecords::getInstance()->getAt(i);
+            if (d.first)
+            {
+              //  AUX::log(d.second,"transmit Data");
+                for (int i=0; i < FRAME_POCKET_SIZE; i++){
+                    txBuff[i] = d.second[i];
+                }
+                emit sendData(txBuff);
+            }
+        }
+    }
+}
+
+
+/*
         // std::this_thread::sleep_for(std::chrono::microseconds(10));
         QMutexLocker mutexlocker(&GeneralData::getInstance()->mutex);
         for (int i=0; i < GeneralData::getInstance()->getActions().size(); i++)
@@ -132,6 +153,4 @@ void TransmitterWorker::taskTransmitData()
                GeneralData::getInstance()->getActions()[i]->bIfApplied = true;
             }
         }
-    }
-}
-
+ */

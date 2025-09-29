@@ -11,13 +11,11 @@
 #include "ArincData.h"
 #include "action.h"
 #include "DEI1016.h"
-
+#include "actionsrecord.h"
 #include <vector>
-#include <thread>
 
 transmitter* transmitter::instance0 = nullptr;
 transmitter* transmitter::instance1 = nullptr;
-
 
 transmitter* transmitter::getInstance(int ch)
 {
@@ -50,31 +48,6 @@ void transmitter::initUiCombos()
     ui->cArinc_parity_bitRate->addItem("100  Kbps/EVEN Parity");
 }
 
-void transmitter::resetDataModel(str_t _eqId){
-
-    ui->treeView->setModel(nullptr);
-    auto __datamodel =  dataModel;
-
-    TransmitterWorker::getInstance(chanell)->getEquipment()->init(_eqId);
-
-    dataModel = new MyDataModel(this, TransmitterWorker::getInstance(chanell)->getEquipments(), true);
-    ui->treeView->setModel(dataModel);
-    dataModel->addReservedLabel();
-
-    //
-    ui->treeView->setColumnWidth(0, 300);
-    ui->treeView->setColumnWidth(1, 60);
-    ui->treeView->setColumnWidth(2, 120);
-    ui->treeView->setColumnWidth(3, 330);
-    ui->treeView->setColumnWidth(4, 600);
-    ui->treeView->setColumnWidth(5, 50);
-
-    emit dataModel->layoutChanged();
-    FillLabelSelector();
-
-    if(__datamodel)
-      delete __datamodel;
-}
 
 transmitter::transmitter(QWidget *parent, int ch):
     QWidget(parent), chanell(ch),
@@ -112,6 +85,32 @@ transmitter::transmitter(QWidget *parent, int ch):
     bIfEnabled = true;
 }
 
+void transmitter::resetDataModel(str_t _eqId){
+
+    ui->treeView->setModel(nullptr);
+    auto __datamodel =  dataModel;
+
+    TransmitterWorker::getInstance(chanell)->getEquipment()->init(_eqId);
+
+    dataModel = new MyDataModel(this, TransmitterWorker::getInstance(chanell)->getEquipments(), true);
+    ui->treeView->setModel(dataModel);
+    dataModel->addReservedLabel();
+
+    //
+    ui->treeView->setColumnWidth(0, 300);
+    ui->treeView->setColumnWidth(1, 60);
+    ui->treeView->setColumnWidth(2, 120);
+    ui->treeView->setColumnWidth(3, 330);
+    ui->treeView->setColumnWidth(4, 600);
+    ui->treeView->setColumnWidth(5, 50);
+
+    emit dataModel->layoutChanged();
+    FillLabelSelector();
+
+    if(__datamodel)
+        delete __datamodel;
+}
+
 transmitter::~transmitter()
 {
     delete ui;
@@ -147,8 +146,8 @@ void transmitter::onArinc_parity_bitRate(int index)
 {
     QMutexLocker locker(&GeneralData::getInstance()->mutex);
     auto control_word = DEI1016::getInstance()->setControlWord_transmitter_32Bits(0,index);
-    GeneralData::getInstance()->getActions().push_back(
-                   MakeControlAction(dei, static_cast<uint16_t>(control_word.to_ulong())));
+    auto x = MakeControlAction(dei, static_cast<uint16_t>(control_word.to_ulong()))->toPacket();
+    TransmitterRecords::getInstance()->record(x);
 }
 
 std::vector<DArincData> transmitter::getListOfAvailableLabelData()
@@ -238,7 +237,7 @@ void transmitter::OnEquipmentSelectorChanged(int _selectorindexd)
     emit onTransmitterEnabled(false);
     auto _eqId = equipmentsIds->FindId(_eqname);
     resetDataModel(_eqId);
-
+    TransmitterRecords::getInstance()->record(GeneralData::getInstance()->resetBoard.toPacket());
 }
 
 void transmitter::OnLabelSelectorChanged(int _selectorindexd)

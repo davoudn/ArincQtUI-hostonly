@@ -15,8 +15,8 @@ public:
     QString TRANSMIT_CONFIGS_PATH;
     QMutex  mutex;
     PointerVector<BaseAction> actions;
-
     PointerVector<BaseAction>& getActions();
+    ResetBoard resetBoard;
 };
 
 #endif // GENERALDATA_H

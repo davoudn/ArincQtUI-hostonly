@@ -32,6 +32,7 @@ uint8_t makeInstructionByte(uint32_t dei,uint32_t ch, uint32_t instr, uint32_t t
 void setInstruction(std::bitset<8>& x, uint32_t ins);
 void setChanel(std::bitset<8>& x, uint32_t ch);
 void setTransReceive(std::bitset<8>& x, uint32_t tranceive);
+void setDEI(std::bitset<8>& x, uint32_t dei);
 
 
 template <typename T,typename U>

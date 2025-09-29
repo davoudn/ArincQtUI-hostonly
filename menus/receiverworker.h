@@ -7,6 +7,7 @@
 #include "TreeDataModel.h"
 
 #include <QThread>
+#include <QTimer>
 #include <QtConcurrent/QtConcurrent>
 
 template <typename T, int I>
@@ -64,23 +65,21 @@ public slots:
     void receiveTask();
     void update(uint8_t& dei, uint8_t& chanell, float& _rate, std::bitset<ARINC32_SIZE>& arincBitsData);
 signals:
-    bool setLabelData(str_t labelId, const float& rate, const QVariant &value);
+    bool setLabelData(uint32_t deiId, uint32_t deiCh, str_t labelId, const float& rate, const QVariant &value);
 
 protected:
 
     PointerVector<BaseItem> equipments;
     str_t defaultEquipment;
     //QFuture <void> idleLabelCleanerFuture;
-    Timer* idleLabelCleanerTimer = nullptr;
-    Timer* dataRateTimer = nullptr;
+    QTimer  idleLabelCleanerTimer ;
+    QTimer  dataRateTimer ;
     bool bIfEnabled = false;
 
-    QThread* mainThread = nullptr;
-    QThread* idlecleanerThread = nullptr;
-    QThread* dataRateThread = nullptr;
+    QThread  mainThread  ;
+    QThread  idlecleanerThread  ;
+    QThread  dataRateThread  ;
     uint8_t chanell = 0;
-
-
 };
 
 

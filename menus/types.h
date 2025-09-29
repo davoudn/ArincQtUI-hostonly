@@ -24,8 +24,8 @@
 #define SDI_LSB 9
 #define SDI_MSB 10
 #define ARINC32_DATA_LENGTH 24
-#define CLEANING_CHECK_TIME 1000// miliseconds
-#define DATA_RATE_EVAL_TIME 10000// miliseconds
+#define CLEANING_CHECK_TIME 2000// miliseconds
+#define DATA_RATE_EVAL_TIME 1000// miliseconds
 #define NUM_DEI1016 2
 #define LAYOUT_REFRESHER_INTERVAL 100 // milliseconds
 #define SERIAL_RESET_INTERVAL 100 // milliseconds
@@ -101,7 +101,10 @@ enum Instructions {
     REMOVE_LABEL_FROM_TRANSMIT,
     UPDATE_LABEL_DATA_FOR_TRANSMIT,
     APPLY_CONTROL_WORD,
-    BURST_A_LABEL
+    BURST_A_LABEL,
+    UART_ECHO,
+    CLEAR_CHANELL,
+    CLEAR_ALL
 };
 
 enum PREDEFINED {

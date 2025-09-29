@@ -6,9 +6,10 @@
 #include "mainwindow.h"
 #include "transmitter.h"
 #include "receiver.h"
-//#include "receiverworker.h"
 #include "settingsdialog.h"
 #include "DEI1016RasberryConfigurations.h"
+#include "DEI1016.h"
+
 
 //! [0]
 MainWindow::MainWindow()
@@ -47,6 +48,8 @@ MainWindow::MainWindow()
     setWindowTitle(tr("Menus"));
     setMinimumSize(160, 160);
     resize(480, 320);
+
+    DEI1016::getInstance(this);
 }
 //! [2]
 

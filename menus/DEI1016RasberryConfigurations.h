@@ -267,17 +267,17 @@ struct SDI_X2
         word[10] =  1;
     }
     static void DISABLE(word_t& word){
-        word[11] = 0;
+        word[10] = 0;
     }
 };
 
 struct SDI_Y2
 {
     static void ENABLE(word_t& word){
-        word[8] =  1;
+        word[11] =  1;
     }
     static void DISABLE(word_t& word){
-        word[8] = 0;
+        word[11] = 0;
     }
 };
 

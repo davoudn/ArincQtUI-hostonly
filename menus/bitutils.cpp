@@ -41,7 +41,7 @@ uint16_t getTransReceive(std::bitset<8>& x) {
 
 uint8_t makeInstructionByte(uint32_t dei,uint32_t ch, uint32_t instr, uint32_t transrec){
     std::bitset<8> insByte;
-    AUX::setChanel(insByte, dei);
+    AUX::setDEI(insByte, dei);
     AUX::setChanel(insByte, ch);
     AUX::setTransReceive(insByte, transrec);
     AUX::setInstruction(insByte, instr);
@@ -68,7 +68,7 @@ void setTransReceive(std::bitset<8>& x, uint32_t tranceive){
 
 void convertFromArincToDEI(dword_t& data){
     dword_t x{data} ;
-    for (int i=0; i<data.size();i++){
+    for (uint32_t i=0; i<data.size();i++){
       data[i] = x[arinc_DEI_wordsMap[i]];
     }
 }
@@ -103,7 +103,7 @@ void convertFromDEIToArinc(dword_t& data, dword_t& x){
 
 //template <typename T>
 void convertBytesToData(record_t& recData, uint8_t& dei, uint8_t& chanel, float& rate, dword_t& arincData){
-    auto x = std::bitset<8>(static_cast<uint8_t>(recData[LABEL_BYTE]));
+    auto x = std::bitset<8>(static_cast<uint8_t>(recData[INSTRUCTION_BYTE]));
     chanel = getChanel(x);
     dei    = getDEI(x);
     rate = AUX::bitsToTime(recData[RATE_BYTE]);

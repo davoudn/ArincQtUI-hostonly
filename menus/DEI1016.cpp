@@ -1,12 +1,9 @@
 #include "types.h"
 #include "DEI1016.h"
 #include "DEI1016RasberryConfigurations.h"
-#include "receiverworker.h"
 #include "settingsdialog.h"
-#include "bitutils.h"
 #include "actionsrecord.h"
-#include "ArincData.h"
-
+#include "action.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <tuple>
@@ -14,20 +11,25 @@
 
 DEI1016::DEI1016(QObject* parent )
 {
-    mainThread = new QThread();
-    this->moveToThread(mainThread);
-    mainThread->start();
+    this->moveToThread(&mainThread);
+    mainThread.start();
 
-    serial = new QSerialPort(this);
-    serial->moveToThread(mainThread);
+    serial.moveToThread(&mainThread);
     openSerialPort();
 
     serialResetTimer.start(SERIAL_RESET_INTERVAL);
-    connect(serial, &QSerialPort::readyRead, this, &DEI1016::dataReceived, Qt::DirectConnection);
-    connect(&serialResetTimer, &QTimer::timeout, this, &DEI1016::serialReset);
+    connect(&serial, &QSerialPort::readyRead, this, &DEI1016::dataReceived, Qt::DirectConnection);
+   // connect(&serialResetTimer, &QTimer::timeout, this, &DEI1016::serialReset);
 
 }
-
+DEI1016::~DEI1016(){
+    auto x = ResetBoard().toPacket();
+    char b[FRAME_POCKET_SIZE];
+    for (int i=0; i < x.size(); i++){
+        b[i] = x[i];
+    }
+    sendData(b);
+}
 
 /*     
   @Control instructions  
@@ -70,27 +72,10 @@ void DEI1016::setControlInstruction(uint8_t instruction)
     }
 }
 
-bool DEI1016::sendAction(BaseAction* ac)
-{
-    if (ac){
-        int numSent = serial->write(ac->toPacket(), TX_BUFFER_SIZE);
-        if (numSent==TX_BUFFER_SIZE){
-            qInfo() << "Num bytes sent: "<<numSent;
-            ac->bIfApplied = true;
-            return true;
-        }
-        else {
-            qInfo() << "Failed to send all data!";
-            ac->bIfApplied = true;
-            return false;
-        }
-    }
-    return false;
-}
 
 bool DEI1016::sendData(char* ac)
 {
-        int numSent = serial->write(ac, TX_BUFFER_SIZE);
+        int numSent = serial.write(ac, TX_BUFFER_SIZE);
         if (numSent==TX_BUFFER_SIZE){
             qInfo() << "Num bytes sent: "<<numSent;
             return true;
@@ -120,14 +105,14 @@ void log (QByteArray& data, str_t msg)
 */
 void DEI1016::dataReceived()
 {
-    recDataBuffer.append(serial->readAll());
+    recDataBuffer.append(serial.readAll());
     updateTask();
 }
 
 void DEI1016::serialReset()
 {
-    serial->reset();
-    qInfo() << " DEI1016::serialReset(), data were not visible fot 100 milliseconds...";
+    serial.reset();
+    qInfo() << " DEI1016::serialReset(), data were not visible for 100 milliseconds, reseting the port ...";
 }
 
 std::tuple<bool,uint32_t, uint32_t>& DEI1016::parse(QByteArray& ba)
@@ -169,25 +154,10 @@ void DEI1016::updateTask()
                         recData[i] = static_cast<uint8_t>(recDataBuffer[initbyteidx+i]);
                     }
                     auto r =  ReceiverRecords::getInstance()->record(recData);
-                    recDataBuffer.clear();
+                    recDataBuffer.clear(); //remove(0,FRAME_POCKET_SIZE+initbyteidx);
         }
 }
 
-
-
-/*    AUX::convertBytesToData(recData, dei, chanell, rate, arincData);
-                    AUX::convertFromDEIToArinc(arincData);
-                    dArincData.Init(arincData);
-                    str_t labelid = dArincData.template Get<LabelIdOctal>().toString();
-                    value_t value = dArincData.template Get<DataBits>();
-                    log(recDataBuffer, "Rec Data: ");
-                   auto res = QtConcurrent::run( [=](){
-                        // QMetaObject::invokeMethod(this,[=](){
-                       //     emit setLabelData(labelid, rate, value);
-                       // });
-                    });
-*/
-//   emit update(dei, chanell, rate, arincData);
 
 /*
   @Serial port
@@ -196,27 +166,25 @@ void DEI1016::updateTask()
 void DEI1016::openSerialPort()
 {
     const SettingsDialog::Settings p = SettingsDialog::getInstance()->settings();
-     serial->setPortName(p.name);
-     serial->setBaudRate(p.baudRate);
-     serial->setDataBits(p.dataBits);
-     serial->setParity(p.parity);
-     serial->setStopBits(p.stopBits);
-     serial->setFlowControl(p.flowControl);
-     if (serial->open(QIODevice::ReadWrite) ){
+     serial.setPortName(p.name);
+     serial.setBaudRate(p.baudRate);
+     serial.setDataBits(p.dataBits);
+     serial.setParity(p.parity);
+     serial.setStopBits(p.stopBits);
+     serial.setFlowControl(p.flowControl);
+     if (serial.open(QIODevice::ReadWrite) ){
          bIfSerialOpen = true;
          qInfo() << "Serial port is connected...";
      }
-     serial->setReadBufferSize(1);
-     //erial-wri(POCKET_SIZE);
-
+     serial.setReadBufferSize(1);
 }
 //! [4]
 
 //! [5]
 void DEI1016::closeSerialPort()
 {
-    if (serial->isOpen()){
-        serial->close();
+    if (serial.isOpen()){
+        serial.close();
     }
 
 }
@@ -232,6 +200,7 @@ void DEI1016::setControlWord_receiver_32Bits(int receiveChanell, int index, word
     case PREDEFINED_RECEIVER::SLOW_SDI_DISABLED :{
         CONTROL::RECEIVER_DATA_RATE::SELECT_LOW(control_word);
         select_enable_receiver_SDIChanell(receiveChanell, SET_DISABLE, 0, control_word);
+        break;
     }
     case PREDEFINED_RECEIVER::FAST_SDI_DISABLED :{
         CONTROL::RECEIVER_DATA_RATE::SELECT_HI(control_word);
@@ -285,72 +254,78 @@ void DEI1016::setControlWord_receiver_32Bits(int receiveChanell, int index, word
 
 
 void DEI1016::select_enable_receiver_SDIChanell(int chanell, int ifEnable, int index, word_t& control_word){
-    if (chanell==CHANELL0){
-        switch(index){
-        case 0:{
+    if (chanell==CHANELL0)
+    {
+        switch(index)
+        {
+            case 0:{
             CONTROL::SDI_X1::DISABLE(control_word);
             CONTROL::SDI_Y1::DISABLE(control_word);
             break;
-        }
-        case 1:{
+            }
+            case 1:{
             CONTROL::SDI_X1::ENABLE(control_word);
             CONTROL::SDI_Y1::DISABLE(control_word);
             break;
-        }
-        case 2:{
+            }
+            case 2:{
             CONTROL::SDI_X1::DISABLE(control_word);
             CONTROL::SDI_Y1::ENABLE(control_word);
             break;
-        }
-        case 3:{
+            }
+            case 3:{
             CONTROL::SDI_X1::ENABLE(control_word);
             CONTROL::SDI_Y1::ENABLE(control_word);
             break;
+            }
         }
-        }
-        switch(ifEnable){
-        case SET_ENABLE :{
+        switch(ifEnable)
+        {
+            case SET_ENABLE :{
             CONTROL::SDI_ENB1::ENABLE(control_word);
             break;
-        }
-        case SET_DISABLE: {
+            }
+            case SET_DISABLE: {
             CONTROL::SDI_ENB1::DISABLE(control_word);
             break;
-        }
+            }
         }
     }
-    if (chanell==CHANELL1){
-        switch(index){
-        case 0:{
+    if (chanell==CHANELL1)
+    {
+        switch(index)
+        {
+            case 0:{
             CONTROL::SDI_X2::DISABLE(control_word);
             CONTROL::SDI_Y2::DISABLE(control_word);
             break;
-        }
+            }
         case 1:{
             CONTROL::SDI_X2::ENABLE(control_word);
             CONTROL::SDI_Y2::DISABLE(control_word);
             break;
-        }
+            }
         case 2:{
             CONTROL::SDI_X2::DISABLE(control_word);
             CONTROL::SDI_Y2::ENABLE(control_word);
             break;
-        }
+            }
         case 3:{
             CONTROL::SDI_X2::ENABLE(control_word);
             CONTROL::SDI_Y2::ENABLE(control_word);
             break;
+            }
         }
-        }
-        switch(ifEnable){
-        case SET_ENABLE :{
-            CONTROL::SDI_ENB1::ENABLE(control_word);
+        switch(ifEnable)
+        {
+            case SET_ENABLE :{
+            CONTROL::SDI_ENB2::ENABLE(control_word);
             break;
-        }
-        case SET_DISABLE: {
-            CONTROL::SDI_ENB1::DISABLE(control_word);
+            }
+            case SET_DISABLE: {
+            CONTROL::SDI_ENB2::DISABLE(control_word);
             break;
-        }
+            }
         }
     }
 }
@@ -404,10 +379,10 @@ const word_t& DEI1016::setControlWord_receiver_32Bits(int dei, int index)
 */
 DEI1016* DEI1016::instance = nullptr;
 
-DEI1016* DEI1016::getInstance()
+DEI1016* DEI1016::getInstance(QObject* parent)
 {
     if (!instance){
-        instance = new DEI1016();
+        instance = new DEI1016(parent);
     }
     return instance;
 }

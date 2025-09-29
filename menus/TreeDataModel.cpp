@@ -6,13 +6,12 @@
 #include "baseitem.h"
 #include "ArincData.h"
 #include "labelfor.h"
-#include "generaldata.h"
 #include <QMutexLocker>
 #include "receiver.h"
 #include "transmitter.h"
-#include "action.h"
-#include "generaldata.h"
 #include "receiverworker.h"
+#include "actionsrecord.h"
+#include "action.h"
 #include <QThread>
 
 #define COLUMN_NAME 0
@@ -34,7 +33,6 @@ MyDataModel::MyDataModel(QObject *parent, PointerVector<BaseItem>& vec, bool _bI
 }
 void MyDataModel::enableLayoutRefresh(){
     bIfLayoutRefresh = true;
-    //qInfo() << "000099999";
 }
 MyDataModel::~MyDataModel(){
 
@@ -868,8 +866,8 @@ std::vector<str_t> MyDataModel::getTimeOutList()
 
 void MyDataModel::addLabelAction(uint32_t dei, uint32_t deichanell, uint32_t transrec, uint32_t instr, Label* label)
 {
-    QMutexLocker<QMutex> mutexlocker(&GeneralData::getInstance()->mutex);
-    GeneralData::getInstance()->getActions().push_back(MakeDataAction(dei, deichanell, transrec, instr, label->getArincData().getBitSet().to_ulong(), label->getDataRate().toFloat()));
+    auto a =  MakeDataAction(dei, deichanell, transrec, instr, label->getArincData().getBitSet().to_ulong(), label->getDataRate().toFloat())->toPacket();
+    auto x = TransmitterRecords::getInstance()->record(a);
 }
 
 int MyDataModel::getChanell()

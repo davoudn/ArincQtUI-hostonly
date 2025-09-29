@@ -54,6 +54,7 @@ std::pair<bool,int> ActionsRecords::record (record_t& d){
     return std::make_pair(false,-1);
 }
 
+
 std::pair<bool,record_t> ActionsRecords::getAt(uint32_t i){
     if (i>0 && i<actions.size()){
         return actions[i].get();
@@ -76,6 +77,19 @@ ReceiverRecords* ReceiverRecords::getInstance()
 
 ReceiverRecords* ReceiverRecords::instance = nullptr;
 
+/*
+ * transmitter records
+*/
+
+TransmitterRecords* TransmitterRecords::getInstance()
+{
+    if (!instance){
+        instance = new TransmitterRecords(RECEIVER_RECORDE_SIZE);
+    }
+    return instance;
+}
+
+TransmitterRecords* TransmitterRecords::instance = nullptr;
 
 
 

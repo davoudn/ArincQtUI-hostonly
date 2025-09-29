@@ -8,9 +8,8 @@
 #include "Equipment.h"
 #include "generaldata.h"
 #include "DEI1016.h"
+#include "actionsrecord.h"
 
-#include <thread>
-#include <chrono>
 
 Receiver* Receiver::instance0 = nullptr;
 Receiver* Receiver::instance1 = nullptr;
@@ -23,7 +22,6 @@ Receiver::Receiver(QWidget *parent, uint8_t ch) :
    chanell(ch), ui(new Ui::Receiver), dataModel(new MyDataModel(nullptr, ReceiverWorker::getInstance(ch)->getEquipments(), false)), equipmentId("002")
 {
    ui->setupUi(this);
-//
    ui->treeView->setModel(dataModel);
    emit dataModel->layoutChanged();
 
@@ -33,16 +31,13 @@ Receiver::Receiver(QWidget *parent, uint8_t ch) :
    ui->treeView->setColumnWidth(3, 370);
    ui->treeView->setColumnWidth(4, 300);
    ui->treeView->setColumnWidth(5, 50);
-//
    this->setWindowTitle("Receiver " + QString::number(chanell));
-//
    equipmentsIds = new EquipmentsIds();
    FillEquipmentSelector();
    initUiCombos();
    resetDataModel(equipmentId);
    ReceiverWorker::getInstance(chanell)->startTasks();
    makeDeviceIndex();
-//
    connect(ui->equipmentSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(OnEquipmentSelectorChanged(int)));
    connect(ui->c_bitRate_enableSDI, SIGNAL(currentIndexChanged(int)), this, SLOT(on_SDI_bitRate(int)));
    connect(this, SIGNAL(OnArincDataUpdated()), this, SLOT(UpdateTree()));
@@ -127,9 +122,9 @@ void Receiver::makeDeviceIndex()
 
 void Receiver::on_SDI_bitRate(int index)
 {
-    //QMutexLocker<QMutex> locker(&GeneralData::getInstance()->mutex);
+    QMutexLocker locker(&GeneralData::getInstance()->mutex);
     auto control_word = DEI1016::getInstance()->setControlWord_receiver_32Bits(dei,index);
-    GeneralData::getInstance()->getActions().push_back(MakeControlAction(dei, static_cast<uint16_t>(control_word.to_ulong())));
+    TransmitterRecords::getInstance()->record(MakeControlAction(dei, static_cast<uint16_t>(control_word.to_ulong()))->toPacket());
 }
 
 MyDataModel *  Receiver::getDataModel()
@@ -208,9 +203,9 @@ void Receiver::UpdateTree()
 
 
 
-bool Receiver::setLabelData(str_t labelId, const float& rate, const QVariant &value)
+bool Receiver::setLabelData(uint32_t deiId, uint32_t deiCh, str_t labelId, const float& rate, const QVariant &value)
 {
-    if (bIfEnabled)
+    if (bIfEnabled && dei==deiId && deiChanell==deiCh)
     {
         Equipment* equipment =  ReceiverWorker::getInstance(chanell)->getEquipment();
         if (equipment)
