@@ -8,11 +8,15 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <asm-generic/termbits.h>
+//#include <termio.h>
 #include <linux/serial.h>
 #include "bitutils.h"
 #include <QSerialPortInfo>
 #include <tuple>
 #include <QSerialPort>
+#include <thread>
+#include <chrono>
+#include <poll.h>
 //
 
 DEI1016::DEI1016(QObject* parent )
@@ -110,20 +114,34 @@ enum class State{
      WaitForFinal,
      FinalReceived
 };
+/*
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(fd, &readfds);
+    timeval  timeout = {0,1};
+    int result = select(fd, &readfds, nullptr, nullptr, nullptr);
+    std::this_thread::sleep_for(std::chrono::microseconds(50));
 
+ */
 void DEI1016::dataReceivedTask()
 {
     uint8_t byte;
     uint32_t counter = 0;
     State state = State::WaitForInitial;
     std::array<uint8_t, 8> buffer;
+    //
+    //pollfd pfd;
+   // pfd.fd = fd;
+   // pfd.events = POLLIN;
+   // write (fd, "PING\n", 5);
     while(true)
     {
-
-        int n = read(fd, &byte, 1);
+   // int result = poll(&pfd, 1, 1000);
+   // qInfo() << "Polling result : " << result;
+   // if (result > 0 && (pfd.events & POLLIN))
+    {
+        int n = ::read(fd, &byte, 1);
         if (n<=0){
-            //recDataBuffer.append(byte);
-            //updateRecordsTable();
             continue;
         }
         qInfo() <<n << "\t" <<byte;
@@ -180,6 +198,7 @@ void DEI1016::dataReceivedTask()
             AUX::log(recData, "updateRecordsTable");
             auto r =  ReceiverRecords::getInstance()->record(recData);
         }
+    }
     }
 }
 
@@ -257,20 +276,35 @@ bool DEI1016::openPort()
 }
 
 void DEI1016::configurePort(int baudrate) {
-    termios2 tio;
-    ioctl(fd, TCGETS2, &tio);
-    tio.c_cflag &= ~CBAUD;
-    tio.c_cflag |= BOTHER;
-    tio.c_ispeed = 115200;
-    tio.c_ospeed = 115200;
-    tio.c_cflag &= ~(PARENB | CSTOPB | CRTSCTS);
-    tio.c_cflag |= CS8;// | CREAD | CLOCAL;
-    tio.c_lflag = 0;
-    tio.c_oflag = 0;
-    tio.c_iflag = 0;
-    tio.c_cc[VMIN] = 1;
-    tio.c_cc[VTIME] = 1;
-    ioctl(fd, TCSETS2, &tio);
+    struct termios2 tio2;
+       if (ioctl(fd, TCGETS2, &tio2) < 0) {
+           qInfo() << "ioctl TCGETS2";
+           close(fd);
+       }
+
+       // 2. Configure raw mode
+       tio2.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
+                        | INLCR  | IGNCR  | ICRNL  | IXON);
+       tio2.c_oflag &= ~OPOST;
+       tio2.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+       tio2.c_cflag &= ~(CSIZE | PARENB | CSTOPB | CRTSCTS);
+       tio2.c_cflag |= CS8 | CREAD | CLOCAL ;
+
+       // 3. Set VMIN/VTIME for blocking read of at least 1 byte
+       tio2.c_cc[VMIN]  = 1;
+       tio2.c_cc[VTIME] = 0;
+
+       // 4. Select custom baud rate
+       //    BOTHER tells the driver to use c_ispeed / c_ospeed directly
+       tio2.c_cflag |= BOTHER;
+       tio2.c_ispeed = 921600;   // e.g. 250k baud
+       tio2.c_ospeed = 921600;
+
+       // 5. Apply settings
+       if (ioctl(fd, TCSETS2, &tio2) < 0) {
+           qInfo() <<  "ioctl TCSETS2";
+           close(fd);
+       }
 }
 
 
