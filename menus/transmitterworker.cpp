@@ -68,7 +68,7 @@ TransmitterWorker::TransmitterWorker(str_t _equipment, int ch)
     connect(dataRateThread, &QThread::started, dataRateTimer, &Timer::counterTask);
     //
     connect(dataRateTimer, &Timer::onTimeout, this, &TransmitterWorker::actionListCleaner,  Qt::DirectConnection);
-    connect(this, &TransmitterWorker::sendData, DEI1016::getInstance(), &DEI1016::sendData, Qt::BlockingQueuedConnection);
+    connect(this, &TransmitterWorker::sendData, DEI1016::getInstance(), &DEI1016::sendData, Qt::DirectConnection);
 
     //
     dataRateTimer->moveToThread(dataRateThread);
@@ -86,10 +86,6 @@ TransmitterWorker::~TransmitterWorker()
 
 void TransmitterWorker::startTasks()
 {
-    DEI1016::getInstance();
-    if (!DEI1016::getInstance()->bIfSerialOpen){
-        DEI1016::getInstance()->openSerialPort();
-    }
     mainThread->start();
     // dataRateThread->start();
 }

@@ -27,36 +27,33 @@ public:
     void select_enable_receiver_SDIChanell(int chanell, int ifEnable, int index, word_t& control_word);
     void setControlInstruction(uint8_t instruction);
     void createMaps();
+    void updateRecordsTable();
+    void start();
+    void stop();
+    bool openPort();
+    void closePort();
+    void configurePort(int baudrate);
+    std::tuple<bool,uint32_t, uint32_t>& parse(QByteArray& ba);
 
 public:
    bool  bIfSerialOpen = false;
    bool  bIfDataReceived = false;
 
 
-private slots:
-   void dataReceived();
 public slots:
    bool sendData(char* ac);
-   void updateTask();
-   void serialReset();
+   void dataReceivedTask();
 
-public:
-   //
-   void openSerialPort();
-   void closeSerialPort();
-   void init();
-   std::tuple<bool,uint32_t, uint32_t>& parse(QByteArray& ba);
 protected:
+    bool running = false;
     record_t recData;
     record_t transData;
     std::array<word_t, NUM_DEI1016> controlWords;
     std::tuple<bool,uint32_t, uint32_t> parseResult;
-    bool bIfUpdated = false;
-    QByteArray recDataBuffer;
-    QMutex mutex;
-
+    std::array<uint8_t, RX_BUFFER_SIZE * 2> recDataBuffer;
+    // QByteArray recDataBuffer;
+    int fd = -1;
     QThread mainThread ;
-    QSerialPort serial ;
     QTimer serialResetTimer;
 };
 

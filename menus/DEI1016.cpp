@@ -4,23 +4,24 @@
 #include "settingsdialog.h"
 #include "actionsrecord.h"
 #include "action.h"
-#include <QSerialPort>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <asm-generic/termbits.h>
+#include <linux/serial.h>
+#include "bitutils.h"
 #include <QSerialPortInfo>
 #include <tuple>
+#include <QSerialPort>
 //
 
 DEI1016::DEI1016(QObject* parent )
 {
     this->moveToThread(&mainThread);
     mainThread.start();
-
-    serial.moveToThread(&mainThread);
-    openSerialPort();
-
-    serialResetTimer.start(SERIAL_RESET_INTERVAL);
-    connect(&serial, &QSerialPort::readyRead, this, &DEI1016::dataReceived, Qt::DirectConnection);
-   // connect(&serialResetTimer, &QTimer::timeout, this, &DEI1016::serialReset);
-
+    connect(&mainThread, &QThread::started, this, &DEI1016::dataReceivedTask);
+    openPort();
+    start();
 }
 DEI1016::~DEI1016(){
     auto x = ResetBoard().toPacket();
@@ -75,7 +76,7 @@ void DEI1016::setControlInstruction(uint8_t instruction)
 
 bool DEI1016::sendData(char* ac)
 {
-        int numSent = serial.write(ac, TX_BUFFER_SIZE);
+        int numSent = write(fd, ac, TX_BUFFER_SIZE);
         if (numSent==TX_BUFFER_SIZE){
             qInfo() << "Num bytes sent: "<<numSent;
             return true;
@@ -103,17 +104,91 @@ void log (QByteArray& data, str_t msg)
 /*
   @Receive
 */
-void DEI1016::dataReceived()
+enum class State{
+     WaitForInitial,
+     InitialReceived,
+     WaitForFinal,
+     FinalReceived
+};
+
+void DEI1016::dataReceivedTask()
 {
-    recDataBuffer.append(serial.readAll());
-    updateTask();
+    uint8_t byte;
+    uint32_t counter = 0;
+    State state = State::WaitForInitial;
+    std::array<uint8_t, 8> buffer;
+    while(true)
+    {
+
+        int n = read(fd, &byte, 1);
+        if (n<=0){
+            //recDataBuffer.append(byte);
+            //updateRecordsTable();
+            continue;
+        }
+        qInfo() <<n << "\t" <<byte;
+
+        switch (state)
+        {
+            case State::WaitForInitial :
+            {
+                if (byte==255) {
+                    state = State::InitialReceived;
+                }
+                break;
+            }
+            //
+            case State::InitialReceived:
+            {
+                if (byte==255) {
+                    state = State::InitialReceived;
+                }
+                else {
+                    state = State::WaitForFinal;
+                    buffer[counter] = byte;
+                    counter++;
+                }
+                break;
+            }
+            //
+            case State::WaitForFinal:
+            {
+                if (counter < 8) {
+                    buffer[counter] = byte;
+                    counter++;
+                }
+                if (counter == 8){
+                    if (byte==0xff){
+                        state = State::FinalReceived;
+                    }
+                    else {
+                        state = State::WaitForInitial;
+                    }
+                    counter = 0;
+                }
+                break;
+            }
+
+        }
+        if (state == State::FinalReceived){
+            state == State::WaitForInitial;
+            recData[0] = 255;
+            recData[FRAME_POCKET_SIZE-1] = 255;
+            for (int i=1;i < FRAME_POCKET_SIZE - 1; i++){
+                recData[i] = buffer[i-1];
+            }
+            AUX::log(recData, "updateRecordsTable");
+            auto r =  ReceiverRecords::getInstance()->record(recData);
+        }
+    }
 }
 
-void DEI1016::serialReset()
+void DEI1016::updateRecordsTable()
 {
-    serial.reset();
-    qInfo() << " DEI1016::serialReset(), data were not visible for 100 milliseconds, reseting the port ...";
+
+
 }
+
 
 std::tuple<bool,uint32_t, uint32_t>& DEI1016::parse(QByteArray& ba)
 {
@@ -139,56 +214,76 @@ std::tuple<bool,uint32_t, uint32_t>& DEI1016::parse(QByteArray& ba)
         if (std::get<2>(parseResult)- std::get<1>(parseResult) == DATA_POCKET_SIZE+1 ){
             std::get<0>(parseResult) = true;
         }
+        if (std::get<2>(parseResult)- std::get<1>(parseResult) == 1){
+            ba.remove(0, std::get<1>(parseResult));
+        }
+        if (recDataBuffer.size()==10){
+                //    log(recDataBuffer, "--");
+                  //  recDataBuffer.clear();
+        }
+
     }
     return parseResult;
 }
 
-void DEI1016::updateTask()
-{
-        parse(recDataBuffer);
-        if(std::get<0>(parseResult))
-        {
-            bIfUpdated = true;
-                    int initbyteidx= std::get<1>(parseResult);
-                    for (int i=0;i < FRAME_POCKET_SIZE; i++){
-                        recData[i] = static_cast<uint8_t>(recDataBuffer[initbyteidx+i]);
-                    }
-                    auto r =  ReceiverRecords::getInstance()->record(recData);
-                    recDataBuffer.clear(); //remove(0,FRAME_POCKET_SIZE+initbyteidx);
-        }
-}
 
 
 /*
   @Serial port
 */
 //! [4]
-void DEI1016::openSerialPort()
+
+void DEI1016::closePort()
+{
+    stop();
+    if (fd >= 0) close(fd);
+}
+//p.name.toStdString().c_str()
+bool DEI1016::openPort()
 {
     const SettingsDialog::Settings p = SettingsDialog::getInstance()->settings();
-     serial.setPortName(p.name);
-     serial.setBaudRate(p.baudRate);
-     serial.setDataBits(p.dataBits);
-     serial.setParity(p.parity);
-     serial.setStopBits(p.stopBits);
-     serial.setFlowControl(p.flowControl);
-     if (serial.open(QIODevice::ReadWrite) ){
-         bIfSerialOpen = true;
-         qInfo() << "Serial port is connected...";
-     }
-     serial.setReadBufferSize(1);
-}
-//! [4]
-
-//! [5]
-void DEI1016::closeSerialPort()
-{
-    if (serial.isOpen()){
-        serial.close();
+    QString  pname = "/dev/" + p.name;
+    fd = open(pname.toStdString().c_str(), O_RDWR | O_NOCTTY | O_SYNC);
+    if (fd < 0) {
+        qInfo() << "DEI1016::openPort() :: Failed to open serial port: " << p.name;
+        return false;
     }
+    else {
+        qInfo() << "Serial port : " << pname << "is open.";
+    }
+    configurePort(p.baudRate);
+    return true;
 
 }
+
+void DEI1016::configurePort(int baudrate) {
+    termios2 tio;
+    ioctl(fd, TCGETS2, &tio);
+    tio.c_cflag &= ~CBAUD;
+    tio.c_cflag |= BOTHER;
+    tio.c_ispeed = 115200;
+    tio.c_ospeed = 115200;
+    tio.c_cflag &= ~(PARENB | CSTOPB | CRTSCTS);
+    tio.c_cflag |= CS8;// | CREAD | CLOCAL;
+    tio.c_lflag = 0;
+    tio.c_oflag = 0;
+    tio.c_iflag = 0;
+    tio.c_cc[VMIN] = 1;
+    tio.c_cc[VTIME] = 1;
+    ioctl(fd, TCSETS2, &tio);
+}
+
+
 //! [5]
+
+void DEI1016::stop() {
+    running = false;
+}
+
+void DEI1016::start() {
+    running = true;
+    mainThread.start();
+}
 
 
 void DEI1016::setControlWord_receiver_32Bits(int receiveChanell, int index, word_t& control_word){

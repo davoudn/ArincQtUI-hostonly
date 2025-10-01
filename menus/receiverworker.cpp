@@ -46,9 +46,7 @@ ReceiverWorker::ReceiverWorker(str_t _equipment, uint8_t ch):chanell(ch)
 
 void ReceiverWorker::startTasks()
 {
-    if (!DEI1016::getInstance()->bIfSerialOpen){
-        DEI1016::getInstance()->openSerialPort();
-    }
+
     mainThread.start();
    // dataRateThread->start();
    // idlecleanerThread->start();

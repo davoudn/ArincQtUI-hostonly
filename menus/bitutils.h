@@ -22,7 +22,20 @@ namespace AUX
 {
 
 
-void log (record_t& data, str_t msg);
+template <typename T>
+void log (T& data, str_t msg)
+{
+    if (data.size()== RX_BUFFER_SIZE)
+    {
+        qInfo() << msg;
+        qInfo() << "\t"<<static_cast<uint8_t>(data[0]) <<"\t" << static_cast<uint8_t>(data[1])
+                << "\t"<<static_cast<uint8_t>(data[2]) <<"\t" << static_cast<uint8_t>(data[3])
+                << "\t"<<static_cast<uint8_t>(data[4]) <<"\t" << static_cast<uint8_t>(data[5])
+                << "\t"<<static_cast<uint8_t>(data[6]) <<"\t" << static_cast<uint8_t>(data[7])
+                << "\t"<<static_cast<uint8_t>(data[8]) << "\t"<< static_cast<uint8_t>(data[9]);
+    }
+}
+
 
 uint16_t getInstruction(std::bitset<8>& x);
 uint16_t getChanel(std::bitset<8>& x);
