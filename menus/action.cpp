@@ -57,34 +57,3 @@ BaseAction* MakeControlAction(uint32_t dei, uint32_t controlword){
 
 
 
-action::action(uint32_t ch, uint32_t trans_rec, uint32_t instr,
-                                                              uint32_t arincdata, float rt, uint16_t control)
- {
-    setData(ch,  trans_rec,  instr,  arincdata,  rt,  control);
- }
-
-void action::setData(uint32_t ch, uint32_t transreceive, uint32_t instr,
-                                                              uint32_t arincdata, float rt, uint16_t control)
-{
-    chanel = ch;
-    tranReceive = transreceive;
-    instruction = instr;
-    arincData   = arincdata;
-    rate        = rt;
-    controlWord = control;
-}
-
-char* action::toPacket()
-{
-    qInfo() << "**Arinc --> "<<std::bitset<32>(arincData).to_string( );
-    dword_t a{arincData};
-    AUX::convertFromArincToDEI(a);
-    qInfo() << "**DEI   --> "<<a.to_string( );
-    uint32_t x = static_cast<uint32_t>(a.to_ulong());
-    data[INSTRUCTION_BYTE] = AUX::makeInstructionByte(0,chanel, instruction, tranReceive);
-    data[RATE_BYTE] = AUX::timeToBits(rate);
-    AUX::split(x, data[ARINC_BYTE0], data[ARINC_BYTE1], data[ARINC_BYTE2], data[ARINC_BYTE3]);
-    uint16_t controlWord = 0;
-    AUX::split(controlWord, data[CONTROL_BYTE0], data[CONTROL_BYTE1]);
-    return data;
-}

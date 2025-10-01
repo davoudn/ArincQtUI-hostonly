@@ -1,4 +1,4 @@
-QT += core gui  widgets serialport
+QT += core gui  widgets  serialport
 
 HEADERS       = mainwindow.h \
     ATCBCDParameter.h \
