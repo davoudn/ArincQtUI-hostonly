@@ -139,12 +139,13 @@ void DEI1016::dataReceivedTask()
    // int result = poll(&pfd, 1, 1000);
    // qInfo() << "Polling result : " << result;
    // if (result > 0 && (pfd.events & POLLIN))
-    {
+
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
         int n = ::read(fd, &byte, 1);
         if (n<=0){
             continue;
         }
-        qInfo() <<n << "\t" <<byte;
+       // qInfo() <<n << "\t" <<byte;
 
         switch (state)
         {
@@ -158,7 +159,7 @@ void DEI1016::dataReceivedTask()
             //
             case State::InitialReceived:
             {
-                if (byte==255) {
+                if (byte==255 && counter==0) {
                     state = State::InitialReceived;
                 }
                 else {
@@ -171,12 +172,8 @@ void DEI1016::dataReceivedTask()
             //
             case State::WaitForFinal:
             {
-                if (counter < 8) {
-                    buffer[counter] = byte;
-                    counter++;
-                }
                 if (counter == 8){
-                    if (byte==0xff){
+                    if (byte==255){
                         state = State::FinalReceived;
                     }
                     else {
@@ -184,21 +181,32 @@ void DEI1016::dataReceivedTask()
                     }
                     counter = 0;
                 }
+                else
+                {
+                    if (counter < 8) {
+                        buffer[counter] = byte;
+                        counter++;
+                    }
+                }
+
+                break;
+            }
+            case State::FinalReceived:
+            {
+                state == State::WaitForInitial;
+                recData[0] = 255;
+                recData[FRAME_POCKET_SIZE-1] = 255;
+                for (int i=1;i < FRAME_POCKET_SIZE - 1; i++){
+                    recData[i] = buffer[i-1];
+                    buffer[i-1] = 0;
+                }
+                AUX::log(recData, "updateRecordsTable");
+                auto r =  ReceiverRecords::getInstance()->record(recData);
                 break;
             }
 
         }
-        if (state == State::FinalReceived){
-            state == State::WaitForInitial;
-            recData[0] = 255;
-            recData[FRAME_POCKET_SIZE-1] = 255;
-            for (int i=1;i < FRAME_POCKET_SIZE - 1; i++){
-                recData[i] = buffer[i-1];
-            }
-            AUX::log(recData, "updateRecordsTable");
-            auto r =  ReceiverRecords::getInstance()->record(recData);
-        }
-    }
+        qInfo() << counter;
     }
 }
 
@@ -261,10 +269,10 @@ void DEI1016::closePort()
 bool DEI1016::openPort()
 {
     const SettingsDialog::Settings p = SettingsDialog::getInstance()->settings();
-    QString  pname = "/dev/" + p.name;
+    QString  pname = "/dev/ttyAMA0"; // + p.name;
     fd = open(pname.toStdString().c_str(), O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0) {
-        qInfo() << "DEI1016::openPort() :: Failed to open serial port: " << p.name;
+        qInfo() << "DEI1016::openPort() :: Failed to open serial port: " << pname;
         return false;
     }
     else {
@@ -280,6 +288,7 @@ void DEI1016::configurePort(int baudrate) {
        if (ioctl(fd, TCGETS2, &tio2) < 0) {
            qInfo() << "ioctl TCGETS2";
            close(fd);
+           return;
        }
 
        // 2. Configure raw mode
@@ -325,7 +334,8 @@ void DEI1016::setControlWord_receiver_32Bits(int receiveChanell, int index, word
 
     CONTROL::WORD_LENGTH::SELECT_32(control_word) ;
     //
-    switch(index){
+    switch(index)
+    {
     case PREDEFINED_RECEIVER::SLOW_SDI_DISABLED :{
         CONTROL::RECEIVER_DATA_RATE::SELECT_LOW(control_word);
         select_enable_receiver_SDIChanell(receiveChanell, SET_DISABLE, 0, control_word);

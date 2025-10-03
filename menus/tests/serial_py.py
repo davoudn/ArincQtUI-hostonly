@@ -2,7 +2,7 @@ import serial
 
 # Open the serial port
 ser = serial.Serial(
-    port='/dev/ttyUSB0',     # or 'COM3' on Windows
+    port='/dev/ttyAMA0',     # or 'COM3' on Windows
     baudrate=921600,
     bytesize=serial.EIGHTBITS,
     parity=serial.PARITY_NONE,

@@ -79,10 +79,10 @@ int  Label::init (str_t _path, str_t _equipmentId, str_t _labelId)
     }
     auto jobj = utils::GetJsonObj(filename);
 
-    if (!Assert<Label>(jobj)){
-        qDebug() << "Label::ParseFromJson: Assert Failed. Data: "<< filename <<"\n";
-        exit(1);
-    }
+    //if (!Assert<Label>(jobj)){
+    //    qDebug() << "Label::ParseFromJson: Assert Failed. Data: "<< filename <<"\n";
+    //    exit(1);
+   // }
 
     EquipmentId  = jobj["Id"].toString();
     if (_equipmentId == "1111"){

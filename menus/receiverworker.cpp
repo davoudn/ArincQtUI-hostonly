@@ -143,7 +143,7 @@ void ReceiverWorker::receiveTask()
             auto d = ReceiverRecords::getInstance()->getAt(i);
             if (d.first)
             {
-                AUX::log(d.second,"received Data");
+             //   AUX::log(d.second,"received Data");
                 AUX::convertBytesToData(d.second, de, ch, rate, arincBits);
                 AUX::convertFromDEIToArinc(arincBits);
                 arincData.Init(arincBits);
