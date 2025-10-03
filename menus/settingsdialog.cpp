@@ -22,12 +22,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
     connect(m_ui->applyButton, &QPushButton::clicked,
             this, &SettingsDialog::apply);
-   connect(m_ui->serialPortInfoListBox, &QComboBox::currentIndexChanged,
-            this, &SettingsDialog::showPortInfo);
-    connect(m_ui->baudRateBox,  &QComboBox::currentIndexChanged,
-            this, &SettingsDialog::checkCustomBaudRatePolicy);
-    connect(m_ui->serialPortInfoListBox, &QComboBox::currentIndexChanged,
-            this, &SettingsDialog::checkCustomDevicePathPolicy);
+   //connect(m_ui->serialPortInfoListBox, &QComboBox::currentIndexChanged,
+    //        this, &SettingsDialog::showPortInfo);
+   // connect(m_ui->baudRateBox,  &QComboBox::currentIndexChanged,
+   //         this, &SettingsDialog::checkCustomBaudRatePolicy);
+   // connect(m_ui->serialPortInfoListBox, &QComboBox::currentIndexChanged,
+    //        this, &SettingsDialog::checkCustomDevicePathPolicy);
 
     fillPortsParameters();
     fillPortsInfo();
