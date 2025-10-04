@@ -140,12 +140,12 @@ void DEI1016::dataReceivedTask()
    // qInfo() << "Polling result : " << result;
    // if (result > 0 && (pfd.events & POLLIN))
 
-      //  std::this_thread::sleep_for(std::chrono::microseconds(1));
+       // std::this_thread::sleep_for(std::chrono::microseconds(1));
         int n = ::read(fd, &byte, 1);
         if (n<=0){
             continue;
         }
-    //    qInfo() << counter <<n << "\t" <<byte;
+     //   qInfo() << counter <<n << "\t" <<byte;
 
         switch (state)
         {
@@ -172,41 +172,39 @@ void DEI1016::dataReceivedTask()
             //
             case State::WaitForFinal:
             {
-                if (counter == 8){
-                    if (byte==255){
-                        state = State::FinalReceived;
-                    }
-                    else {
-                        state = State::WaitForInitial;
-                    }
-                    counter = 0;
+               if (counter < 8) {
+                    buffer[counter] = byte;
+                    counter++;
                 }
                 else
                 {
-                    if (counter < 8) {
-                        buffer[counter] = byte;
-                        counter++;
-                    }
+                   if (counter == 8)
+                   {
+                       if (byte==255){
+                           state = State::FinalReceived;
+                       }
+                       else {
+                           state = State::WaitForInitial;
+                       }
+                       counter = 0;
+                   }
                 }
-
-                break;
+               break;
             }
-            case State::FinalReceived:
-            {
-                state = State::WaitForInitial;
-                recData[0] = 255;
-                recData[FRAME_POCKET_SIZE-1] = 255;
-                for (int i=1;i < FRAME_POCKET_SIZE - 1; i++){
-                    recData[i] = buffer[i-1];
-                    buffer[i-1] = 0;
-                }
-                AUX::log(recData, "updateRecordsTable");
-                auto r =  ReceiverRecords::getInstance()->record(recData);
-                break;
-            }
-
         }
-        // qInfo() << counter;
+        if ( state==State::FinalReceived)
+        {
+            state = State::WaitForInitial;
+            recData[0] = 255;
+            recData[FRAME_POCKET_SIZE-1] = 255;
+            for (int i=1;i < FRAME_POCKET_SIZE - 1; i++){
+                recData[i] = buffer[i-1];
+            //    buffer[i-1] = 0;
+            }
+            AUX::log(recData, "updateRecordsTable");
+            auto r =  ReceiverRecords::getInstance()->record(recData);
+           // break;
+        }
     }
 }
 
