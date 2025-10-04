@@ -44,15 +44,16 @@ public:
 
     bool removeRow(int position);
     bool removeRow(QModelIndex _index);
-
     bool addLabel(str_t _labelName);
     bool addReservedLabel();
     bool removeLabel(str_t _labelName);
-  //  bool setLabelData(str_t labelName, const QVariant &value);
-  //  bool setLabelData(str_t labelId, const QVariant &value, QThread* thread);
+
 public slots:
     bool setLabelData(str_t labelName, const float& rate,  const QVariant &value);
     void enableLayoutRefresh();
+    void evalDataRates();
+    void cleanTimeoutList();
+
 public:
     // for transmitter
     std::vector<DArincData> getListOfAvailableLabelData();
@@ -60,10 +61,7 @@ public:
     void addLabelAction(uint32_t dei, uint32_t deichanell, uint32_t transrec, uint32_t instr, Label* label);
 
     // for receiver
-    void evalDataRates();
-    void evalDataRates(double _resettime);
     std::vector<str_t> getTimeOutList();
-    void               cleanTimeoutList();
 
     //
     QModelIndex findLabel(str_t _labelName);

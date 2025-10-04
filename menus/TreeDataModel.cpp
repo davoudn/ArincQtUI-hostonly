@@ -609,30 +609,6 @@ bool MyDataModel::checkLabel(str_t labelId)
     return false;
 }
 
-void MyDataModel::evalDataRates()
-{
-    QModelIndex topindex = index(0,0,QModelIndex());
-    if (topindex.isValid())
-    {
-        for (int row=0; row < rowCount(topindex); row++)
-        {
-            QModelIndex _index = index(row,0,topindex);
-            BaseItem* _base = static_cast<BaseItem*>(_index.internalPointer());
-            Label* _label = static_cast<Label*>(_base);
-            if (_base->type == BaseItem::ItemType::Label)
-            {
-                Label* _label = static_cast<Label*>(_base);
-                LabelFor<DReceiver>* _tmp = dynamic_cast<LabelFor<DReceiver>*>(_label);
-                if (_tmp){
-                    _tmp->evalDataRate() ;
-                }
-            }
-        }
-    }
-    return;
-}
-
-
 
 void  MyDataModel::cleanTimeoutList(){
     auto _garbage = getTimeOutList();
@@ -816,9 +792,8 @@ void MyDataModel::incrementLabelsDataRateCounter()
     return ;
 }
 
-void MyDataModel::evalDataRates(double _resettime)
+void MyDataModel::evalDataRates()
 {
-    std::vector<str_t> _garbage;
     QModelIndex topindex = index(0,0,QModelIndex());
     if (topindex.isValid())
     {
@@ -826,6 +801,7 @@ void MyDataModel::evalDataRates(double _resettime)
         {
             QModelIndex _index = index(row,0,topindex);
             BaseItem* _base = static_cast<BaseItem*>(_index.internalPointer());
+            Label* _label = static_cast<Label*>(_base);
             if (_base->type == BaseItem::ItemType::Label)
             {
                 Label* _label = static_cast<Label*>(_base);
@@ -836,8 +812,9 @@ void MyDataModel::evalDataRates(double _resettime)
             }
         }
     }
-    return ;
+    return;
 }
+
 
 std::vector<str_t> MyDataModel::getTimeOutList()
 {

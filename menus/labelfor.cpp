@@ -53,7 +53,7 @@ void LabelFor<DReceiver>::evalDataRate()
         dataRate = 0;
     }
     else {
-        float r = (uint16_t)RATE_EVAL_TIME / dataRateCounter;
+        float r = (uint16_t)DATA_RATE_EVAL_TIME / dataRateCounter;
         if ( r > 2 * dataRate) {
             // dataRate = r;
         }

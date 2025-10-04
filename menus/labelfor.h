@@ -10,8 +10,6 @@ class QThread;
 class QTimer;
 
 
-
-
 template <>
 class LabelFor<DReceiver>: public Label
 {

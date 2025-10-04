@@ -37,9 +37,6 @@ public:
     void resetDataModel(str_t _eqId);
     void initUiCombos();
     void removeLabel(bool _ifChecked);
-   // bool setLabelDataSimple(str_t labelId, const QVariant &value);
-    void evalDataRates(uint32_t interval);
-    void idleLabelCleaner();
 
     void Enable();
     void Disable();
@@ -54,6 +51,8 @@ public slots:
     void onReceiverEnabled(bool);
     void onReceiverDisabled(bool);
     bool setLabelData(uint32_t dei, uint32_t ch, str_t labelId, const float& rate, const QVariant &value);
+    void evalDataRates();
+    void idleLabelCleaner();
 
 public:
     void makeDeviceIndex();
@@ -66,6 +65,8 @@ protected:
     EquipmentsIds* equipmentsIds = nullptr;
     QString equipmentId;
     QMutex modelMutex;
+    QTimer  idleLabelCleanerTimer ;
+    QTimer  dataRateTimer ;
     bool bIfEnabled = false;
 };
 

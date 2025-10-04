@@ -1,14 +1,17 @@
 #include "bitutils.h"
 #include <array>
 #include "types.h"
-
+#include <termios.h>
 
 namespace AUX {
 
 const std::array<uint8_t,ARINC32_SIZE> arinc_DEI_wordsMap = { 7, 6, 5, 4 , 3, 2, 1, 0, 31, 30, 29, 8 ,9 , 10, 11, 12, 13, 14, 15, 16 , 17, 18, 19, 20, 21, 22, 23, 24 ,25 , 26, 27, 28};
 
 
-
+void serialFlush(int fd)
+{
+     tcflush(fd, TCIOFLUSH);
+}
 
 
 uint16_t getInstruction(std::bitset<8>& x)

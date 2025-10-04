@@ -26,7 +26,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 namespace {
 struct qt_meta_stringdata_MyDataModel_t {
-    uint offsetsAndSizes[16];
+    uint offsetsAndSizes[20];
     char stringdata0[12];
     char stringdata1[13];
     char stringdata2[1];
@@ -35,6 +35,8 @@ struct qt_meta_stringdata_MyDataModel_t {
     char stringdata5[5];
     char stringdata6[6];
     char stringdata7[20];
+    char stringdata8[14];
+    char stringdata9[17];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_MyDataModel_t::offsetsAndSizes) + ofs), len 
@@ -47,7 +49,9 @@ Q_CONSTINIT static const qt_meta_stringdata_MyDataModel_t qt_meta_stringdata_MyD
         QT_MOC_LITERAL(32, 9),  // "labelName"
         QT_MOC_LITERAL(42, 4),  // "rate"
         QT_MOC_LITERAL(47, 5),  // "value"
-        QT_MOC_LITERAL(53, 19)   // "enableLayoutRefresh"
+        QT_MOC_LITERAL(53, 19),  // "enableLayoutRefresh"
+        QT_MOC_LITERAL(73, 13),  // "evalDataRates"
+        QT_MOC_LITERAL(87, 16)   // "cleanTimeoutList"
     },
     "MyDataModel",
     "setLabelData",
@@ -56,7 +60,9 @@ Q_CONSTINIT static const qt_meta_stringdata_MyDataModel_t qt_meta_stringdata_MyD
     "labelName",
     "rate",
     "value",
-    "enableLayoutRefresh"
+    "enableLayoutRefresh",
+    "evalDataRates",
+    "cleanTimeoutList"
 };
 #undef QT_MOC_LITERAL
 } // unnamed namespace
@@ -67,7 +73,7 @@ Q_CONSTINIT static const uint qt_meta_data_MyDataModel[] = {
       10,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -75,11 +81,15 @@ Q_CONSTINIT static const uint qt_meta_data_MyDataModel[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    3,   26,    2, 0x0a,    1 /* Public */,
-       7,    0,   33,    2, 0x0a,    5 /* Public */,
+       1,    3,   38,    2, 0x0a,    1 /* Public */,
+       7,    0,   45,    2, 0x0a,    5 /* Public */,
+       8,    0,   46,    2, 0x0a,    6 /* Public */,
+       9,    0,   47,    2, 0x0a,    7 /* Public */,
 
  // slots: parameters
     QMetaType::Bool, 0x80000000 | 3, QMetaType::Float, QMetaType::QVariant,    4,    5,    6,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
 
        0        // eod
@@ -100,6 +110,10 @@ Q_CONSTINIT const QMetaObject MyDataModel::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<const float &, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QVariant &, std::false_type>,
         // method 'enableLayoutRefresh'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'evalDataRates'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'cleanTimeoutList'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -114,6 +128,8 @@ void MyDataModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         case 0: { bool _r = _t->setLabelData((*reinterpret_cast< std::add_pointer_t<str_t>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<float>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QVariant>>(_a[3])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         case 1: _t->enableLayoutRefresh(); break;
+        case 2: _t->evalDataRates(); break;
+        case 3: _t->cleanTimeoutList(); break;
         default: ;
         }
     }
@@ -138,13 +154,13 @@ int MyDataModel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 4;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 2)
+        if (_id < 4)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 2;
+        _id -= 4;
     }
     return _id;
 }

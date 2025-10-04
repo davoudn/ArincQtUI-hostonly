@@ -44,6 +44,11 @@ Receiver::Receiver(QWidget *parent, uint8_t ch) :
    connect(ui->chReceiverEnabled, &QCheckBox::clicked, this, &Receiver::onReceiverEnabled);
    connect(ui->chReceiverDisabled, &QCheckBox::clicked, this, &Receiver::onReceiverDisabled);
    connect(ReceiverWorker::getInstance(chanell), &ReceiverWorker::setLabelData, this, &Receiver::setLabelData, Qt::QueuedConnection);
+   connect(&idleLabelCleanerTimer, &QTimer::timeout, this, &Receiver::idleLabelCleaner);
+   connect(&dataRateTimer        , &QTimer::timeout, this, &Receiver::evalDataRates);
+
+   idleLabelCleanerTimer.start(CLEANING_CHECK_TIME);
+   dataRateTimer.start(DATA_RATE_EVAL_TIME);
 
    ui->chReceiverDisabled->setCheckState(Qt::CheckState::Unchecked);
    ui->chReceiverEnabled->setCheckState(Qt::CheckState::Checked);
@@ -240,12 +245,13 @@ void Receiver::idleLabelCleaner()
     Enable();
 }
 
-void Receiver::evalDataRates(uint32_t interval)
+void Receiver::evalDataRates()
 {
     if (bIfEnabled)
+    //    qInfo() << "Receiver::evalDataRates()";
     {
         if (dataModel){
-            dataModel->evalDataRates(interval);
+            dataModel->evalDataRates();
         }
     }
 }

@@ -201,7 +201,7 @@ void DEI1016::dataReceivedTask()
                 recData[i] = buffer[i-1];
             //    buffer[i-1] = 0;
             }
-            AUX::log(recData, "updateRecordsTable");
+        //    AUX::log(recData, "updateRecordsTable");
             auto r =  ReceiverRecords::getInstance()->record(recData);
            // break;
         }
@@ -268,7 +268,7 @@ bool DEI1016::openPort()
 {
     const SettingsDialog::Settings p = SettingsDialog::getInstance()->settings();
     QString  pname = "/dev/ttyAMA0"; // + p.name;
-    fd = open(pname.toStdString().c_str(), O_RDWR | O_NOCTTY | O_SYNC);
+    fd = open(pname.toStdString().c_str(), O_RDWR | O_NOCTTY | O_SYNC |  O_NDELAY);
     if (fd < 0) {
         qInfo() << "DEI1016::openPort() :: Failed to open serial port: " << pname;
         return false;
@@ -281,7 +281,11 @@ bool DEI1016::openPort()
 
 }
 
-void DEI1016::configurePort(int baudrate) {
+void DEI1016::configurePort(int baudrate)
+{
+    AUX::serialFlush(fd);
+    fcntl(fd, F_SETFL, 0);
+
     struct termios2 tio2;
        if (ioctl(fd, TCGETS2, &tio2) < 0) {
            qInfo() << "ioctl TCGETS2";

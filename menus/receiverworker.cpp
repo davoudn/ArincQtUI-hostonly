@@ -9,6 +9,8 @@
 #include "DEI1016RasberryConfigurations.h"
 #include "actionsrecord.h"
 #include "bitutils.h"
+#include "receiver.h"
+#include "TreeDataModel.h"
 
 ReceiverWorker* ReceiverWorker::instance0 = nullptr;
 ReceiverWorker* ReceiverWorker::instance1 = nullptr;
@@ -27,17 +29,17 @@ ReceiverWorker::ReceiverWorker(str_t _equipment, uint8_t ch):chanell(ch)
    // dataRateThread.setObjectName("datRate thread...");
 
 
-    connect(&idleLabelCleanerTimer, &QTimer::timeout, this, &ReceiverWorker::idleLabelCleaner, Qt::DirectConnection);
-    connect(&dataRateTimer, &QTimer::timeout, this, &ReceiverWorker::evalDataRates, Qt::DirectConnection);
-   // connect(dataRateThread, &QThread::started, dataRateTimer, &Timer::counterTask);
-    connect(&mainThread, &QThread::started, this, &ReceiverWorker::receiveTask);
-   // connect(idlecleanerThread, &QThread::started, idleLabelCleanerTimer, &Timer::counterTask);
 
-    //dataRateTimer->moveToThread(dataRateThread);
-    //idleLabelCleanerTimer->moveToThread(idlecleanerThread);
+    connect(&mainThread, &QThread::started, this, &ReceiverWorker::receiveTask);
+    //connect(this, &ReceiverWorker::evalDataRates, Receiver::getInstance(chanell)->getDataModel(), &MyDataModel::evalDataRates, Qt::QueuedConnection);
+    //connect(this, &ReceiverWorker::idleLabelCleaner, Receiver::getInstance(chanell)->getDataModel(), &MyDataModel::cleanTimeoutList, Qt::QueuedConnection);
+
     this->moveToThread(&mainThread);
-    //idleLabelCleanerTimer.start(CLEANING_CHECK_TIME);
-    //dataRateTimer.start(DATA_RATE_EVAL_TIME);
+    //idleLabelCleanerTimer.moveToThread(&mainThread);
+    //dataRateTimer.moveToThread(&mainThread);
+
+   // idleLabelCleanerTimer.start(CLEANING_CHECK_TIME);
+   // dataRateTimer.start(DATA_RATE_EVAL_TIME);
 
 }
 /*
@@ -48,19 +50,9 @@ void ReceiverWorker::startTasks()
 {
 
     mainThread.start();
-   // dataRateThread->start();
-   // idlecleanerThread->start();
+
 }
 
-void ReceiverWorker::idleLabelCleaner()
-{
-    bIfToClean = true;
-}
-
-void ReceiverWorker::evalDataRates()
-{
-    Receiver::getInstance(chanell)->evalDataRates(DATA_RATE_EVAL_TIME);
-}
 
 ReceiverWorker* ReceiverWorker::getInstance(uint8_t ch)
 {
@@ -150,14 +142,23 @@ void ReceiverWorker::receiveTask()
                 str_t labelid = arincData.template Get<LabelIdOctal>().toString();
                 value_t value = arincData.template Get<DataBits>();
                 auto res = QtConcurrent::run( [=](){
-                        emit setLabelData(de,ch,labelid, rate, value);//});
+                       emit setLabelData(de,ch,labelid, rate, value);//});
                 });
             }
         }
-        if (bIfToClean)
+       if (bIfToClean)
         {
-            Receiver::getInstance(chanell)->idleLabelCleaner();
+           auto res = QtConcurrent::run( [=](){
+                  emit idleLabelCleaner();//});
+           });
             bIfToClean = false;
+        }
+        if (bIfEvalDatarates)
+        {
+            auto res = QtConcurrent::run( [=](){
+                   emit evalDataRates();//});
+            });
+            bIfEvalDatarates = false;
         }
 
     }
@@ -193,4 +194,13 @@ void ReceiverWorker::update(uint8_t& deiId, uint8_t& chanellId, float& _rate, st
         bIfDataUpdated = true;
     }
 
+}
+
+void  ReceiverWorker::enableEvalrates()
+{
+     bIfEvalDatarates = true;
+}
+void  ReceiverWorker::enableIdleCleaner()
+{
+    bIfToClean = true;
 }

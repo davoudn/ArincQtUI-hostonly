@@ -25,7 +25,7 @@
 #define SDI_MSB 10
 #define ARINC32_DATA_LENGTH 24
 #define CLEANING_CHECK_TIME 2000// miliseconds
-#define DATA_RATE_EVAL_TIME 1000// miliseconds
+#define DATA_RATE_EVAL_TIME 2000// miliseconds
 #define NUM_DEI1016 2
 #define LAYOUT_REFRESHER_INTERVAL 100 // milliseconds
 #define SERIAL_RESET_INTERVAL 100 // milliseconds

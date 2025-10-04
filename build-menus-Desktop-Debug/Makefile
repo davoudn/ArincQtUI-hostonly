@@ -197,6 +197,7 @@ DIST          = ../menus/equipment.json \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/qt_config.prf \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/linux-clang/qmake.conf \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/spec_post.prf \
+		../menus/.qmake.stash \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/toolchain.prf \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/default_pre.prf \
@@ -347,6 +348,7 @@ Makefile: ../menus/menus.pro /usr/lib/aarch64-linux-gnu/qt6/mkspecs/linux-clang/
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/qt_config.prf \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/linux-clang/qmake.conf \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/toolchain.prf \
 		/usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/default_pre.prf \
@@ -419,6 +421,7 @@ Makefile: ../menus/menus.pro /usr/lib/aarch64-linux-gnu/qt6/mkspecs/linux-clang/
 /usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/qt_config.prf:
 /usr/lib/aarch64-linux-gnu/qt6/mkspecs/linux-clang/qmake.conf:
 /usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/exclusive_builds.prf:
 /usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/toolchain.prf:
 /usr/lib/aarch64-linux-gnu/qt6/mkspecs/features/default_pre.prf:

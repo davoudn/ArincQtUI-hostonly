@@ -21,6 +21,7 @@
 namespace AUX
 {
 
+void serialFlush(int fd);
 
 template <typename T>
 void log (T& data, str_t msg)

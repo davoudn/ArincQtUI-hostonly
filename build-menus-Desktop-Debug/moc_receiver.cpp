@@ -26,7 +26,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 namespace {
 struct qt_meta_stringdata_Receiver_t {
-    uint offsetsAndSizes[36];
+    uint offsetsAndSizes[40];
     char stringdata0[9];
     char stringdata1[19];
     char stringdata2[1];
@@ -45,6 +45,8 @@ struct qt_meta_stringdata_Receiver_t {
     char stringdata15[8];
     char stringdata16[5];
     char stringdata17[6];
+    char stringdata18[14];
+    char stringdata19[17];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_Receiver_t::offsetsAndSizes) + ofs), len 
@@ -67,7 +69,9 @@ Q_CONSTINIT static const qt_meta_stringdata_Receiver_t qt_meta_stringdata_Receiv
         QT_MOC_LITERAL(158, 5),  // "str_t"
         QT_MOC_LITERAL(164, 7),  // "labelId"
         QT_MOC_LITERAL(172, 4),  // "rate"
-        QT_MOC_LITERAL(177, 5)   // "value"
+        QT_MOC_LITERAL(177, 5),  // "value"
+        QT_MOC_LITERAL(183, 13),  // "evalDataRates"
+        QT_MOC_LITERAL(197, 16)   // "idleLabelCleaner"
     },
     "Receiver",
     "OnArincDataUpdated",
@@ -86,7 +90,9 @@ Q_CONSTINIT static const qt_meta_stringdata_Receiver_t qt_meta_stringdata_Receiv
     "str_t",
     "labelId",
     "rate",
-    "value"
+    "value",
+    "evalDataRates",
+    "idleLabelCleaner"
 };
 #undef QT_MOC_LITERAL
 } // unnamed namespace
@@ -97,7 +103,7 @@ Q_CONSTINIT static const uint qt_meta_data_Receiver[] = {
       10,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       9,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -105,15 +111,17 @@ Q_CONSTINIT static const uint qt_meta_data_Receiver[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   56,    2, 0x06,    1 /* Public */,
+       1,    0,   68,    2, 0x06,    1 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       3,    1,   57,    2, 0x0a,    2 /* Public */,
-       5,    0,   60,    2, 0x0a,    4 /* Public */,
-       6,    1,   61,    2, 0x0a,    5 /* Public */,
-       8,    1,   64,    2, 0x0a,    7 /* Public */,
-       9,    1,   67,    2, 0x0a,    9 /* Public */,
-      10,    5,   70,    2, 0x0a,   11 /* Public */,
+       3,    1,   69,    2, 0x0a,    2 /* Public */,
+       5,    0,   72,    2, 0x0a,    4 /* Public */,
+       6,    1,   73,    2, 0x0a,    5 /* Public */,
+       8,    1,   76,    2, 0x0a,    7 /* Public */,
+       9,    1,   79,    2, 0x0a,    9 /* Public */,
+      10,    5,   82,    2, 0x0a,   11 /* Public */,
+      18,    0,   93,    2, 0x0a,   17 /* Public */,
+      19,    0,   94,    2, 0x0a,   18 /* Public */,
 
  // signals: parameters
     QMetaType::Void,
@@ -125,6 +133,8 @@ Q_CONSTINIT static const uint qt_meta_data_Receiver[] = {
     QMetaType::Void, QMetaType::Bool,    2,
     QMetaType::Void, QMetaType::Bool,    2,
     QMetaType::Bool, 0x80000000 | 11, 0x80000000 | 11, 0x80000000 | 14, QMetaType::Float, QMetaType::QVariant,   12,   13,   15,   16,   17,
+    QMetaType::Void,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -160,7 +170,11 @@ Q_CONSTINIT const QMetaObject Receiver::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<uint32_t, std::false_type>,
         QtPrivate::TypeAndForceComplete<str_t, std::false_type>,
         QtPrivate::TypeAndForceComplete<const float &, std::false_type>,
-        QtPrivate::TypeAndForceComplete<const QVariant &, std::false_type>
+        QtPrivate::TypeAndForceComplete<const QVariant &, std::false_type>,
+        // method 'evalDataRates'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'idleLabelCleaner'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
 } };
@@ -179,6 +193,8 @@ void Receiver::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         case 5: _t->onReceiverDisabled((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
         case 6: { bool _r = _t->setLabelData((*reinterpret_cast< std::add_pointer_t<uint32_t>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<uint32_t>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<str_t>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<float>>(_a[4])),(*reinterpret_cast< std::add_pointer_t<QVariant>>(_a[5])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
+        case 7: _t->evalDataRates(); break;
+        case 8: _t->idleLabelCleaner(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -212,13 +228,13 @@ int Receiver::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 9;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 9)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 7;
+        _id -= 9;
     }
     return _id;
 }
