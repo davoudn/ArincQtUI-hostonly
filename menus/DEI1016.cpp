@@ -140,18 +140,18 @@ void DEI1016::dataReceivedTask()
    // qInfo() << "Polling result : " << result;
    // if (result > 0 && (pfd.events & POLLIN))
 
-        std::this_thread::sleep_for(std::chrono::microseconds(1));
+      //  std::this_thread::sleep_for(std::chrono::microseconds(1));
         int n = ::read(fd, &byte, 1);
         if (n<=0){
             continue;
         }
-       // qInfo() <<n << "\t" <<byte;
+    //    qInfo() << counter <<n << "\t" <<byte;
 
         switch (state)
         {
             case State::WaitForInitial :
             {
-                if (byte==255) {
+                if (byte==255 && counter==0) {
                     state = State::InitialReceived;
                 }
                 break;
@@ -193,7 +193,7 @@ void DEI1016::dataReceivedTask()
             }
             case State::FinalReceived:
             {
-                state == State::WaitForInitial;
+                state = State::WaitForInitial;
                 recData[0] = 255;
                 recData[FRAME_POCKET_SIZE-1] = 255;
                 for (int i=1;i < FRAME_POCKET_SIZE - 1; i++){
@@ -206,7 +206,7 @@ void DEI1016::dataReceivedTask()
             }
 
         }
-        qInfo() << counter;
+        // qInfo() << counter;
     }
 }
 
