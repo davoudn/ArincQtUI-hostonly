@@ -25,7 +25,7 @@ DEI1016::DEI1016(QObject* parent )
 DEI1016::~DEI1016(){
     auto x = ResetBoard().toPacket();
     char b[FRAME_POCKET_SIZE];
-    for (int i=0; i < x.size(); i++){
+    for (uint32_t i=0; i < x.size(); i++){
         b[i] = x[i];
     }
     sendData(b);
@@ -106,6 +106,9 @@ void log (QByteArray& data, str_t msg)
 void DEI1016::dataReceived()
 {
     recDataBuffer.append(serial.readAll());
+    //if (recDataBuffer.size()==10)
+      //  qInfo() << "--------------" << recDataBuffer;
+    //
     updateTask();
 }
 
@@ -145,9 +148,16 @@ std::tuple<bool,uint32_t, uint32_t>& DEI1016::parse(QByteArray& ba)
 
 void DEI1016::updateTask()
 {
+  /*  if (recDataBuffer.size()==10){
+        log(recDataBuffer, "+++++++");
+        recDataBuffer.clear();
+    }
+*/
         parse(recDataBuffer);
+
         if(std::get<0>(parseResult))
         {
+            log(recDataBuffer, "------");
             bIfUpdated = true;
                     int initbyteidx= std::get<1>(parseResult);
                     for (int i=0;i < FRAME_POCKET_SIZE; i++){
