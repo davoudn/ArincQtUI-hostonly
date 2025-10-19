@@ -1,0 +1,4 @@
+uart0 tx 8, rx 10
+uart1 tx 5, rx 3
+uart2 tx 19, rx 21
+uart0 tx 18, rx 16

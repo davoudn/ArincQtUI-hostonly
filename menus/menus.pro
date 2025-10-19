@@ -94,6 +94,6 @@ FORMS += \
 DISTFILES += \
     equipment.json
 
-unix: LIBS += -lpigpio
+unix: LIBS +=
 
 QMAKE_CXXFLAGS += -O3

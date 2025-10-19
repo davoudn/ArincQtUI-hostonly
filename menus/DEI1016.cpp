@@ -27,6 +27,7 @@ DEI1016::DEI1016(QObject* parent )
     openPort();
     start();
 }
+
 DEI1016::~DEI1016(){
     auto x = ResetBoard().toPacket();
     char b[FRAME_POCKET_SIZE];
@@ -108,12 +109,7 @@ void log (QByteArray& data, str_t msg)
 /*
   @Receive
 */
-enum class State{
-     WaitForInitial,
-     InitialReceived,
-     WaitForFinal,
-     FinalReceived
-};
+
 /*
     fd_set readfds;
     FD_ZERO(&readfds);
@@ -121,89 +117,34 @@ enum class State{
     timeval  timeout = {0,1};
     int result = select(fd, &readfds, nullptr, nullptr, nullptr);
     std::this_thread::sleep_for(std::chrono::microseconds(50));
-
- */
-void DEI1016::dataReceivedTask()
-{
-    uint8_t byte;
-    uint32_t counter = 0;
-    State state = State::WaitForInitial;
-    std::array<uint8_t, 8> buffer;
     //
     //pollfd pfd;
    // pfd.fd = fd;
    // pfd.events = POLLIN;
    // write (fd, "PING\n", 5);
-    while(true)
-    {
    // int result = poll(&pfd, 1, 1000);
    // qInfo() << "Polling result : " << result;
    // if (result > 0 && (pfd.events & POLLIN))
 
        // std::this_thread::sleep_for(std::chrono::microseconds(1));
-        int n = ::read(fd, &byte, 1);
+     //   qInfo() << counter <<n << "\t" <<byte;
+
+ */
+void DEI1016::dataReceivedTask()
+{
+    uint8_t bytes[FRAME_POCKET_SIZE];
+    state = State::WaitForInitial;
+
+    while(true)
+    {
+
+        int n = ::read(fd, &bytes, FRAME_POCKET_SIZE);
         if (n<=0){
             continue;
         }
-     //   qInfo() << counter <<n << "\t" <<byte;
 
-        switch (state)
-        {
-            case State::WaitForInitial :
-            {
-                if (byte==255 && counter==0) {
-                    state = State::InitialReceived;
-                }
-                break;
-            }
-            //
-            case State::InitialReceived:
-            {
-                if (byte==255 && counter==0) {
-                    state = State::InitialReceived;
-                }
-                else {
-                    state = State::WaitForFinal;
-                    buffer[counter] = byte;
-                    counter++;
-                }
-                break;
-            }
-            //
-            case State::WaitForFinal:
-            {
-               if (counter < 8) {
-                    buffer[counter] = byte;
-                    counter++;
-                }
-                else
-                {
-                   if (counter == 8)
-                   {
-                       if (byte==255){
-                           state = State::FinalReceived;
-                       }
-                       else {
-                           state = State::WaitForInitial;
-                       }
-                       counter = 0;
-                   }
-                }
-               break;
-            }
-        }
-        if ( state==State::FinalReceived)
-        {
-            state = State::WaitForInitial;
-            recData[0] = 255;
-            recData[FRAME_POCKET_SIZE-1] = 255;
-            for (int i=1;i < FRAME_POCKET_SIZE - 1; i++){
-                recData[i] = buffer[i-1];
-            //    buffer[i-1] = 0;
-            }
-        //    AUX::log(recData, "updateRecordsTable");
-            auto r =  ReceiverRecords::getInstance()->record(recData);
-           // break;
+        for (uint32_t i=0; i < n; i++){
+            parse(bytes[i]);
         }
     }
 }
@@ -215,42 +156,62 @@ void DEI1016::updateRecordsTable()
 }
 
 
-std::tuple<bool,uint32_t, uint32_t>& DEI1016::parse(QByteArray& ba)
+void DEI1016::parse(uint8_t byte)
 {
-    bool ifInitfound = false;
-    bool ifFinalFound = false;
-    std::get<0>(parseResult) = false;
-    std::get<1>(parseResult) = -1;
-    std::get<1>(parseResult) = -1;
-
-    for(int i=0;i<ba.size();i++){
-        if ( static_cast<uint8_t>(ba[i]) == INITIAL_BYTE && !ifInitfound ){
-            std::get<1>(parseResult) = i;
-            ifInitfound = true;
-        }
-        if ( static_cast<uint8_t>(ba[i]) == FINAL_BYTE && ifInitfound ){
-            std::get<2>(parseResult) = i;
-            ifFinalFound = true;
-        }
-
-    }
-    if (ifInitfound && ifFinalFound)
+    switch (state)
     {
-        if (std::get<2>(parseResult)- std::get<1>(parseResult) == DATA_POCKET_SIZE+1 ){
-            std::get<0>(parseResult) = true;
+        case State::WaitForInitial :
+        {
+            if (byte==255 && counter==1) {
+                state = State::InitialReceived;
+            }
+            break;
         }
-        if (std::get<2>(parseResult)- std::get<1>(parseResult) == 1){
-            ba.remove(0, std::get<1>(parseResult));
+        //
+        case State::InitialReceived:
+        {
+            if (byte==255 && counter==1) {
+                state = State::InitialReceived;
+            }
+            else {
+                state = State::WaitForFinal;
+                recData[counter] = byte;
+                counter++;
+            }
+            break;
         }
-        if (recDataBuffer.size()==10){
-                //    log(recDataBuffer, "--");
-                  //  recDataBuffer.clear();
+        //
+        case State::WaitForFinal:
+        {
+            if (counter < 9) {
+                recData[counter] = byte;
+                counter++;
+            }
+            else
+            {
+                if (counter == 9)
+                {
+                    if (byte==255){
+                        state = State::FinalReceived;
+                    }
+                    else {
+                        state = State::WaitForInitial;
+                    }
+                    counter = 1;
+                }
+            }
+            break;
         }
-
     }
-    return parseResult;
+    if ( state==State::FinalReceived)
+    {
+        state = State::WaitForInitial;
+        recData[0] = 255;
+        recData[FRAME_POCKET_SIZE-1] = 255;
+        AUX::log(recData, "updateRecordsTable");
+        auto r =  ReceiverRecords::getInstance()->record(recData);
+    }
 }
-
 
 
 /*

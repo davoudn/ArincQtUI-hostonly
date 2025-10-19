@@ -12,6 +12,13 @@
 class QMutex;
 class QSerialPort;
 
+enum class State{
+     WaitForInitial,
+     InitialReceived,
+     WaitForFinal,
+     FinalReceived
+};
+
 class DEI1016 : public QObject {
     Q_OBJECT
     explicit DEI1016(QObject* parent = nullptr);
@@ -33,7 +40,8 @@ public:
     bool openPort();
     void closePort();
     void configurePort(int baudrate);
-    std::tuple<bool,uint32_t, uint32_t>& parse(QByteArray& ba);
+    void parse(uint8_t byte);
+
 
 public:
    bool  bIfSerialOpen = false;
@@ -55,5 +63,7 @@ protected:
     int fd = -1;
     QThread mainThread ;
     QTimer serialResetTimer;
+    State state;
+    int counter = 1;
 };
 
