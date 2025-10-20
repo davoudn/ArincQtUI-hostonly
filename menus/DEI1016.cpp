@@ -228,8 +228,8 @@ void DEI1016::closePort()
 bool DEI1016::openPort()
 {
     const SettingsDialog::Settings p = SettingsDialog::getInstance()->settings();
-    QString  pname = "/dev/ttyAMA0"; // + p.name;
-    fd = open(pname.toStdString().c_str(), O_RDWR | O_NOCTTY | O_SYNC |  O_NDELAY);
+    QString  pname = "/dev/ttyS1"; // + p.name; os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK
+    fd = open(pname.toStdString().c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (fd < 0) {
         qInfo() << "DEI1016::openPort() :: Failed to open serial port: " << pname;
         return false;
@@ -237,14 +237,13 @@ bool DEI1016::openPort()
     else {
         qInfo() << "Serial port : " << pname << "is open.";
     }
-    configurePort(p.baudRate);
+    configurePort(921600);
     return true;
 
 }
 
 void DEI1016::configurePort(int baudrate)
 {
-    AUX::serialFlush(fd);
     fcntl(fd, F_SETFL, 0);
 
     struct termios2 tio2;
@@ -253,30 +252,37 @@ void DEI1016::configurePort(int baudrate)
            close(fd);
            return;
        }
+   /*    tio2.c_cflag |=  (CREAD | CLOCAL);
+       tio2.c_cflag |=  CS8;
+       tio2.c_cflag &= ~(PARENB | PARODD | CMSPAR |CSIZE);
+       tio2.c_cflag &= ~(CSTOPB | CRTSCTS);
+       tio2.c_lflag &= ~(ICANON |ECHO | ECHOE | ECHOK | ECHONL |ISIG | IEXTEN);
+       tio2.c_oflag &= ~(OPOST | ONLCR | OCRNL);
+       tio2.c_iflag &= ~(IGNBRK | INLCR  | IGNCR  | ICRNL | PARMRK |IUCLC);
+       tio2.c_iflag &= ~(IXON | IXOFF | IXANY);
+       tio2.c_iflag &= ~(INPCK | ISTRIP);
+       */
+       // Set raw mode
+          tio2.c_iflag = 0;
+          tio2.c_oflag = 0;
+          tio2.c_cflag &= ~CBAUD;
+          tio2.c_cflag |= BOTHER | CLOCAL | CREAD;
+          tio2.c_lflag = 0;
 
-       // 2. Configure raw mode
-       tio2.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
-                        | INLCR  | IGNCR  | ICRNL  | IXON);
-       tio2.c_oflag &= ~OPOST;
-       tio2.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
-       tio2.c_cflag &= ~(CSIZE | PARENB | CSTOPB | CRTSCTS);
-       tio2.c_cflag |= CS8 | CREAD | CLOCAL ;
+          // Set custom baud rate
+          tio2.c_ispeed = baudrate;
+          tio2.c_ospeed = baudrate;
+          tio2.c_cc[VMIN]  = 1;
+          tio2.c_cc[VTIME] = 0;
 
-       // 3. Set VMIN/VTIME for blocking read of at least 1 byte
-       tio2.c_cc[VMIN]  = 1;
-       tio2.c_cc[VTIME] = 0;
 
-       // 4. Select custom baud rate
-       //    BOTHER tells the driver to use c_ispeed / c_ospeed directly
-       tio2.c_cflag |= BOTHER;
-       tio2.c_ispeed = 921600;   // e.g. 250k baud
-       tio2.c_ospeed = 921600;
 
        // 5. Apply settings
        if (ioctl(fd, TCSETS2, &tio2) < 0) {
            qInfo() <<  "ioctl TCSETS2";
            close(fd);
        }
+       AUX::serialFlush(fd);
 }
 
 

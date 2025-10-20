@@ -10,7 +10,9 @@ const std::array<uint8_t,ARINC32_SIZE> arinc_DEI_wordsMap = { 7, 6, 5, 4 , 3, 2,
 
 void serialFlush(int fd)
 {
-     tcflush(fd, TCIOFLUSH);
+    tcdrain(fd);
+    tcflush(fd,TCOFLUSH);
+    tcflush(fd, TCIOFLUSH);
 }
 
 

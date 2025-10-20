@@ -8,7 +8,7 @@
 #include <iostream>
 
 int main() {
-    const char* port = "/dev/ttyUSB0";
+    const char* port = "/dev/ttyS0";
     int fd = open(port, O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0) {
         perror("open");
@@ -51,12 +51,15 @@ int main() {
     printf("Listening on %s at 250000 baud (termios2)\n", port);
 
     // 6. Read loop
+    char buf[10];
+    for (int i=0; i <10; i++)
+	    buf[i]=i;
     while (true) {
-        char buf[10];
-        int n = ::read(fd, buf, sizeof(buf));
-        if (n > 0) {
-		for (int i=0; i < n; i++)
-			std::cout << static_cast<uint8_t>(buf[i]) << "\t";
+        int n = ::write(fd, buf, sizeof(buf));
+        if (1) {
+		for (int i=0; i < 100000; i++);
+
+	//		std::cout << static_cast<uint8_t>(buf[i]) << "\t";
         }
     }
 

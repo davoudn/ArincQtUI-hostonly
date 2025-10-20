@@ -3,7 +3,7 @@ import serial
 # Open the serial port
 ser = serial.Serial(
     port='/dev/ttyS1',     # or 'COM3' on Windows
-    baudrate=921600,
+    baudrate=115200,
     bytesize=serial.EIGHTBITS,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
@@ -16,14 +16,14 @@ a = []
 for i in range(10):
     a.append(i)
 
-#ser.write(a)
+ser.write(a)
 
 # Read loop
 while 1==1:
-	input()
-	ser.write(a)
-	data = ser.read(10)     
-	print ("\n")
-	if data:
-		for x in data:
-			print("Received:", x)
+#input()
+#ser.write(a)
+    data = ser.read(10)     # read up to 256 bytes
+    print ("\n")
+    if data:
+        for x in data:
+            print("Received:", x)
