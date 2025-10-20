@@ -41,6 +41,7 @@ public:
     void closePort();
     void configurePort(int baudrate);
     void parse(uint8_t byte);
+    void resetBoard();
 
 
 public:

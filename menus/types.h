@@ -43,8 +43,7 @@
 #define SDI2 2
 #define SDI3 3
 
-#define POCKET_SIZE 9
-
+#define BAUD_RATE 921600
 
 #define TRANSMITTER_INTERVAL_TIME 2 // MILLISECONDS
 #define MILLISECONDS_TO_SECONDS 0.001
@@ -187,17 +186,7 @@ class DTransmitter{};
 class DReserved{};
 
 
-
+#define RASBERRYPI
+#define MR_Pin 2
+#define MR_RESET_HOLD 10000000
 #endif // TYPES_H
-
-//
-/*
-enum PREDEFINED {
-   SLOW_32BIT_SELFTEST,
-   FAST_32BIT_SELFTEST,
-   SLOW_32BIT_NORMAL_OPERATION,
-   FAST_32BIT_NORMAL_OPERATION,
-   ALLONES
-};
-*/
-//

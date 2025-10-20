@@ -8,7 +8,6 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <asm-generic/termbits.h>
-//#include <termio.h>
 #include <linux/serial.h>
 #include "bitutils.h"
 #include <QSerialPortInfo>
@@ -17,6 +16,11 @@
 #include <thread>
 #include <chrono>
 #include <poll.h>
+
+#ifdef RASBERRYPI
+#include <pigpio.h>
+#endif
+
 //
 
 DEI1016::DEI1016(QObject* parent )
@@ -26,15 +30,21 @@ DEI1016::DEI1016(QObject* parent )
     connect(&mainThread, &QThread::started, this, &DEI1016::dataReceivedTask);
     openPort();
     start();
+#ifdef RASBERRYPI
+    gpioInitialise();
+#endif
+    resetBoard();
 }
 
 DEI1016::~DEI1016(){
-    auto x = ResetBoard().toPacket();
+ /*   auto x = ResetBoard().toPacket();
     char b[FRAME_POCKET_SIZE];
     for (int i=0; i < x.size(); i++){
         b[i] = x[i];
     }
     sendData(b);
+*/
+    resetBoard();
 }
 
 /*     
@@ -110,28 +120,10 @@ void log (QByteArray& data, str_t msg)
   @Receive
 */
 
-/*
-    fd_set readfds;
-    FD_ZERO(&readfds);
-    FD_SET(fd, &readfds);
-    timeval  timeout = {0,1};
-    int result = select(fd, &readfds, nullptr, nullptr, nullptr);
-    std::this_thread::sleep_for(std::chrono::microseconds(50));
-    //
-    //pollfd pfd;
-   // pfd.fd = fd;
-   // pfd.events = POLLIN;
-   // write (fd, "PING\n", 5);
-   // int result = poll(&pfd, 1, 1000);
-   // qInfo() << "Polling result : " << result;
-   // if (result > 0 && (pfd.events & POLLIN))
 
-       // std::this_thread::sleep_for(std::chrono::microseconds(1));
-     //   qInfo() << counter <<n << "\t" <<byte;
-
- */
 void DEI1016::dataReceivedTask()
 {
+
     uint8_t bytes[FRAME_POCKET_SIZE];
     state = State::WaitForInitial;
 
@@ -228,7 +220,13 @@ void DEI1016::closePort()
 bool DEI1016::openPort()
 {
     const SettingsDialog::Settings p = SettingsDialog::getInstance()->settings();
-    QString  pname = "/dev/ttyS1"; // + p.name; os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK
+#ifdef ORANGEPI
+    QString  pname = "/dev/ttyS1";
+#endif
+#ifdef RASBERRYPI
+    QString  pname = "/dev/ttyAMA0";
+#endif
+
     fd = open(pname.toStdString().c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (fd < 0) {
         qInfo() << "DEI1016::openPort() :: Failed to open serial port: " << pname;
@@ -237,7 +235,7 @@ bool DEI1016::openPort()
     else {
         qInfo() << "Serial port : " << pname << "is open.";
     }
-    configurePort(921600);
+    configurePort(BAUD_RATE);
     return true;
 
 }
@@ -252,16 +250,7 @@ void DEI1016::configurePort(int baudrate)
            close(fd);
            return;
        }
-   /*    tio2.c_cflag |=  (CREAD | CLOCAL);
-       tio2.c_cflag |=  CS8;
-       tio2.c_cflag &= ~(PARENB | PARODD | CMSPAR |CSIZE);
-       tio2.c_cflag &= ~(CSTOPB | CRTSCTS);
-       tio2.c_lflag &= ~(ICANON |ECHO | ECHOE | ECHOK | ECHONL |ISIG | IEXTEN);
-       tio2.c_oflag &= ~(OPOST | ONLCR | OCRNL);
-       tio2.c_iflag &= ~(IGNBRK | INLCR  | IGNCR  | ICRNL | PARMRK |IUCLC);
-       tio2.c_iflag &= ~(IXON | IXOFF | IXANY);
-       tio2.c_iflag &= ~(INPCK | ISTRIP);
-       */
+
        // Set raw mode
           tio2.c_iflag = 0;
           tio2.c_oflag = 0;
@@ -274,8 +263,6 @@ void DEI1016::configurePort(int baudrate)
           tio2.c_ospeed = baudrate;
           tio2.c_cc[VMIN]  = 1;
           tio2.c_cc[VTIME] = 0;
-
-
 
        // 5. Apply settings
        if (ioctl(fd, TCSETS2, &tio2) < 0) {
@@ -479,6 +466,29 @@ const word_t& DEI1016::setControlWord_receiver_32Bits(int dei, int index)
 {
     setControlWord_receiver_32Bits(dei,  index, controlWords[dei]);
     return controlWords[dei];
+}
+
+
+void DEI1016::resetBoard()
+{
+#ifdef RASBERRYPI
+    gpioSetMode(MR_Pin, PI_OUTPUT);
+   // gpioWrite(MR_Pin, 1);
+    //
+    gpioWrite(MR_Pin, 0);
+    //for (int i=0; i < MR_RESET_HOLD; i++);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    gpioWrite(MR_Pin, 1);
+
+#endif
+
+#ifdef ORANGEPI
+#endif
+
+#ifdef UBUNTU
+#endif
+
 }
 
 
