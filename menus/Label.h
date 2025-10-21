@@ -73,6 +73,10 @@ public:
 
 
     virtual void setDataRate(value_t _value){
+        if (_value.toFloat() < MIN_RATE){
+            dataRate = MIN_RATE;
+            return;
+        }
         dataRate = _value.toDouble();
     }
 

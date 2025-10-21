@@ -37,6 +37,7 @@
 #define ACTION_CLEANER_TIME 2000
 #define SET_ENABLE 1
 #define SET_DISABLE 0
+#define MIN_RATE 25  // ms
 
 #define SDI0 0
 #define SDI1 1
