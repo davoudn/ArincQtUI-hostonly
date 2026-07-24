@@ -9,8 +9,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include  <memory>
 
-class ReceiverEventHandler: public QObject, 
-    public SingletonArray<ReceiverEventHandler, NUM_CHANNELS>, public ThreadedBuffer
+class ReceiverEventHandler: public SingletonArray<ReceiverEventHandler, NUM_CHANNELS>, public ThreadedBuffer
 {
     Q_OBJECT
 private:
