@@ -1,7 +1,7 @@
 #include "Transmitter.h"
-#include "ui_transmitter.h"
+#include "ui_Transmitter.h"
 #include "equipmentsids.h"
-#include "transmitterworker.h"
+#include "TransmitterWorker.h"
 #include "Equipment.h"
 #include "editordelegate.h"
 #include "TreeDataModel.h"
@@ -15,7 +15,7 @@
 #include <vector>
 #include <thread>
 
-void transmitter::initUiCombos()
+void Transmitter::initUiCombos()
 {
     ui->cArinc_parity_bitRate->addItem("12.5 Kbps/ODD  Parity");
     ui->cArinc_parity_bitRate->addItem("100  Kbps/ODD  Parity");
@@ -23,7 +23,7 @@ void transmitter::initUiCombos()
     ui->cArinc_parity_bitRate->addItem("100  Kbps/EVEN Parity");
 }
 
-void transmitter::resetDataModel(str_t eq_id)
+void Transmitter::resetDataModel(str_t eq_id)
 {
      ui->treeView->setModel(nullptr);
      auto old_data_model = data_model;
@@ -47,9 +47,9 @@ void transmitter::resetDataModel(str_t eq_id)
          delete old_data_model;
  }
 
-transmitter::transmitter(QWidget *parent, int ch):
+Transmitter::Transmitter(QWidget *parent, int ch):
     QWidget(parent), m_channel(ch), channel(ch),
-    ui(new Ui::transmitter), data_model(new MyDataModel(this, TransmitterWorker::getInstance(std::min(ch, 1))->getEquipments(), true))
+    ui(new Ui::Transmitter), data_model(new MyDataModel(this, TransmitterWorker::getInstance(std::min(ch, 1))->getEquipments(), true))
 {
     if (ch >= static_cast<int>(CHANNEL_DEI_MAPPING.size()) || ch < 0) {
         qWarning() << "Invalid channel:" << ch << ", defaulting to 0";
@@ -79,8 +79,8 @@ ui->setupUi(this);
     connect(ui->cArinc_parity_bitRate, SIGNAL(currentIndexChanged(int)), this, SLOT(onArincParityBitRate(int)));
     connect(ui->pSaveConfig, SIGNAL(clicked(bool)), this, SLOT(onSelectSaveConfigFile(bool)));
     connect(ui->pLoadConfig, SIGNAL(clicked(bool)), this, SLOT(onSelectLoadConfigFile(bool)));
-    connect(ui->chTransmitterEnabled, &QCheckBox::clicked, this, &transmitter::onTransmitterEnabled);
-    connect(ui->chTransmitterDisabled, &QCheckBox::clicked, this, &transmitter::onTransmitterDisabled);
+    connect(ui->chTransmitterEnabled, &QCheckBox::clicked, this, &Transmitter::onTransmitterEnabled);
+    connect(ui->chTransmitterDisabled, &QCheckBox::clicked, this, &Transmitter::onTransmitterDisabled);
     
     this->setWindowTitle("Transmitter " + QString::number(channel));
     
@@ -89,7 +89,7 @@ ui->setupUi(this);
     if_enabled = false;
 }
 
-transmitter::~transmitter()
+Transmitter::~Transmitter()
 {
     delete ui;
     delete equipments_ids;
@@ -97,20 +97,20 @@ transmitter::~transmitter()
     delete data_model;
 }
 
-MyDataModel* transmitter::getDataModel()
+MyDataModel* Transmitter::getDataModel()
 {
     return data_model;
 }
 
-void transmitter::onArincParityBitRate(int index)
+void Transmitter::onArincParityBitRate(int index)
 {
     QMutexLocker locker(&GeneralData::getInstance()->mutex);
-    auto control_word = DEI1016::getInstance()->setControlWord_transmitter_32Bits(0,index);
+    auto control_word = DEI1016::getInstance()->setControlWord_Transmitter_32Bits(0,index);
     GeneralData::getInstance()->getEvents().push_back(
                    MakeControlEvent(dei, static_cast<uint16_t>(control_word.to_ulong())));
 }
 
-std::vector<DArincData> transmitter::getListOfAvailableLabelData()
+std::vector<DArincData> Transmitter::getListOfAvailableLabelData()
 {
     std::vector<DArincData> list;
     if (if_enabled)
@@ -122,7 +122,7 @@ std::vector<DArincData> transmitter::getListOfAvailableLabelData()
     return list;
 }
 
-void transmitter::incrementLabelsDataRateCounter()
+void Transmitter::incrementLabelsDataRateCounter()
 {
     if (if_enabled)
     {
@@ -132,7 +132,7 @@ void transmitter::incrementLabelsDataRateCounter()
     }
 }
 
-void transmitter::addLabel(bool if_checked)
+void Transmitter::addLabel(bool if_checked)
 {
      disable();
      data_model->addLabel(selected_label_id);
@@ -140,7 +140,7 @@ void transmitter::addLabel(bool if_checked)
      emit data_model->layoutChanged();
  }
  
- void transmitter::removeLabel(bool if_checked)
+ void Transmitter::removeLabel(bool if_checked)
  {
      const QModelIndex index = ui->treeView->selectionModel()->currentIndex();
      QAbstractItemModel *model = ui->treeView->model();
@@ -155,7 +155,7 @@ void transmitter::addLabel(bool if_checked)
      emit data_model->layoutChanged();
  }
 
-void transmitter::fillEquipmentSelector()
+void Transmitter::fillEquipmentSelector()
 {
     for (const auto &x : equipments_ids->getNames()){
         ui->equipmentSelector->addItem(x);
@@ -164,7 +164,7 @@ void transmitter::fillEquipmentSelector()
     fillLabelSelector();
 }
 
-void transmitter::setEditorDelegate()
+void Transmitter::setEditorDelegate()
 {
     editor_delegate = new EditorDelegate(this);
     ui->treeView->setItemDelegateForColumn(1, editor_delegate);
@@ -172,7 +172,7 @@ void transmitter::setEditorDelegate()
     ui->treeView->setItemDelegateForColumn(4, editor_delegate);
 }
 
-void transmitter::unsetEditorDelegate()
+void Transmitter::unsetEditorDelegate()
 {
     ui->treeView->setItemDelegateForColumn(1, nullptr);
     ui->treeView->setItemDelegateForColumn(2, nullptr);
@@ -180,7 +180,7 @@ void transmitter::unsetEditorDelegate()
     delete editor_delegate;
 }
 
-void transmitter::fillLabelSelector()
+void Transmitter::fillLabelSelector()
 {
     ui->labelSelector->clear();
     Equipment* tmp = TransmitterWorker::getInstance(channel)->getEquipment();
@@ -190,7 +190,7 @@ void transmitter::fillLabelSelector()
     }
 }
 
-void transmitter::onEquipmentSelectorChanged(int selector_index)
+void Transmitter::onEquipmentSelectorChanged(int selector_index)
 {
      QString eq_name = ui->equipmentSelector->itemText(selector_index);
      emit onTransmitterEnabled(false);
@@ -198,14 +198,14 @@ void transmitter::onEquipmentSelectorChanged(int selector_index)
      resetDataModel(eq_id);
  }
 
-void transmitter::onLabelSelectorChanged(int selector_index)
+void Transmitter::onLabelSelectorChanged(int selector_index)
 {
     Equipment* tmp = TransmitterWorker::getInstance(channel)->getEquipment();
     str_t selected_label_name = ui->labelSelector->itemText(selector_index);
     selected_label_id  = tmp->findLabelIdFromName(selected_label_name);
 }
 
-void transmitter::onSelectSaveConfigFile(bool if_clicked)
+void Transmitter::onSelectSaveConfigFile(bool if_clicked)
 {
     config_file_name =  utils::openFileDialogForSaving(this, GeneralData::getInstance()->TRANSMIT_CONFIGS_PATH);
     if (!config_file_name.isEmpty()) {
@@ -230,7 +230,7 @@ void transmitter::onSelectSaveConfigFile(bool if_clicked)
     }
 }
 
-void transmitter::selectEquipment(str_t eq_id)
+void Transmitter::selectEquipment(str_t eq_id)
 {
     str_t eq_name = equipments_ids->findName(eq_id);
     if (eq_name!= "null"){
@@ -238,7 +238,7 @@ void transmitter::selectEquipment(str_t eq_id)
     }
 }
 
-void transmitter::onLoadConfig(bool if_clicked)
+void Transmitter::onLoadConfig(bool if_clicked)
 {
      if (!config_file_name.isEmpty()) {
          jsonobj_t jconfig = utils::GetJsonObj(config_file_name);
@@ -262,7 +262,7 @@ void transmitter::onLoadConfig(bool if_clicked)
      }
  }
 
-void transmitter::onSelectLoadConfigFile(bool if_clicked)
+void Transmitter::onSelectLoadConfigFile(bool if_clicked)
 {
     config_file_name =  utils::openFileDialogForOpening(this, GeneralData::getInstance()->TRANSMIT_CONFIGS_PATH);
 
@@ -274,7 +274,7 @@ void transmitter::onSelectLoadConfigFile(bool if_clicked)
     ui->lSelectedFile->setText("No file selected.");
 }
 
-void transmitter::onTransmitterEnabled(bool checked)
+void Transmitter::onTransmitterEnabled(bool checked)
 {
      ui->chTransmitterDisabled->setChecked(!checked);
      if (checked)
@@ -283,7 +283,7 @@ void transmitter::onTransmitterEnabled(bool checked)
          disable();
  }
  
- void transmitter::onTransmitterDisabled(bool checked)
+ void Transmitter::onTransmitterDisabled(bool checked)
  {
      ui->chTransmitterEnabled->setChecked(!checked);
      if (checked)
@@ -292,19 +292,19 @@ void transmitter::onTransmitterEnabled(bool checked)
          enable();
  }
  
- void transmitter::disable()
+ void Transmitter::disable()
  {
       if_enabled = false;
       std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
   }
   
-  void transmitter::enable()
+  void Transmitter::enable()
   {
        if_enabled = true;
        std::this_thread::sleep_for(std::chrono::milliseconds (MIN_TICK));
   }
   
-  transmitter* transmitter::getInstance(int ch)
+  Transmitter* Transmitter::getInstance(int ch)
   {
-      return SingletonArray<transmitter, 2>::getInstance(ch);
+      return SingletonArray<Transmitter, 2>::getInstance(ch);
   }

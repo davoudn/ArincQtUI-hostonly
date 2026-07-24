@@ -1,0 +1,2 @@
+#include "editordelegate.h"
+

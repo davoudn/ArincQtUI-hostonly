@@ -1,12 +1,13 @@
-#ifndef TRANSMITTER_H
-#define TRANSMITTER_H
+#ifndef Transmitter_H
+#define Transmitter_H
 
 #include "PointerVector.h"
-#include "types.h"
+#include "Types.h"
+#include "Singleton.h"
+
 #include <QWidget>
 #include <vector>
 #include <QMutex>
-#include "singleton.h"
 
 class EditorDelegate;
 class Equipment;
@@ -16,20 +17,17 @@ class DArincData;
 class BaseEvent;
 
 namespace Ui {
-class transmitter;
+class Transmitter;
 }
 
-class transmitter : public QWidget, public SingletonArray<transmitter, 2>
+class Transmitter : public QWidget, public SingletonArray<Transmitter, 2>
 {
     Q_OBJECT
-    friend class SingletonArray<transmitter, 2>;
     int m_channel = 0;
 
 public:
-    transmitter(QWidget *parent = nullptr, int ch = 0);
-    ~transmitter();
-    static transmitter* getInstance(int ch);
-
+    Transmitter(QWidget *parent = nullptr, int ch = 0);
+    ~Transmitter();
     void fillEquipmentSelector();
     void fillLabelSelector();
     void setEditorDelegate();
@@ -43,9 +41,7 @@ public:
     QMutex model_mutex;
     void disable();
     void enable();
-    int dei = 0;
-    int dei_channel = 0;
-    int channel = 0;
+
 public slots:
     void onEquipmentSelectorChanged(int);
     void onLabelSelectorChanged(int);
@@ -59,8 +55,11 @@ public slots:
     void onLoadConfig(bool);
 
 protected:
+    int dei = 0;
+    int dei_channel = 0;
+    int channel = 0;
     uint64_t control_word = 0;
-    Ui::transmitter *ui = nullptr;
+    Ui::Transmitter *ui = nullptr;
     MyDataModel *data_model = nullptr;
     EquipmentsIds* equipments_ids = nullptr;
     str_t equipment_id;
@@ -70,7 +69,6 @@ protected:
     str_t selected_label_id;
     str_t config_file_name;
     bool if_enabled = false;
-
 };
 
-#endif // TRANSMITTER_H
+#endif // Transmitter_H

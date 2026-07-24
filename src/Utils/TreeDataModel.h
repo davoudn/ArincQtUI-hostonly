@@ -1,6 +1,7 @@
 #ifndef TREEDATAMODEL_H
 #define TREEDATAMODEL_H
 #include "PointerVector.h"
+#include <QTimer>
 #include <QAbstractItemModel>
 #include <vector>
 
@@ -8,7 +9,7 @@ class Label;
 class BaseItem;
 class DArincData;
 class QThread;
-class BaseEvent;
+class BaseAction;
 /**
  * This is the model used to display our data.
  */
@@ -16,8 +17,11 @@ class MyDataModel: public QAbstractItemModel
 {
     Q_OBJECT
 private:
-    PointerVector<BaseItem>& my_data;
-    bool b_if_editable = false;
+    QTimer layoutRefresher;
+    PointerVector<BaseItem>& myData;
+    int depth(QModelIndex &index);
+    bool bIfEditable = false;
+
 public:
     MyDataModel(QObject *parent, PointerVector<BaseItem>& vec, bool _bIfEditable);
     ~MyDataModel();
@@ -40,23 +44,26 @@ public:
 
     bool removeRow(int position);
     bool removeRow(QModelIndex _index);
-
     bool addLabel(str_t _labelName);
     bool addReservedLabel();
     bool removeLabel(str_t _labelName);
-    bool setLabelData(str_t labelName, const QVariant &value);
-    bool setLabelData(str_t labelId, const QVariant &value, QThread* thread);
-    bool setLabelData(str_t labelName, const float& rate,  const QVariant &value);
 
+public slots:
+    bool setLabelData(str_t labelName, const float& rate,  const QVariant &value);
+    void enableLayoutRefresh();
+    void evalDataRates();
+    void cleanTimeoutList();
+
+public:
+    // for transmitter
     std::vector<DArincData> getListOfAvailableLabelData();
     void incrementLabelsDataRateCounter();
-    void addLabelAction(uint32_t dei, uint32_t channel, uint32_t transrec, uint32_t instr, Label* label);
+    void addLabelAction(uint32_t dei, uint32_t deichanell, uint32_t transrec, uint32_t instr, Label* label);
 
-    void evalDataRates();
-    void evalDataRates(double _resettime);
+    // for receiver
     std::vector<str_t> getTimeOutList();
-    void               cleanTimeoutList();
 
+    //
     QModelIndex findLabel(str_t _labelName);
     bool checkLabel(str_t _labelName);
 
@@ -70,10 +77,12 @@ public:
 
     QObject *tranciver = nullptr;
 
-    int getChannel();
+    int getChanell();
     int getDEI();
 private:
-    str_t label_to_insert;
+    int counter = 0;
+    str_t labelToInsert;
+    bool bIfLayoutRefresh = false;
 };
 
 #endif // TREEDATAMODEL_H

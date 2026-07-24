@@ -6,7 +6,7 @@
 #include <QTimer>
 #include <QMutex>
 #include <QMutexLocker>
-#include "singleton.h"
+#include "Utils/Singleton.h"
 
 class EquipmentsIds;
 class Equipment;
@@ -48,7 +48,7 @@ signals:
 public slots:
     void onEquipmentSelectorChanged(int id);
     void updateTree();
-    void on_SDI_bitRate(int index);
+    void onSdiBitrate(int index);
     void onReceiverEnabled(bool);
     void onReceiverDisabled(bool);
 public:

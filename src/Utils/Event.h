@@ -1,6 +1,6 @@
 #ifndef EVENT_H
 #define EVENT_H
-#include "types.h"
+#include "Utils/Types.h"
 #include <stdint.h>
 #include <array>
 
@@ -26,6 +26,7 @@ public:
 
 };
 
+
 class DataEvent : public BaseEvent
 {
 public:
@@ -49,9 +50,8 @@ protected:
     uint32_t control_word = 0;
 };
 
-BaseEvent* MakeDataEvent(uint32_t device_id, uint32_t ch, uint32_t tran_receive, uint32_t instr, uint32_t arinc_data, float rt);
-BaseEvent* MakeControlEvent(uint32_t device_id, uint32_t control_word);
-
-
+using BaseEventPtr = std::unique_ptr<BaseEvent>;
+using DataEventPtr = std::unique_ptr<DataEvent>;
+using ControlEventPtr = std::unique_ptr<ControlEven>;
 
 #endif // EVENT_H
