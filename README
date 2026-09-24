@@ -1,2 +1,44 @@
-1- The code gets the 8bytes data the first 4bytes for rate and ancillary data, the second 4bytes represent arinc429 32 bit data.
-2- It represent the data and its rate, the data representations are bits data representation and engineering representation.
+# ArincQtUI-hostonly
+
+> **Note on this file.** `README` was left mid-merge with conflict markers in it. The two sides
+> carried: HEAD, the two-line data-format description reproduced below; and `4aafb70`, an empty
+> file. HEAD's content is kept. Resolving the merge properly — and `git add`ing this — is
+> Phase 0 of `PLAN.md`. See `docs/markdowns/CHANGELOG.md` §3.3 and §6.12.
+
+A Qt/C++ host application for ARINC 429 test equipment, talking to a DEI1016 board over a
+serial/USB gate. It is being restructured around an event-based core: 16 bidirectional
+channels, lock-free ring buffers, and a Python scripting surface via pybind11.
+
+The data is 8-byte packets: the first 4 bytes carry rate and ancillary data, the second 4 bytes
+are the 32-bit ARINC 429 word. Data is shown both as bits and in engineering representation.
+
+---
+
+## Start here
+
+**Current state:** the event-based core is **specified and planned, not built**. No code in
+`src/` has been changed. The documentation set exists and its cross-references are checked
+mechanically. The build does not currently configure, and the working tree is mid-merge — both
+are Phase 0 and both block everything else.
+
+**The one open question that needs an owner, not a programmer:** the wire format encodes channel
+as *one bit* (2 channels); the specification needs *four* (16 channels). See
+`docs/markdowns/CHANGELOG.md` §6.2. Phase 2 cannot start until it is answered.
+
+| The door you want | Open |
+|---|---|
+| I'm picking this up cold — what's the state and what's next? | `docs/markdowns/PROGRESS.md` |
+| I'm looking at a file — what is its story? | `docs/markdowns/MAP.md` |
+| What is being built, in what order, and what counts as done? | `PLAN.md` |
+| Why was this designed this way? | `docs/markdowns/DECISIONS.md` |
+| What rule must future work follow? | `docs/markdowns/PRINCIPLES.md` |
+| Which thread touches which buffer? | `docs/markdowns/WORKFLOW.md` |
+| What's broken, and what did we get wrong? | `docs/markdowns/CHANGELOG.md` |
+| How is work done here — branches, docs, verification? | `CLAUDE.md` |
+| What was originally asked for? | `Instructions.md` (workspace root) |
+
+Before committing a documentation change:
+
+```
+python tools/check_docs.py
+```
